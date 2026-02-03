@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import vase1 from "@/assets/product-vase-1.png";
-import vase2 from "@/assets/product-vase-2.png";
-import bowl1 from "@/assets/product-bowl-1.png";
-import bowl2 from "@/assets/product-bowl-2.png";
-import cup1 from "@/assets/product-cup-1.png";
-import cup2 from "@/assets/product-cup-2.png";
+
+// Import real product assets
+import burgundyBowl from "@/assets/burgundy_bowl_1770124696039.png";
+import burgundyMezze from "@/assets/burgundy_mezze_1770124696040.png";
+import burgundyMug from "@/assets/burgundy_mug_1770124696041.png";
+import burgundyOliveSet from "@/assets/burgundy_olive_set_1770124696041.png";
+import classicBowl from "@/assets/classic_bowl_1770124706114.png";
+import classicMezze from "@/assets/classic_mezze_plate_1770124706115.png";
+import classicMug from "@/assets/classic_mug_1770124706116.png";
+import classicSet from "@/assets/classic_1770124706117.png";
 
 interface Product {
   id: number;
@@ -20,26 +24,47 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: "The Artisan Vase",
-    price: "$120.00",
-    image1: vase1,
-    image2: vase2,
+    name: "Classic Indigo Mug",
+    price: "$38.00",
+    image1: classicMug,
+    image2: classicSet,
     badge: "Limited Drop",
   },
   {
     id: 2,
-    name: "Heritage Serving Bowl",
-    price: "$85.00",
-    image1: bowl1,
-    image2: bowl2,
+    name: "Burgundy Hand-Painted Bowl",
+    price: "$52.00",
+    image1: burgundyBowl,
+    image2: burgundyMezze,
   },
   {
     id: 3,
-    name: "Daily Espresso Set",
+    name: "Classic Indigo Mezze",
     price: "$45.00",
-    image1: cup1,
-    image2: cup2,
+    image1: classicMezze,
+    image2: classicSet,
     badge: "Sold Out",
+  },
+  {
+    id: 4,
+    name: "Burgundy Heritage Mug",
+    price: "$38.00",
+    image1: burgundyMug,
+    image2: burgundyOliveSet,
+  },
+  {
+    id: 5,
+    name: "Indigo Heritage Bowl",
+    price: "$52.00",
+    image1: classicBowl,
+    image2: classicSet,
+  },
+  {
+    id: 6,
+    name: "Burgundy Mezze Set",
+    price: "$48.00",
+    image1: burgundyMezze,
+    image2: burgundyOliveSet,
   },
 ];
 
@@ -48,13 +73,16 @@ export default function ProductGrid() {
     <section className="py-24 bg-background">
       <div className="container mx-auto px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl text-foreground">Curated Selection</h2>
+          <div>
+            <span className="text-xs uppercase tracking-[0.3em] text-primary mb-2 block font-medium">The Collection</span>
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground">Hand-Painted Heritage</h2>
+          </div>
           <a href="#" className="text-sm uppercase tracking-widest border-b border-foreground/20 pb-1 hover:border-foreground transition-colors mt-4 md:mt-0">
             View All Objects
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -77,7 +105,7 @@ function ProductCard({ product }: { product: Product }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted/20 mb-6">
+      <div className="relative aspect-[4/5] overflow-hidden bg-[#f4f2ee] mb-6">
         {product.badge && (
           <Badge 
             variant="secondary" 
@@ -90,7 +118,7 @@ function ProductCard({ product }: { product: Product }) {
         <img
           src={product.image1}
           alt={product.name}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${isHovered ? "opacity-0" : "opacity-100"}`}
+          className={`absolute inset-0 w-full h-full object-contain p-8 transition-opacity duration-700 ease-in-out ${isHovered ? "opacity-0" : "opacity-100"}`}
         />
         <img
           src={product.image2}
