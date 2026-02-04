@@ -2,15 +2,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
-// Import real product assets
-import burgundyBowl from "@/assets/burgundy_bowl_1770124696039.png";
-import burgundyMezze from "@/assets/burgundy_mezze_1770124696040.png";
-import burgundyMug from "@/assets/burgundy_mug_1770124696041.png";
-import burgundyOliveSet from "@/assets/burgundy_olive_set_1770124696041.png";
-import classicBowl from "@/assets/classic_bowl_1770124706114.png";
-import classicMezze from "@/assets/classic_mezze_plate_1770124706115.png";
-import classicMug from "@/assets/classic_mug_1770124706116.png";
-import classicSet from "@/assets/classic_1770124706117.png";
+// Import real product assets from @assets alias (attached_assets)
+import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
+import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
+import burgundyMug from "@assets/burgundy_mug_1770124696041.png";
+import burgundyOliveSet from "@assets/burgundy_olive_set_1770124696041.png";
+import classicBowl from "@assets/classic_bowl_1770124706114.png";
+import classicMezze from "@assets/classic_mezze_plate_1770124706115.png";
+import classicMug from "@assets/classic_mug_1770124706116.png";
+import classicSet from "@assets/classic_1770124706117.png";
 
 interface Product {
   id: number;
