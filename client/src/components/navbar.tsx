@@ -36,7 +36,7 @@ export default function Navbar() {
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           <div className="hidden md:block w-20">
-              <Link href="/" className="text-sm uppercase tracking-widest hover:text-primary transition-colors font-medium">Shop</Link>
+              <Link href="/" className="text-sm uppercase tracking-widest hover:text-primary transition-colors font-medium">Home</Link>
           </div>
 
           <Link href="/">

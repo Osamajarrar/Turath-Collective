@@ -96,48 +96,50 @@ function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="group cursor-pointer"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className="relative aspect-[4/5] overflow-hidden bg-[#f4f2ee] mb-6">
-        {product.badge && (
-          <Badge 
-            variant="secondary" 
-            className="absolute top-4 left-4 z-20 bg-secondary text-secondary-foreground text-[10px] uppercase tracking-widest px-3 py-1 rounded-none border-none font-medium"
-          >
-            {product.badge}
-          </Badge>
-        )}
-        
-        <img
-          src={product.image1}
-          alt={product.name}
-          className={`absolute inset-0 w-full h-full object-contain p-8 transition-opacity duration-700 ease-in-out ${isHovered ? "opacity-0" : "opacity-100"}`}
-        />
-        <img
-          src={product.image2}
-          alt={`${product.name} detail`}
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out scale-105 ${isHovered ? "opacity-100 scale-100" : "opacity-0"}`}
-        />
-      </div>
-
-      <div className="flex flex-col space-y-1">
-        <div className="flex justify-between items-baseline">
-          <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors duration-300">
-            {product.name}
-          </h3>
-          <span className="font-sans text-sm font-medium text-foreground/70">{product.price}</span>
+    <Link href={`/product/${product.id}`}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="group cursor-pointer"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative aspect-[4/5] overflow-hidden bg-[#f4f2ee] mb-6">
+          {product.badge && (
+            <Badge 
+              variant="secondary" 
+              className="absolute top-4 left-4 z-20 bg-secondary text-secondary-foreground text-[10px] uppercase tracking-widest px-3 py-1 rounded-none border-none font-medium"
+            >
+              {product.badge}
+            </Badge>
+          )}
+          
+          <img
+            src={product.image1}
+            alt={product.name}
+            className={`absolute inset-0 w-full h-full object-contain p-8 transition-opacity duration-700 ease-in-out ${isHovered ? "opacity-0" : "opacity-100"}`}
+          />
+          <img
+            src={product.image2}
+            alt={`${product.name} detail`}
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out scale-105 ${isHovered ? "opacity-100 scale-100" : "opacity-0"}`}
+          />
         </div>
-        <p className="text-xs text-muted-foreground uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-          Quick Add +
-        </p>
-      </div>
-    </motion.div>
+
+        <div className="flex flex-col space-y-1">
+          <div className="flex justify-between items-baseline">
+            <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors duration-300">
+              {product.name}
+            </h3>
+            <span className="font-sans text-sm font-medium text-foreground/70">{product.price}</span>
+          </div>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+            View Details →
+          </p>
+        </div>
+      </motion.div>
+    </Link>
   );
 }
