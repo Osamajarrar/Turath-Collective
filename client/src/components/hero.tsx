@@ -7,14 +7,14 @@ export default function Hero() {
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background Video with Gradient Overlays */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black/20 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 z-10" />
+        <div className="absolute inset-0 bg-black/10 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 z-10" />
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-90"
           src={brandVideo}
         />
       </div>
@@ -26,39 +26,21 @@ export default function Hero() {
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-[10px] uppercase tracking-[0.6em] mb-8 text-white/80 font-bold block"
-          >
-            Preserving Living Traditions
-          </motion.span>
-          <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-white drop-shadow-2xl">
+          <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-black">
             Connect through <br />
             <span className="italic font-light">Heritage</span>
           </h1>
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="text-white/80 text-lg md:text-xl font-light mb-12 max-w-xl mx-auto tracking-wide leading-relaxed"
-          >
-            Handcrafted objects that tell a story of people, place, and perseverance. 
-            Add heritage to your daily ritual.
-          </motion.p>
-
           <div className="flex flex-col md:flex-row items-center justify-center gap-10">
-            <button className="group bg-white text-black px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary hover:text-white transition-all duration-500 shadow-2xl">
-              <span className="uppercase tracking-[0.3em] text-[10px] font-bold">Add heritage to your life</span>
+            <button className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10">
+              <span className="uppercase tracking-[0.3em] text-[10px] font-bold">Shop Heritage</span>
               <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500" />
             </button>
             <button className="flex items-center gap-4 group">
-                <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all backdrop-blur-sm">
-                    <Play className="w-3 h-3 fill-current ml-0.5" />
+                <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all backdrop-blur-sm">
+                    <Play className="w-3 h-3 fill-current ml-0.5 text-primary group-hover:text-white" />
                 </div>
-                <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-white">Watch Our Story</span>
+                <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-primary">Watch Our Story</span>
             </button>
           </div>
         </motion.div>

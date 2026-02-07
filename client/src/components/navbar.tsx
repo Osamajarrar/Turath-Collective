@@ -6,12 +6,14 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
+    setIsScrolled(latest > 50);
     if (latest > previous && latest > 150) {
       setHidden(true);
     } else {
@@ -21,6 +23,11 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Announcement Banner */}
+      <div className="bg-secondary text-secondary-foreground py-2 text-center text-[10px] uppercase tracking-[0.2em] font-medium z-[60] relative">
+        Free shipping on orders above 100 CAD
+      </div>
+
       <motion.nav
         variants={{
           visible: { y: 0 },
@@ -28,7 +35,12 @@ export default function Navbar() {
         }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
-        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border py-4"
+        className={cn(
+          "fixed top-8 left-0 right-0 z-50 transition-all duration-300 border-b",
+          isScrolled || isCartOpen || isLangOpen 
+            ? "bg-background/80 backdrop-blur-md border-border py-4" 
+            : "bg-transparent border-transparent py-6"
+        )}
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Left Side */}
@@ -38,12 +50,13 @@ export default function Navbar() {
           </div>
 
           {/* Center Side */}
-          <div className="w-1/3 flex justify-center">
+          <div className="w-1/3 flex flex-col items-center">
             <Link href="/">
               <span className="font-serif text-xl md:text-2xl tracking-[0.15em] cursor-pointer text-foreground">
                 TURATH COLLECTIVE
               </span>
             </Link>
+            <span className="text-[8px] uppercase tracking-[0.4em] text-primary font-bold mt-1">Heritage Craftsmanship</span>
           </div>
 
           {/* Right Side */}
