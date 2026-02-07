@@ -1,146 +1,102 @@
 import { useState } from "react";
-import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 
-// Import real product assets from @assets alias (attached_assets)
+// Ceramics
 import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
 import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
-import burgundyMug from "@assets/burgundy_mug_1770124696041.png";
-import burgundyOliveSet from "@assets/burgundy_olive_set_1770124696041.png";
 import classicBowl from "@assets/classic_bowl_1770124706114.png";
-import classicMezze from "@assets/classic_mezze_plate_1770124706115.png";
-import classicMug from "@assets/classic_mug_1770124706116.png";
 import classicSet from "@assets/classic_1770124706117.png";
 
-interface Product {
-  id: number;
-  name: string;
-  price: string;
-  image1: string;
-  image2: string;
-  badge?: string;
-}
+// Embroidery
+import embroideryDetail from "@/assets/embroidery-detail.png";
+import embroideryLifestyle from "@/assets/embroidery-lifestyle.png";
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Classic Indigo Mug",
-    price: "$38.00",
-    image1: classicMug,
-    image2: classicSet,
-    badge: "Limited Drop",
-  },
-  {
-    id: 2,
-    name: "Burgundy Hand-Painted Bowl",
-    price: "$52.00",
-    image1: burgundyBowl,
-    image2: burgundyMezze,
-  },
-  {
-    id: 3,
-    name: "Classic Indigo Mezze",
-    price: "$45.00",
-    image1: classicMezze,
-    image2: classicSet,
-    badge: "Sold Out",
-  },
-  {
-    id: 4,
-    name: "Burgundy Heritage Mug",
-    price: "$38.00",
-    image1: burgundyMug,
-    image2: burgundyOliveSet,
-  },
-  {
-    id: 5,
-    name: "Indigo Heritage Bowl",
-    price: "$52.00",
-    image1: classicBowl,
-    image2: classicSet,
-  },
-  {
-    id: 6,
-    name: "Burgundy Mezze Set",
-    price: "$48.00",
-    image1: burgundyMezze,
-    image2: burgundyOliveSet,
-  },
+const ceramics = [
+  { id: 1, name: "Indigo Heritage Mug", price: "$38.00", image1: classicSet, image2: classicSet },
+  { id: 2, name: "Burgundy Hand-Painted Bowl", price: "$52.00", image1: burgundyBowl, image2: burgundyMezze },
+  { id: 5, name: "Indigo Heritage Bowl", price: "$52.00", image1: classicBowl, image2: classicSet },
+];
+
+const embroidery = [
+  { id: 7, name: "Heritage Cross-Stitch Cushion", price: "$145.00", image1: embroideryDetail, image2: embroideryLifestyle, badge: "Artisan Piece" },
+  { id: 8, name: "Traditional Red Table Runner", price: "$180.00", image1: embroideryDetail, image2: embroideryLifestyle },
+  { id: 9, name: "Modern Tatreez Linen Set", price: "$95.00", image1: embroideryDetail, image2: embroideryLifestyle, badge: "New Arrival" },
 ];
 
 export default function ProductGrid() {
+  const [activeTab, setActiveTab] = useState("ceramics");
+
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>
-            <span className="text-xs uppercase tracking-[0.3em] text-primary mb-2 block font-medium">The Collection</span>
-            <h2 className="font-serif text-4xl md:text-5xl text-foreground">Hand-Painted Heritage</h2>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">Explore the Collections</span>
+            <div className="flex gap-8">
+              <button 
+                onClick={() => setActiveTab("ceramics")}
+                className={cn("font-serif text-3xl md:text-4xl transition-all", activeTab === "ceramics" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+              >
+                Ceramics
+              </button>
+              <button 
+                onClick={() => setActiveTab("embroidery")}
+                className={cn("font-serif text-3xl md:text-4xl transition-all", activeTab === "embroidery" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+              >
+                Embroidery
+              </button>
+            </div>
           </div>
-          <a href="#" className="text-sm uppercase tracking-widest border-b border-foreground/20 pb-1 hover:border-foreground transition-colors mt-4 md:mt-0">
-            View All Objects
-          </a>
+          <Link href="/shop" className="text-[10px] uppercase tracking-[0.2em] border-b border-foreground/20 pb-1 hover:border-foreground transition-all font-bold">
+            Shop Everything
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {products.map((product) => (
+        <motion.div 
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
+        >
+          {(activeTab === "ceramics" ? ceramics : embroidery).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: any) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Link href={`/product/${product.id}`}>
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="group cursor-pointer"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div className="relative aspect-[4/5] overflow-hidden bg-[#f4f2ee] mb-6">
+      <motion.div className="group cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        <div className="relative aspect-[4/5] overflow-hidden bg-[#F4F2EE] mb-8">
           {product.badge && (
-            <Badge 
-              variant="secondary" 
-              className="absolute top-4 left-4 z-20 bg-secondary text-secondary-foreground text-[10px] uppercase tracking-widest px-3 py-1 rounded-none border-none font-medium"
-            >
+            <Badge className="absolute top-6 left-6 z-20 bg-secondary text-secondary-foreground text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-none border-none font-bold shadow-sm">
               {product.badge}
             </Badge>
           )}
-          
-          <img
-            src={product.image1}
-            alt={product.name}
-            className={`absolute inset-0 w-full h-full object-contain p-8 transition-opacity duration-700 ease-in-out ${isHovered ? "opacity-0" : "opacity-100"}`}
-          />
-          <img
-            src={product.image2}
-            alt={`${product.name} detail`}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out scale-105 ${isHovered ? "opacity-100 scale-100" : "opacity-0"}`}
-          />
+          <img src={product.image1} alt={product.name} className={cn("absolute inset-0 w-full h-full object-contain p-12 transition-all duration-1000", isHovered ? "opacity-0 scale-105" : "opacity-100 scale-100")} />
+          <img src={product.image2} alt={product.name} className={cn("absolute inset-0 w-full h-full object-cover transition-all duration-1000", isHovered ? "opacity-100 scale-100" : "opacity-0 scale-110")} />
         </div>
-
-        <div className="flex flex-col space-y-1">
+        <div className="space-y-2">
           <div className="flex justify-between items-baseline">
-            <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors duration-300">
-              {product.name}
-            </h3>
-            <span className="font-sans text-sm font-medium text-foreground/70">{product.price}</span>
+            <h3 className="font-serif text-xl md:text-2xl text-foreground group-hover:text-primary transition-colors">{product.name}</h3>
+            <span className="font-sans text-xs font-bold text-foreground/50 tracking-wider">{product.price}</span>
           </div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-            View Details →
-          </p>
+          <div className="w-0 group-hover:w-full h-px bg-primary transition-all duration-500 opacity-30" />
         </div>
       </motion.div>
     </Link>
   );
+}
+
+function cn(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
 }
