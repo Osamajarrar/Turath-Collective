@@ -1,136 +1,149 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { ShoppingBag, X, Globe } from "lucide-react";
+import { Link } from "wouter";
+import { ShoppingBag, Search, Globe, User, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-
-const cartItems = [
-  { id: 1, name: "Classic Indigo Mug", price: 38.00, quantity: 1 },
-  { id: 2, name: "Burgundy Hand-Painted Bowl", price: 52.00, quantity: 1 }
-];
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [currency, setCurrency] = useState("CAD");
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   return (
     <>
-      {/* Announcement Banner */}
-      <div className="bg-secondary text-secondary-foreground py-2 text-center text-[10px] uppercase tracking-[0.2em] font-medium z-[60] relative">
-        Free shipping on orders above 100 CAD
-      </div>
-
-      <nav
-        className={cn(
-          "fixed top-10 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b border-transparent",
-          scrolled || isCartOpen ? "bg-background/80 backdrop-blur-md border-border py-4" : "bg-transparent py-6"
-        )}
+      <motion.nav
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border py-4"
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-          <div className="hidden md:flex items-center gap-6 w-48">
-              <Link href="/" className="text-[10px] uppercase tracking-widest hover:text-primary transition-colors font-bold">Collection</Link>
-              <div className="flex gap-2">
-                {["CAD", "USD", "EUR"].map((c) => (
-                  <button 
-                    key={c}
-                    onClick={() => setCurrency(c)}
-                    className={cn("text-[9px] font-bold transition-colors", currency === c ? "text-primary" : "text-muted-foreground hover:text-foreground")}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+          {/* Left Side */}
+          <div className="flex items-center gap-8 w-1/3">
+            <Link href="/" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">Shop</Link>
+            <Link href="/about" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">About</Link>
           </div>
 
-          <Link href="/">
-            <span className="font-serif text-xl md:text-2xl lg:text-3xl tracking-[0.1em] cursor-pointer text-foreground text-center flex-1">
-              TURATH COLLECTIVE
-            </span>
-          </Link>
+          {/* Center Side */}
+          <div className="w-1/3 flex justify-center">
+            <Link href="/">
+              <span className="font-serif text-xl md:text-2xl tracking-[0.15em] cursor-pointer text-foreground">
+                TURATH COLLECTIVE
+              </span>
+            </Link>
+          </div>
 
-          <div className="flex items-center gap-6 w-48 justify-end">
-            <div className="flex items-center gap-3">
-              <button className="text-[9px] font-bold hover:text-primary transition-colors">عربي</button>
-              <span className="text-[9px] font-bold cursor-pointer hover:opacity-70 transition-opacity">
-                FR <span className="opacity-30 mx-0.5">|</span> EN
-              </span>
+          {/* Right Side */}
+          <div className="flex items-center gap-5 w-1/3 justify-end">
+            <div className="hidden lg:flex items-center bg-muted/50 px-3 py-1.5 rounded-full border border-border/50">
+              <Search className="w-3.5 h-3.5 text-muted-foreground" />
+              <input type="text" placeholder="Search..." className="bg-transparent border-none text-[10px] px-2 focus:outline-none w-24" />
             </div>
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="relative group p-2"
-            >
-              <ShoppingBag className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" strokeWidth={1.2} />
-              <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary text-[8px] text-white font-bold">
-                {cartItems.length}
-              </span>
+            
+            <button onClick={() => setIsLangOpen(true)} className="p-1.5 hover:bg-muted rounded-full transition-colors">
+              <Globe className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+            </button>
+            
+            <Link href="/login">
+              <button className="p-1.5 hover:bg-muted rounded-full transition-colors">
+                <User className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              </button>
+            </Link>
+
+            <button onClick={() => setIsCartOpen(true)} className="p-1.5 hover:bg-muted rounded-full transition-colors relative">
+              <ShoppingBag className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              <span className="absolute top-0 right-0 h-3 w-3 bg-primary rounded-full flex items-center justify-center text-[7px] text-white font-bold">2</span>
             </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
+      {/* Language / Region Dialog */}
+      <AnimatePresence>
+        {isLangOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              onClick={() => setIsLangOpen(false)} 
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.95, opacity: 0 }} 
+              className="relative bg-background w-full max-w-md p-8 shadow-2xl rounded-none border border-border"
+            >
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="font-serif text-2xl uppercase tracking-wider">Region & Language</h3>
+                <button onClick={() => setIsLangOpen(false)}><X className="w-5 h-5" /></button>
+              </div>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Country / Region</label>
+                  <select className="w-full bg-muted/50 border border-border p-3 text-sm focus:outline-none">
+                    <option>Canada (CAD $)</option>
+                    <option>United States (USD $)</option>
+                    <option>Palestine (ILS ₪)</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Language</label>
+                  <select className="w-full bg-muted/50 border border-border p-3 text-sm focus:outline-none">
+                    <option>English</option>
+                    <option>Français</option>
+                    <option>العربية (Arabic)</option>
+                  </select>
+                </div>
+                <button className="w-full bg-primary text-white py-4 uppercase tracking-[0.2em] text-xs font-bold mt-4">Save Selection</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Cart Drawer */}
       <AnimatePresence>
         {isCartOpen && (
           <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsCartOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]"
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[70] shadow-2xl flex flex-col"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]" />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[70] shadow-2xl flex flex-col">
               <div className="p-8 flex items-center justify-between border-b border-border">
-                <h2 className="font-serif text-2xl">Your Bag</h2>
-                <button 
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 hover:bg-muted rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <h2 className="font-serif text-2xl uppercase tracking-wider">Your Bag</h2>
+                <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-muted rounded-full transition-colors"><X className="w-5 h-5" /></button>
               </div>
-
-              <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-6">
-                    <div className="w-20 h-24 bg-muted rounded-none" />
-                    <div className="flex-1 flex flex-col justify-between py-1">
-                      <div>
-                        <h3 className="font-serif text-lg leading-tight">{item.name}</h3>
-                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-2 font-bold">Qty: {item.quantity}</p>
-                      </div>
-                      <p className="font-sans text-sm font-medium">{currency} ${item.price.toFixed(2)}</p>
+              <div className="flex-1 p-8 overflow-y-auto">
+                <div className="flex gap-6 mb-8">
+                  <div className="w-20 h-24 bg-muted" />
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <h4 className="font-serif text-lg">Classic Indigo Mug</h4>
+                      <p className="text-[10px] uppercase tracking-widest font-bold opacity-40 mt-1">Qty: 1</p>
                     </div>
+                    <p className="text-sm font-bold">CAD $38.00</p>
                   </div>
-                ))}
-              </div>
-
-              <div className="p-8 bg-muted/20 border-t border-border space-y-6">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-[10px] uppercase tracking-widest font-bold">Subtotal</span>
-                  <span className="font-sans text-xl font-medium">{currency} ${subtotal.toFixed(2)}</span>
                 </div>
-                <Link href="/checkout">
-                  <button className="w-full bg-primary text-primary-foreground py-5 uppercase tracking-widest text-xs font-bold hover:bg-primary/90 transition-colors">
-                    Checkout Now
-                  </button>
-                </Link>
+              </div>
+              <div className="p-8 bg-muted/20 border-t border-border space-y-4">
+                <div className="flex justify-between font-bold text-xs uppercase tracking-widest">
+                  <span>Subtotal</span>
+                  <span>CAD $90.00</span>
+                </div>
+                <Link href="/checkout"><button className="w-full bg-primary text-white py-5 uppercase tracking-[0.2em] text-[10px] font-bold">Checkout</button></Link>
               </div>
             </motion.div>
           </>
