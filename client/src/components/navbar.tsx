@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ShoppingBag, Search, Globe, User, X } from "lucide-react";
+import { ShoppingBag, Search, Globe, User, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 
@@ -9,6 +9,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -36,16 +37,21 @@ export default function Navbar() {
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
         className={cn(
-          "fixed top-8 left-0 right-0 z-50 transition-all duration-300 border-b",
-          isScrolled || isCartOpen || isLangOpen 
-            ? "bg-background/80 backdrop-blur-md border-border py-4" 
-            : "bg-transparent border-transparent py-6"
+          "fixed left-0 right-0 z-50 transition-all duration-300 border-b",
+          isScrolled || isCartOpen || isLangOpen || isMenuOpen
+            ? "bg-background/80 backdrop-blur-md border-border py-4 top-0" 
+            : "bg-transparent border-transparent py-6 top-10"
         )}
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-          {/* Left Side */}
-          <div className="flex items-center gap-8 w-1/3">
-            <Link href="/" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">Shop</Link>
+          {/* Mobile Menu Trigger */}
+          <div className="md:hidden w-1/3">
+            <button onClick={() => setIsMenuOpen(true)} className="p-2"><Menu className="w-5 h-5" /></button>
+          </div>
+
+          {/* Left Side - Desktop */}
+          <div className="hidden md:flex items-center gap-8 w-1/3">
+            <Link href="/shop" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">Shop</Link>
             <Link href="/about" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">About</Link>
           </div>
 
@@ -60,7 +66,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-5 w-1/3 justify-end">
+          <div className="flex items-center gap-3 md:gap-5 w-1/3 justify-end">
             <div className="hidden lg:flex items-center bg-muted/50 px-3 py-1.5 rounded-full border border-border/50">
               <Search className="w-3.5 h-3.5 text-muted-foreground" />
               <input type="text" placeholder="Search..." className="bg-transparent border-none text-[10px] px-2 focus:outline-none w-24" />
@@ -83,6 +89,46 @@ export default function Navbar() {
           </div>
         </div>
       </motion.nav>
+
+      {/* Mobile Menu Drawer */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
+            />
+            <motion.div 
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col"
+            >
+              <div className="p-8 flex items-center justify-between border-b border-border">
+                <span className="font-serif text-xl tracking-[0.1em]">TURATH</span>
+                <button onClick={() => setIsMenuOpen(false)} className="p-2"><X className="w-6 h-6" /></button>
+              </div>
+              <div className="flex-1 p-8 space-y-8 overflow-y-auto">
+                <div className="space-y-4">
+                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">Collections</p>
+                  <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">All Products</Link>
+                  <Link href="/shop?category=ceramics" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">Ceramics</Link>
+                  <Link href="/shop?category=embroidery" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">Embroidery</Link>
+                </div>
+                <div className="space-y-4 pt-8 border-t border-border/50">
+                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">Brand</p>
+                  <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">Our Story</Link>
+                  <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">Account</Link>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Language / Region Dialog */}
       <AnimatePresence>
@@ -133,8 +179,8 @@ export default function Navbar() {
       <AnimatePresence>
         {isCartOpen && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]" />
-            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[70] shadow-2xl flex flex-col">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCartOpen(false)} className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]" />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[110] shadow-2xl flex flex-col">
               <div className="p-8 flex items-center justify-between border-b border-border">
                 <h2 className="font-serif text-2xl uppercase tracking-wider">Your Bag</h2>
                 <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-muted rounded-full transition-colors"><X className="w-5 h-5" /></button>

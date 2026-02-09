@@ -9,14 +9,14 @@ const collections = [
     description: "Hand-thrown Hebron clay vessels, painted with the rhythm of the wheel.",
     cta: "SHOP CERAMICS",
     image: ceramicCard,
-    link: "/shop/ceramics"
+    link: "/shop?category=ceramics"
   },
   {
     title: "Embroidery",
     description: "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
     cta: "SHOP EMBROIDERY",
     image: embroideryCard,
-    link: "/shop/embroidery"
+    link: "/shop?category=embroidery"
   }
 ];
 

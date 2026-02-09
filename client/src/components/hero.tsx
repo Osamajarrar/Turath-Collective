@@ -37,10 +37,10 @@ export default function Hero() {
               <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500" />
             </button>
             <button className="flex items-center gap-4 group">
-                <div className="w-14 h-14 rounded-full border border-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all backdrop-blur-sm">
-                    <Play className="w-3 h-3 fill-current ml-0.5 text-primary group-hover:text-white" />
+                <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
+                    <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />
                 </div>
-                <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-primary">Watch Our Story</span>
+                <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-black">Watch Our Story</span>
             </button>
           </div>
         </motion.div>

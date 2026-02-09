@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <main className="min-h-screen bg-[#FDFCFB] flex items-center justify-center p-6 relative overflow-hidden">
       {/* Brand Accents */}
@@ -21,39 +21,48 @@ export default function LoginPage() {
           <Link href="/">
             <span className="font-serif text-2xl tracking-[0.2em] mb-4 block cursor-pointer">TURATH</span>
           </Link>
-          <h1 className="font-serif text-3xl mb-2">Welcome Back</h1>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Login to your Turath account</p>
+          <h1 className="font-serif text-3xl mb-2">Join the Collective</h1>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Create your heritage account</p>
         </div>
 
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">First Name</Label>
+              <Input placeholder="Layla" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Last Name</Label>
+              <Input placeholder="Sami" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Email Address</Label>
             <Input type="email" placeholder="email@example.com" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
           </div>
           
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Password</Label>
-              <a href="#" className="text-[9px] uppercase tracking-widest text-primary hover:underline">Forgot?</a>
-            </div>
+            <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Password</Label>
             <Input type="password" placeholder="••••••••" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
           </div>
 
+          <div className="flex items-start gap-3 py-2">
+            <input type="checkbox" id="terms" className="mt-1 accent-primary" />
+            <label htmlFor="terms" className="text-[10px] text-muted-foreground leading-relaxed">
+              I agree to the Terms of Service and Privacy Policy, and wish to receive updates from the collective.
+            </label>
+          </div>
+
           <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-none py-6 uppercase tracking-widest text-xs font-bold mt-4 shadow-lg shadow-primary/20">
-            Sign In
+            Create Account
           </Button>
         </form>
 
         <div className="mt-10 pt-10 border-t border-border/50 text-center">
-          <p className="text-sm text-muted-foreground mb-4 font-light">Don't have an account yet?</p>
-          <Link href="/signup">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary hover:text-foreground cursor-pointer transition-colors border-b border-primary/20 pb-1">Create Account</span>
-          </Link>
-        </div>
-
-        <div className="mt-8 text-center">
-          <Link href="/">
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground cursor-pointer">Return to Store</span>
+          <p className="text-sm text-muted-foreground mb-4 font-light">Already part of the collective?</p>
+          <Link href="/login">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary hover:text-foreground cursor-pointer transition-colors border-b border-primary/20 pb-1">Sign In Instead</span>
           </Link>
         </div>
       </motion.div>
