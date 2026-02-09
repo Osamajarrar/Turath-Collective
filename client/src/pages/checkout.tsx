@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { ChevronLeft, CreditCard, Apple, Truck, ShieldCheck, Lock } from "lucide-react";
+import { ChevronLeft, CreditCard, Apple, Truck, ShieldCheck, Lock, Instagram } from "lucide-react";
 import { Link } from "wouter";
-import Navbar from "@/components/navbar";
 
 export default function CheckoutPage() {
   const cartItems = [
@@ -14,17 +13,28 @@ export default function CheckoutPage() {
   const total = subtotal + shipping;
 
   return (
-    <main className="min-h-screen bg-background pt-24 pb-12 font-sans">
-      <Navbar />
-      
-      <div className="container mx-auto px-6 md:px-12">
-        <Link href="/">
-          <button className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors mb-8 group">
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Bag
-          </button>
-        </Link>
+    <main className="min-h-screen bg-background flex flex-col font-sans">
+      {/* Branded Header */}
+      <header className="py-8 border-b border-border bg-white sticky top-0 z-50">
+        <div className="container mx-auto px-6 md:px-12 flex justify-center items-center relative">
+          <Link href="/" className="absolute left-6 md:left-12">
+            <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors group font-bold">
+              <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+              Back
+            </button>
+          </Link>
+          <Link href="/">
+            <div className="flex flex-col items-center cursor-pointer">
+              <span className="font-serif text-2xl tracking-[0.15em] text-foreground">
+                TURATH COLLECTIVE
+              </span>
+              <span className="text-[8px] uppercase tracking-[0.4em] text-primary font-bold mt-1">Heritage Craftsmanship</span>
+            </div>
+          </Link>
+        </div>
+      </header>
 
+      <div className="flex-1 container mx-auto px-6 md:px-12 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Form Side */}
           <div className="lg:col-span-7 space-y-12">
@@ -136,6 +146,14 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      <footer className="py-12 border-t border-border/40 bg-[#FDFCFB]">
+        <div className="container mx-auto px-6 md:px-12 text-center">
+          <p className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
+            © 2026 Turath Collective. All Rights Reserved.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }

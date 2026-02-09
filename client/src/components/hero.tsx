@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
+import { Link } from "wouter";
 import brandVideo from "@/assets/brand-video.mp4";
 
 export default function Hero() {
@@ -32,10 +33,12 @@ export default function Hero() {
           </h1>
           
           <div className="flex flex-col md:flex-row items-center justify-center gap-10">
-            <button className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10">
-              <span className="uppercase tracking-[0.3em] text-[10px] font-bold">Shop Heritage</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500" />
-            </button>
+            <Link href="/shop">
+              <button className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10">
+                <span className="uppercase tracking-[0.3em] text-[10px] font-bold">Shop Heritage</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500" />
+              </button>
+            </Link>
             <button className="flex items-center gap-4 group">
                 <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
                     <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />

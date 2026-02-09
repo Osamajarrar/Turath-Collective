@@ -6,21 +6,28 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-[#FDFCFB] flex items-center justify-center p-6 relative overflow-hidden">
+    <main className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-between relative overflow-hidden">
       {/* Brand Accents */}
       <div className="absolute top-0 left-0 w-full h-2 bg-primary" />
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
 
+      {/* Header with Logo */}
+      <header className="py-12 w-full flex justify-center z-20">
+        <Link href="/">
+          <div className="flex flex-col items-center cursor-pointer">
+            <span className="font-serif text-3xl tracking-[0.2em] text-foreground">TURATH</span>
+            <span className="text-[9px] uppercase tracking-[0.5em] text-primary font-bold mt-1">Collective</span>
+          </div>
+        </Link>
+      </header>
+
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white p-12 border border-border/50 shadow-2xl relative z-10"
+        className="w-full max-w-md bg-white p-12 border border-border/50 shadow-2xl relative z-10 my-auto"
       >
         <div className="text-center mb-10">
-          <Link href="/">
-            <span className="font-serif text-2xl tracking-[0.2em] mb-4 block cursor-pointer">TURATH</span>
-          </Link>
           <h1 className="font-serif text-3xl mb-2">Welcome Back</h1>
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Login to your Turath account</p>
         </div>
@@ -44,6 +51,17 @@ export default function LoginPage() {
           </Button>
         </form>
 
+        <div className="mt-8 space-y-3">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+            <div className="relative flex justify-center text-[8px] uppercase tracking-widest"><span className="bg-white px-2 text-muted-foreground font-bold">Or continue with</span></div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold">Google</Button>
+            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold">Apple</Button>
+          </div>
+        </div>
+
         <div className="mt-10 pt-10 border-t border-border/50 text-center">
           <p className="text-sm text-muted-foreground mb-4 font-light">Don't have an account yet?</p>
           <Link href="/signup">
@@ -57,6 +75,13 @@ export default function LoginPage() {
           </Link>
         </div>
       </motion.div>
+
+      {/* Footer */}
+      <footer className="py-12 w-full text-center z-20">
+        <p className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
+          © 2026 Turath Collective. All Rights Reserved.
+        </p>
+      </footer>
     </main>
   );
 }
