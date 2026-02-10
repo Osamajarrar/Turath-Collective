@@ -71,4 +71,5 @@ export default function Home() {
   );
 }
 
+import { Link } from "wouter";
 import { Instagram } from "lucide-react";
