@@ -10,12 +10,14 @@ import CheckoutPage from "@/pages/checkout";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
 import ShopPage from "@/pages/shop";
+import ContactPage from "@/pages/contact";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/shop" component={ShopPage} />
+      <Route path="/contact" component={ContactPage} />
       <Route path="/product/:id" component={ProductPage} />
       <Route path="/checkout" component={CheckoutPage} />
       <Route path="/login" component={LoginPage} />
