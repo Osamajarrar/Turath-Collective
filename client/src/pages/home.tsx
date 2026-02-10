@@ -40,19 +40,19 @@ export default function Home() {
             <div>
               <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Explore</h4>
               <ul className="space-y-4 text-sm text-foreground/60 font-light">
-                <li><a href="#" className="hover:text-primary transition-colors">All Collections</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Our Story</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Artisan Process</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Journal</a></li>
+                <li><Link href="/shop" className="hover:text-primary transition-colors">All Collections</Link></li>
+                <li><Link href="/about" className="hover:text-primary transition-colors">Our Story</Link></li>
+                <li><Link href="/process" className="hover:text-primary transition-colors">Artisan Process</Link></li>
+                <li><Link href="/journal" className="hover:text-primary transition-colors">Journal</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Support</h4>
               <ul className="space-y-4 text-sm text-foreground/60 font-light">
-                <li><a href="#" className="hover:text-primary transition-colors">Shipping & Returns</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Artisan Care Guide</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Wholesale</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>
+                <li><Link href="/shipping" className="hover:text-primary transition-colors">Shipping & Returns</Link></li>
+                <li><Link href="/care" className="hover:text-primary transition-colors">Artisan Care Guide</Link></li>
+                <li><Link href="/wholesale" className="hover:text-primary transition-colors">Wholesale</Link></li>
+                <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>
@@ -61,8 +61,8 @@ export default function Home() {
               © 2026 Turath Collective. Preserving tradition, one piece at a time.
             </p>
             <div className="flex gap-8">
-              <a href="#" className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold">Privacy Policy</a>
-              <a href="#" className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold">Terms of Service</a>
+              <Link href="/privacy" className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold">Privacy Policy</Link>
+              <Link href="/terms" className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold">Terms of Service</Link>
             </div>
           </div>
         </div>

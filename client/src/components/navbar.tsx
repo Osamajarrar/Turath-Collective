@@ -53,6 +53,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-8 w-1/3">
             <Link href="/shop" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">Shop</Link>
             <Link href="/about" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">About</Link>
+            <Link href="/contact" className="text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors font-bold">Contact</Link>
           </div>
 
           {/* Center Side */}

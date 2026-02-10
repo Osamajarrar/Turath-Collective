@@ -11,6 +11,8 @@ import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
+import ForgotPasswordPage from "@/pages/forgot-password";
+import GenericPage from "@/pages/generic";
 
 function Router() {
   return (
@@ -22,6 +24,34 @@ function Router() {
       <Route path="/checkout" component={CheckoutPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
+      <Route path="/forgot-password" component={ForgotPasswordPage} />
+      
+      {/* Footer Pages */}
+      <Route path="/about">
+        <GenericPage title="Our Story" />
+      </Route>
+      <Route path="/process">
+        <GenericPage title="Artisan Process" />
+      </Route>
+      <Route path="/journal">
+        <GenericPage title="The Journal" />
+      </Route>
+      <Route path="/shipping">
+        <GenericPage title="Shipping & Returns" />
+      </Route>
+      <Route path="/care">
+        <GenericPage title="Artisan Care Guide" />
+      </Route>
+      <Route path="/wholesale">
+        <GenericPage title="Wholesale" />
+      </Route>
+      <Route path="/privacy">
+        <GenericPage title="Privacy Policy" />
+      </Route>
+      <Route path="/terms">
+        <GenericPage title="Terms of Service" />
+      </Route>
+
       <Route component={NotFound} />
     </Switch>
   );
