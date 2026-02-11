@@ -14,46 +14,51 @@ import ContactPage from "@/pages/contact";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import GenericPage from "@/pages/generic";
 
+import ScrollToTop from "@/components/scroll-to-top";
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/shop" component={ShopPage} />
-      <Route path="/contact" component={ContactPage} />
-      <Route path="/product/:id" component={ProductPage} />
-      <Route path="/checkout" component={CheckoutPage} />
-      <Route path="/login" component={LoginPage} />
-      <Route path="/signup" component={SignupPage} />
-      <Route path="/forgot-password" component={ForgotPasswordPage} />
-      
-      {/* Footer Pages */}
-      <Route path="/about">
-        <GenericPage title="Our Story" />
-      </Route>
-      <Route path="/process">
-        <GenericPage title="Artisan Process" />
-      </Route>
-      <Route path="/journal">
-        <GenericPage title="The Journal" />
-      </Route>
-      <Route path="/shipping">
-        <GenericPage title="Shipping & Returns" />
-      </Route>
-      <Route path="/care">
-        <GenericPage title="Artisan Care Guide" />
-      </Route>
-      <Route path="/wholesale">
-        <GenericPage title="Wholesale" />
-      </Route>
-      <Route path="/privacy">
-        <GenericPage title="Privacy Policy" />
-      </Route>
-      <Route path="/terms">
-        <GenericPage title="Terms of Service" />
-      </Route>
+    <>
+      <ScrollToTop />
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/shop" component={ShopPage} />
+        <Route path="/contact" component={ContactPage} />
+        <Route path="/product/:id" component={ProductPage} />
+        <Route path="/checkout" component={CheckoutPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/signup" component={SignupPage} />
+        <Route path="/forgot-password" component={ForgotPasswordPage} />
+        
+        {/* Footer Pages */}
+        <Route path="/about">
+          <GenericPage title="Our Story" />
+        </Route>
+        <Route path="/process">
+          <GenericPage title="Artisan Process" />
+        </Route>
+        <Route path="/journal">
+          <GenericPage title="The Journal" />
+        </Route>
+        <Route path="/shipping">
+          <GenericPage title="Shipping & Returns" />
+        </Route>
+        <Route path="/care">
+          <GenericPage title="Artisan Care Guide" />
+        </Route>
+        <Route path="/wholesale">
+          <GenericPage title="Wholesale" />
+        </Route>
+        <Route path="/privacy">
+          <GenericPage title="Privacy Policy" />
+        </Route>
+        <Route path="/terms">
+          <GenericPage title="Terms of Service" />
+        </Route>
 
-      <Route component={NotFound} />
-    </Switch>
+        <Route component={NotFound} />
+      </Switch>
+    </>
   );
 }
 

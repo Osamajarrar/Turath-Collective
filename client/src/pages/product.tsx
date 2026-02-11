@@ -5,13 +5,15 @@ import { ChevronLeft, Minus, Plus, ShoppingBag, Heart, Shield, Truck, RefreshCcw
 import Navbar from "@/components/navbar";
 import { cn } from "@/lib/utils";
 
-// Mock assets (reusing existing ones)
+// Mock assets
 import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
 import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
 import burgundyMug from "@assets/burgundy_mug_1770124696041.png";
 import classicBowl from "@assets/classic_bowl_1770124706114.png";
 import classicMezze from "@assets/classic_mezze_plate_1770124706115.png";
 import classicMug from "@assets/classic_mug_1770124706116.png";
+import img1 from "@/assets/social-1.png";
+import img2 from "@/assets/social-2.png";
 
 const products = [
   { 
@@ -33,11 +35,10 @@ const products = [
       origin: "Hebron, Palestine"
     },
     reviews: [
-      { name: "Sarah L.", rating: 5, comment: "Breathtaking quality. The colors are even more vibrant in person.", date: "Feb 12, 2024" },
-      { name: "Omar K.", rating: 4, comment: "Beautiful craftsmanship, arrived well packaged.", date: "Jan 28, 2024" }
+      { name: "Sarah L.", rating: 5, comment: "Breathtaking quality. The colors are even more vibrant in person.", date: "Feb 12, 2024", image: img1 },
+      { name: "Omar K.", rating: 4, comment: "Beautiful craftsmanship, arrived well packaged.", date: "Jan 28, 2024", image: img2 }
     ]
-  },
-  // Adding default fallback logic for other IDs
+  }
 ];
 
 const Accordion = ({ title, children }: { title: string, children: React.ReactNode }) => {
@@ -82,6 +83,10 @@ export default function ProductPage() {
 
   const currentVariation = product.variations[selectedVariationIdx];
   const images = currentVariation.images;
+
+  const scrollToReviews = () => {
+    document.getElementById("reviews-section")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <main className="min-h-screen bg-background pt-24 pb-12">
@@ -134,12 +139,14 @@ export default function ProductPage() {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={cn("w-3 h-3", i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-border")} />
-                  ))}
-                </div>
-                <span className="text-[10px] uppercase tracking-widest font-bold opacity-40">{product.reviewCount} Reviews</span>
+                <button onClick={scrollToReviews} className="flex items-center gap-4 hover:opacity-70 transition-opacity text-left">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={cn("w-3 h-3", i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-border")} />
+                    ))}
+                  </div>
+                  <span className="text-[10px] uppercase tracking-widest font-bold opacity-40 border-b border-border/40 pb-0.5">{product.reviewCount} Reviews</span>
+                </button>
                 {product.isBestSeller && (
                    <span className="bg-primary text-white text-[8px] uppercase tracking-widest font-bold px-3 py-1">Best Seller</span>
                 )}
@@ -211,7 +218,7 @@ export default function ProductPage() {
         </div>
 
         {/* Reviews Section */}
-        <section className="pt-24 border-t border-border">
+        <section id="reviews-section" className="pt-24 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
             <div>
               <h2 className="font-serif text-4xl mb-4">Customer Stories</h2>
@@ -227,13 +234,18 @@ export default function ProductPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {product.reviews.map((review, idx) => (
-              <div key={idx} className="space-y-4">
+              <div key={idx} className="space-y-6">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => <Star key={i} className={cn("w-3 h-3", i < review.rating ? "fill-primary text-primary" : "text-border")} />)}
                   </div>
                   <span className="text-[10px] text-muted-foreground uppercase tracking-widest">{review.date}</span>
                 </div>
+                {review.image && (
+                  <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+                    <img src={review.image} className="w-full h-full object-cover" alt="Review" />
+                  </div>
+                )}
                 <p className="text-lg font-serif italic text-foreground/80 leading-relaxed">"{review.comment}"</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">— {review.name}</p>
               </div>

@@ -43,25 +43,30 @@ export default function SocialProof() {
         </div>
       </div>
 
-      <div 
-        ref={scrollRef}
-        className="flex overflow-x-auto gap-6 px-6 md:px-12 no-scrollbar scroll-smooth"
-      >
-        {socialPosts.map((post, idx) => (
-          <div key={idx} className="relative w-72 md:w-80 aspect-[4/5] overflow-hidden group/item shrink-0">
-            <img 
-              src={post.image} 
-              alt={`Social post by ${post.username}`} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/0 group-hover/item:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-0 group-hover/item:opacity-100">
-              <div className="text-center text-white">
-                <p className="text-xs font-bold tracking-widest uppercase mb-2">{post.username}</p>
-                <Instagram className="w-5 h-5 mx-auto" />
+      <div className="relative group/carousel">
+        <motion.div 
+          ref={scrollRef}
+          className="flex overflow-x-auto gap-6 px-6 md:px-12 no-scrollbar scroll-smooth snap-x snap-mandatory"
+        >
+          {/* Duplicating items for seamless marquee effect but with manual override */}
+          {[...socialPosts, ...socialPosts, ...socialPosts].map((post, idx) => (
+            <div key={idx} className="relative w-72 md:w-80 aspect-[4/5] overflow-hidden group/item shrink-0 snap-start">
+              <img 
+                src={post.image} 
+                alt={`Social post by ${post.username}`} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-110"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover/item:bg-black/40 transition-all duration-500 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover/item:opacity-100">
+                <div className="text-center text-white">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase mb-2">{post.username}</p>
+                  <Instagram className="w-4 h-4 mx-auto" />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </motion.div>
+        
+        {/* Animated Marquee Overlay logic simplified: keeping manual scroll behavior as primary but ensuring it feels dynamic */}
       </div>
 
       <style>{`
