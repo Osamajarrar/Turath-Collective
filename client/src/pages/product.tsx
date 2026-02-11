@@ -1,65 +1,117 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRoute, Link } from "wouter";
-import { motion } from "framer-motion";
-import { ChevronLeft, Minus, Plus, ShoppingBag, Heart, Shield, Truck, RefreshCcw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Minus, Plus, ShoppingBag, Heart, Shield, Truck, RefreshCcw, Star, ChevronDown, ChevronUp } from "lucide-react";
 import Navbar from "@/components/navbar";
 import { cn } from "@/lib/utils";
 
-// Import real product assets from @assets alias
+// Mock assets (reusing existing ones)
 import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
 import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
 import burgundyMug from "@assets/burgundy_mug_1770124696041.png";
-import burgundyOliveSet from "@assets/burgundy_olive_set_1770124696041.png";
 import classicBowl from "@assets/classic_bowl_1770124706114.png";
 import classicMezze from "@assets/classic_mezze_plate_1770124706115.png";
 import classicMug from "@assets/classic_mug_1770124706116.png";
-import classicSet from "@assets/classic_1770124706117.png";
 
 const products = [
-  { id: 1, name: "Classic Indigo Mug", price: 38.00, images: [classicMug, classicSet], description: "A hand-painted indigo mug inspired by traditional Palestinian motifs. Each stroke is a tribute to the craftsmen of Hebron.", details: "Dishwasher safe. Lead-free glaze. 350ml capacity." },
-  { id: 2, name: "Burgundy Hand-Painted Bowl", price: 52.00, images: [burgundyBowl, burgundyMezze], description: "Rich burgundy tones meet organic clay. This bowl is designed for the modern table, rooted in ancient heritage.", details: "Hand-thrown in Hebron. Lead-free glaze. 18cm diameter." },
-  { id: 3, name: "Classic Indigo Mezze", price: 45.00, images: [classicMezze, classicSet], description: "Perfect for serving olives, za'atar, or small delights. The indigo pattern reflects the timeless beauty of local flora.", details: "Hand-painted. Stackable design. 14cm diameter." },
-  { id: 4, name: "Burgundy Heritage Mug", price: 38.00, images: [burgundyMug, burgundyOliveSet], description: "A companion for your slowest mornings. The warm burgundy glaze brings a sense of comfort to every ritual.", details: "Dishwasher safe. Lead-free. 350ml capacity." },
-  { id: 5, name: "Indigo Heritage Bowl", price: 52.00, images: [classicBowl, classicSet], description: "A versatile vessel for soups, salads, or morning grains. The indigo rim adds a touch of classic elegance.", details: "Hand-thrown. Lead-free glaze. 18cm diameter." },
-  { id: 6, name: "Burgundy Mezze Set", price: 48.00, images: [burgundyMezze, burgundyOliveSet], description: "An essential for the shared table. These small bowls invite connection and conversation over simple foods.", details: "Set of two. Hand-painted motifs. 12cm diameter." },
+  { 
+    id: 1, 
+    name: "Indigo Mosaic Bowl", 
+    price: 45.00, 
+    rating: 4.8,
+    reviewCount: 24,
+    isBestSeller: true,
+    variations: [
+      { color: "Indigo", images: [classicBowl, classicMezze], price: 45.00 },
+      { color: "Burgundy", images: [burgundyBowl, burgundyMezze], price: 48.00 }
+    ],
+    description: "A hand-painted indigo mug inspired by traditional Palestinian motifs. Each stroke is a tribute to the craftsmen of Hebron.", 
+    specs: {
+      material: "Hebron Clay",
+      size: "18cm Diameter",
+      weight: "450g",
+      origin: "Hebron, Palestine"
+    },
+    reviews: [
+      { name: "Sarah L.", rating: 5, comment: "Breathtaking quality. The colors are even more vibrant in person.", date: "Feb 12, 2024" },
+      { name: "Omar K.", rating: 4, comment: "Beautiful craftsmanship, arrived well packaged.", date: "Jan 28, 2024" }
+    ]
+  },
+  // Adding default fallback logic for other IDs
 ];
+
+const Accordion = ({ title, children }: { title: string, children: React.ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-border">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-6 flex justify-between items-center group"
+      >
+        <span className="text-xs uppercase tracking-[0.2em] font-bold group-hover:text-primary transition-colors">{title}</span>
+        {isOpen ? <ChevronUp className="w-4 h-4 opacity-40" /> : <ChevronDown className="w-4 h-4 opacity-40" />}
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="pb-8 text-sm text-foreground/60 font-light leading-relaxed">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export default function ProductPage() {
   const [, params] = useRoute("/product/:id");
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariationIdx, setSelectedVariationIdx] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const product = products.find(p => p.id === Number(params?.id)) || products[0];
+  const product = useMemo(() => {
+    const p = products.find(p => p.id === Number(params?.id)) || products[0];
+    return p;
+  }, [params?.id]);
+
+  const currentVariation = product.variations[selectedVariationIdx];
+  const images = currentVariation.images;
 
   return (
     <main className="min-h-screen bg-background pt-24 pb-12">
       <Navbar />
       
       <div className="container mx-auto px-6 md:px-12">
-        {/* Breadcrumbs / Back */}
-        <Link href="/">
+        <Link href="/shop">
           <button className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors mb-12 group">
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Collection
           </button>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-32">
           {/* Gallery */}
           <div className="space-y-6">
             <motion.div 
+              key={`${selectedVariationIdx}-${selectedImage}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="aspect-[4/5] bg-[#f4f2ee] overflow-hidden"
             >
               <img 
-                src={product.images[selectedImage]} 
+                src={images[selectedImage]} 
                 alt={product.name}
                 className="w-full h-full object-contain p-12 transition-transform duration-1000 hover:scale-105"
               />
             </motion.div>
             <div className="grid grid-cols-4 gap-4">
-              {product.images.map((img, idx) => (
+              {images.map((img, idx) => (
                 <button 
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
@@ -81,69 +133,113 @@ export default function ProductPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <span className="text-xs uppercase tracking-[0.3em] text-primary font-bold mb-4 block">Hand-Painted Heritage</span>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={cn("w-3 h-3", i < Math.floor(product.rating) ? "fill-primary text-primary" : "text-border")} />
+                  ))}
+                </div>
+                <span className="text-[10px] uppercase tracking-widest font-bold opacity-40">{product.reviewCount} Reviews</span>
+                {product.isBestSeller && (
+                   <span className="bg-primary text-white text-[8px] uppercase tracking-widest font-bold px-3 py-1">Best Seller</span>
+                )}
+              </div>
+
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-4 leading-tight">
                 {product.name}
               </h1>
               <p className="text-2xl font-sans font-medium text-foreground/80 mb-8">
-                ${product.price.toFixed(2)}
+                CAD ${currentVariation.price.toFixed(2)}
               </p>
-              
-              <div className="space-y-6 mb-12 border-t border-border pt-8">
-                <p className="text-lg text-foreground/70 font-light leading-relaxed">
-                  {product.description}
-                </p>
-                <div className="bg-muted/30 p-4 border-l-2 border-primary italic text-sm text-foreground/80">
-                  {product.details}
+
+              {/* Variations */}
+              <div className="mb-12">
+                <p className="text-[10px] uppercase tracking-widest font-bold mb-4">Color: <span className="opacity-40">{currentVariation.color}</span></p>
+                <div className="flex gap-4">
+                  {product.variations.map((v, idx) => (
+                    <button
+                      key={v.color}
+                      onClick={() => {
+                        setSelectedVariationIdx(idx);
+                        setSelectedImage(0);
+                      }}
+                      className={cn(
+                        "w-12 h-12 rounded-full border-2 transition-all p-1",
+                        selectedVariationIdx === idx ? "border-primary" : "border-transparent"
+                      )}
+                    >
+                      <div className={cn("w-full h-full rounded-full", v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-[#800000]")} />
+                    </button>
+                  ))}
                 </div>
               </div>
-
-              {/* Purchase Actions */}
-              <div className="space-y-6">
+              
+              <div className="flex flex-col gap-6 mb-12">
                 <div className="flex items-center gap-8">
                   <div className="flex items-center border border-border">
-                    <button 
-                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                      className="p-4 hover:bg-muted transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-4 hover:bg-muted transition-colors"><Minus className="w-4 h-4" /></button>
                     <span className="w-12 text-center font-medium">{quantity}</span>
-                    <button 
-                      onClick={() => setQuantity(q => q + 1)}
-                      className="p-4 hover:bg-muted transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setQuantity(q => q + 1)} className="p-4 hover:bg-muted transition-colors"><Plus className="w-4 h-4" /></button>
                   </div>
                   <button className="flex-1 bg-primary text-white py-4 flex items-center justify-center gap-3 uppercase tracking-widest text-sm font-medium hover:bg-primary/90 transition-all group">
-                    <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    Add to Bag
-                  </button>
-                  <button className="p-4 border border-border hover:bg-muted transition-colors">
-                    <Heart className="w-5 h-5" />
+                    <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Bag
                   </button>
                 </div>
               </div>
 
-              {/* Trust Badges */}
-              <div className="grid grid-cols-2 gap-y-6 gap-x-12 mt-12 pt-12 border-t border-border">
-                <div className="flex items-center gap-3">
-                  <Truck className="w-5 h-5 text-muted-foreground" strokeWidth={1} />
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Carbon Neutral Shipping</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <RefreshCcw className="w-5 h-5 text-muted-foreground" strokeWidth={1} />
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">14-Day Artisan Guarantee</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-muted-foreground" strokeWidth={1} />
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Secure Global Checkout</span>
-                </div>
+              {/* Accordions */}
+              <div className="border-t border-border">
+                <Accordion title="Description">
+                  <p>{product.description}</p>
+                </Accordion>
+                <Accordion title="Specifications">
+                  <ul className="space-y-2">
+                    {Object.entries(product.specs).map(([key, val]) => (
+                      <li key={key} className="flex justify-between">
+                        <span className="capitalize">{key}</span>
+                        <span className="font-medium text-foreground">{val}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Accordion>
+                <Accordion title="Shipping & Returns">
+                  <p>Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within 7-14 business days. 14-day heritage guarantee returns.</p>
+                </Accordion>
               </div>
             </motion.div>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <section className="pt-24 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
+            <div>
+              <h2 className="font-serif text-4xl mb-4">Customer Stories</h2>
+              <div className="flex items-center gap-4">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-primary text-primary" />)}
+                </div>
+                <span className="text-sm font-medium">{product.rating} Average Rating</span>
+              </div>
+            </div>
+            <button className="px-8 py-4 border border-border text-[10px] uppercase tracking-widest font-bold hover:bg-muted transition-colors">Write a Review</button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {product.reviews.map((review, idx) => (
+              <div key={idx} className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} className={cn("w-3 h-3", i < review.rating ? "fill-primary text-primary" : "text-border")} />)}
+                  </div>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-widest">{review.date}</span>
+                </div>
+                <p className="text-lg font-serif italic text-foreground/80 leading-relaxed">"{review.comment}"</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary">— {review.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   );
