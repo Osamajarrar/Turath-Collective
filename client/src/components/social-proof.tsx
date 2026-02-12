@@ -3,6 +3,7 @@ import img1 from "@/assets/social-1.png";
 import img2 from "@/assets/social-2.png";
 import img3 from "@/assets/social-3.png";
 import { useRef } from "react";
+import { motion } from "framer-motion";
 
 const socialPosts = [
   { username: "@layla_designs", image: img1 },
