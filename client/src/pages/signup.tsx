@@ -1,18 +1,29 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function SignupPage() {
+  const { registerMutation } = useAuth();
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
+
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    registerMutation.mutate(form);
+  };
+
   return (
     <main className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-between relative overflow-hidden">
-      {/* Brand Accents */}
       <div className="absolute top-0 left-0 w-full h-2 bg-primary" />
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
 
-      {/* Header with Logo */}
       <header className="py-12 w-full flex justify-center z-20">
         <Link href="/">
           <div className="flex flex-col items-center cursor-pointer">
@@ -22,7 +33,7 @@ export default function SignupPage() {
         </Link>
       </header>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white p-12 border border-border/50 shadow-2xl relative z-10 my-auto"
@@ -32,37 +43,48 @@ export default function SignupPage() {
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Create your heritage account</p>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-6" onSubmit={handleSubmit} data-testid="form-signup">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">First Name</Label>
-              <Input placeholder="Layla" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+              <Input data-testid="input-firstname" value={form.firstName} onChange={set("firstName")} placeholder="Layla" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Last Name</Label>
-              <Input placeholder="Sami" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+              <Input data-testid="input-lastname" value={form.lastName} onChange={set("lastName")} placeholder="Sami" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Email Address</Label>
-            <Input type="email" placeholder="email@example.com" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+            <Input data-testid="input-email" type="email" required value={form.email} onChange={set("email")} placeholder="email@example.com" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
           </div>
-          
+
           <div className="space-y-2">
             <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Password</Label>
-            <Input type="password" placeholder="••••••••" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+            <Input data-testid="input-password" type="password" required value={form.password} onChange={set("password")} placeholder="••••••••" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
           </div>
 
           <div className="flex items-start gap-3 py-2">
-            <input type="checkbox" id="terms" className="mt-1 accent-primary" />
+            <input type="checkbox" id="terms" required className="mt-1 accent-primary" />
             <label htmlFor="terms" className="text-[10px] text-muted-foreground leading-relaxed">
               I agree to the Terms of Service and Privacy Policy, and wish to receive updates from the collective.
             </label>
           </div>
 
-          <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-none py-6 uppercase tracking-widest text-xs font-bold mt-4 shadow-lg shadow-primary/20">
-            Create Account
+          {registerMutation.error && (
+            <p data-testid="error-signup" className="text-sm text-red-600 font-medium">
+              {registerMutation.error.message}
+            </p>
+          )}
+
+          <Button
+            data-testid="button-signup"
+            type="submit"
+            disabled={registerMutation.isPending}
+            className="w-full bg-primary hover:bg-primary/90 text-white rounded-none py-6 uppercase tracking-widest text-xs font-bold mt-4 shadow-lg shadow-primary/20"
+          >
+            {registerMutation.isPending ? "Creating account..." : "Create Account"}
           </Button>
         </form>
 
@@ -72,8 +94,8 @@ export default function SignupPage() {
             <div className="relative flex justify-center text-[8px] uppercase tracking-widest"><span className="bg-white px-2 text-muted-foreground font-bold">Or sign up with</span></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold">Google</Button>
-            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold">Apple</Button>
+            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold" disabled>Google</Button>
+            <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold" disabled>Apple</Button>
           </div>
         </div>
 
@@ -85,7 +107,6 @@ export default function SignupPage() {
         </div>
       </motion.div>
 
-      {/* Footer */}
       <footer className="py-12 w-full text-center z-20">
         <p className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
           © 2026 Turath Collective. All Rights Reserved.
