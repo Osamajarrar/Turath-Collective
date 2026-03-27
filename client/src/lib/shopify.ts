@@ -41,6 +41,7 @@ export interface ShopifyProduct {
   tags: string[];
   vendor: string;
   availableForSale: boolean;
+  createdAt: string;
   priceRange: {
     minVariantPrice: ShopifyMoneyV2;
     maxVariantPrice: ShopifyMoneyV2;
@@ -74,7 +75,7 @@ export interface ShopifyCart {
 // ── GraphQL fragments ─────────────────────────────────────────────────────────
 
 const PRODUCT_FRAGMENT = `
-  id title handle description descriptionHtml productType tags vendor availableForSale
+  id title handle description descriptionHtml productType tags vendor availableForSale createdAt
   priceRange {
     minVariantPrice { amount currencyCode }
     maxVariantPrice { amount currencyCode }

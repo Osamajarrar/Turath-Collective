@@ -77,6 +77,9 @@ export const MOCK_PRODUCTS = [
 // Expose the original ALL_PRODUCTS name for any existing imports
 export const ALL_PRODUCTS = MOCK_PRODUCTS;
 
+// Static category list used in mock mode
+const MOCK_CATEGORIES = ["all", "ceramics", "embroidery"];
+
 // ── Normalise a Shopify product into a display-friendly shape ──────────────
 
 interface DisplayProduct {
@@ -109,7 +112,8 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     isBestSeller: p.tags?.includes("best-seller") ?? false,
     isNew: p.tags?.includes("new") ?? false,
     isLimited: p.tags?.includes("limited") ?? false,
-    dateAdded: new Date().toISOString().split("T")[0],
+    // Use real Shopify createdAt for accurate "newest" sorting
+    dateAdded: p.createdAt ? p.createdAt.split("T")[0] : new Date().toISOString().split("T")[0],
   };
 }
 
@@ -122,14 +126,25 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
+  const [categories, setCategories] = useState<string[]>(MOCK_CATEGORIES);
 
-  // Try to load live Shopify products; fall back silently to mock data
+  // Attempt to load live Shopify data; fall back silently to mock data
   useEffect(() => {
     let cancelled = false;
+
+    // Load products
     shopifyService.getProducts().then((result) => {
       if (cancelled || !result || result.length === 0) return;
       setProducts(result.map(normaliseShopify));
     });
+
+    // Load collections for filter categories
+    shopifyService.getCollections().then((cols) => {
+      if (cancelled || !cols || cols.length === 0) return;
+      const liveCategories = ["all", ...cols.map((c) => c.handle.toLowerCase())];
+      setCategories(liveCategories);
+    });
+
     return () => { cancelled = true; };
   }, []);
 
@@ -166,6 +181,10 @@ export default function ShopPage() {
   const productHref = (p: DisplayProduct) =>
     p.handle ? `/product/${p.handle}` : `/product/${p.id}`;
 
+  // Derive display label for a category (handle → title-case)
+  const categoryLabel = (cat: string) =>
+    cat === "all" ? "All" : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
   return (
     <main className="min-h-screen bg-background pt-32">
       <Navbar />
@@ -175,10 +194,10 @@ export default function ShopPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
               <h1 className="font-serif text-5xl md:text-6xl mb-6 capitalize">
-                {selectedCategory === "all" ? "The Collection" : selectedCategory}
+                {selectedCategory === "all" ? "The Collection" : categoryLabel(selectedCategory)}
               </h1>
               <div className="flex flex-wrap gap-4">
-                {["all", "ceramics", "embroidery"].map((cat) => (
+                {categories.map((cat) => (
                   <button
                     key={cat}
                     data-testid={`filter-${cat}`}
@@ -190,7 +209,7 @@ export default function ShopPage() {
                         : "border-border hover:border-primary"
                     )}
                   >
-                    {cat}
+                    {categoryLabel(cat)}
                   </button>
                 ))}
               </div>
