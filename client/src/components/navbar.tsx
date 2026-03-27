@@ -43,8 +43,6 @@ export default function Navbar() {
     }
   });
 
-  const currentLang = LANGS.find(l => l.code === i18n.language) ?? LANGS[0];
-
   return (
     <>
       {/* Announcement Banner */}
@@ -188,7 +186,7 @@ export default function Navbar() {
                 <div className="pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30 mb-4">{t("lang.label")}</p>
                   <div className="flex gap-3">
-                    {LANGS.map(({ code, label, full }) => (
+                    {LANGS.map(({ code, label }) => (
                       <button
                         key={code}
                         onClick={() => { switchLang(code); setIsMenuOpen(false); }}
@@ -244,7 +242,7 @@ export default function Navbar() {
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">{t("lang.label")}</label>
                   <div className="flex gap-3">
-                    {LANGS.map(({ code, label, full }) => (
+                    {LANGS.map(({ code, label }) => (
                       <button
                         key={code}
                         onClick={() => switchLang(code)}
