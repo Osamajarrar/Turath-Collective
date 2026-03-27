@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+import { createHtmlPlugin } from "vite-plugin-html";
 import { metaImagesPlugin } from "./vite-plugin-meta-images";
 
 export default defineConfig({
@@ -11,6 +12,14 @@ export default defineConfig({
     runtimeErrorOverlay(),
     tailwindcss(),
     metaImagesPlugin(),
+    createHtmlPlugin({
+      minify: false,
+      inject: {
+        data: {
+          GA_MEASUREMENT_ID: process.env.VITE_GA_MEASUREMENT_ID || "",
+        },
+      },
+    }),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [

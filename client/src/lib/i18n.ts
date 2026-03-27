@@ -40,3 +40,8 @@ export function applyRtl(lng: string) {
     html.setAttribute("lang", lng);
   }
 }
+
+// Apply correct direction immediately at module load time
+// (before React renders) to avoid a flash of wrong-direction text
+// when the user's persisted language is Arabic.
+applyRtl(i18n.language);
