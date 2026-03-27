@@ -15,17 +15,28 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulating API call as this is mockup mode
-    // Real implementation would require backend graduation
-    setTimeout(() => {
-      toast({
-        title: "Message Sent",
-        description: "Thank you for reaching out. We'll get back to you soon.",
+    const form = e.target as HTMLFormElement;
+    const data = Object.fromEntries(new FormData(form));
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          subject: data.subject || "General Inquiry",
+          message: data.message,
+        }),
       });
+      if (!res.ok) throw new Error("Failed");
+      toast({ title: "Message Sent", description: "Thank you for reaching out. We'll get back to you within 1–2 business days." });
+      form.reset();
+    } catch {
+      toast({ title: "Something went wrong", description: "Please try again or email us directly.", variant: "destructive" });
+    } finally {
       setIsSubmitting(false);
-      (e.target as HTMLFormElement).reset();
-    }, 1500);
+    }
   };
 
   return (
@@ -114,22 +125,22 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="space-y-2">
                   <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Full Name</Label>
-                  <Input required placeholder="Layla Sami" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+                  <Input name="name" required placeholder="Layla Sami" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Email Address</Label>
-                  <Input required type="email" placeholder="layla@example.com" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+                  <Input name="email" required type="email" placeholder="layla@example.com" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Subject</Label>
-                  <Input placeholder="Inquiry about Ceramics" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
+                  <Input name="subject" placeholder="Inquiry about Ceramics" className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent" />
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Message</Label>
-                  <Textarea required placeholder="How can we help you?" className="min-h-[150px] rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent resize-none" />
+                  <Textarea name="message" required placeholder="How can we help you?" className="min-h-[150px] rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent resize-none" />
                 </div>
 
                 <Button 
