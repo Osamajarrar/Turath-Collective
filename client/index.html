@@ -44,16 +44,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
-    <!-- Google Analytics 4 — injected only when VITE_GA_MEASUREMENT_ID is set -->
-    <% if (GA_MEASUREMENT_ID) { %>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= GA_MEASUREMENT_ID %>"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '<%= GA_MEASUREMENT_ID %>');
-    </script>
-    <% } %>
+    <!-- GA4 injected here by Vite build when VITE_GA_MEASUREMENT_ID is set -->
   </head>
   <body>
     <div id="root"></div>
