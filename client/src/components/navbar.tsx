@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ShoppingBag, Search, Globe, User, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import img1 from "@/assets/burgundy-mug.png";
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -188,7 +189,7 @@ export default function Navbar() {
               </div>
               <div className="flex-1 p-8 overflow-y-auto">
                 <div className="flex gap-6 mb-8">
-                  <div className="w-20 h-24 bg-muted" />
+                  <div className="w-20 h-24 bg-muted"><img src={img1} alt="Product" className="w-full h-full object-cover" /></div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h4 className="font-serif text-lg">Classic Indigo Mug</h4>

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import ceramicCard from "@/assets/product-bowl-1.png";
-import embroideryCard from "@/assets/embroidery-lifestyle.png";
+import ceramicCard from "@/assets/burgundy-olive-set.png";
+import embroideryCard from "@/assets/embroidery.jpg";
 
 const collections = [
   {
@@ -24,6 +24,7 @@ export default function CollectionCards() {
   return (
     <section className="py-32 bg-background">
       <div className="container mx-auto px-6 md:px-12">
+      <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-8 block font-bold">Explore the Collections</span>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {collections.map((collection, idx) => (
             <motion.div 

@@ -4,14 +4,14 @@ import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 
 // Ceramics
-import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
-import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
-import classicBowl from "@assets/classic_bowl_1770124706114.png";
-import classicSet from "@assets/classic_1770124706117.png";
+import burgundyBowl from "@/assets/burgundy-bowl.png";
+import burgundyMezze from "@/assets/burgundy-mezze.png";
+import classicBowl from "@/assets/classic-bowl.png";
+import classicSet from "@/assets/classic.png";
 
 // Embroidery
-import embroideryDetail from "@/assets/embroidery-detail.png";
-import embroideryLifestyle from "@/assets/embroidery-lifestyle.png";
+import embroideryDetail from "@/assets/embroidery.jpg";
+import embroideryLifestyle from "@/assets/embroidery.jpg";
 
 const ceramics = [
   { id: 1, name: "Indigo Heritage Mug", price: "$38.00", image1: classicSet, image2: classicSet },

@@ -3,7 +3,10 @@ import { useLocation, Link } from "wouter";
 import Navbar from "@/components/navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, X, ChevronDown, Star } from "lucide-react";
-import img1 from "@/assets/product-bowl-1.png";
+import img1 from "@/assets/burgundy-mug.png";
+import img2 from "@/assets/burgundy-plate.png";
+import img3 from "@/assets/burgundy-bowl.png";
+import img4 from "@/assets/burgundy-mezze.png";
 
 export const ALL_PRODUCTS = [
   { 
@@ -24,7 +27,7 @@ export const ALL_PRODUCTS = [
     name: "Olive Tree Embroidery", 
     category: "embroidery", 
     price: 120, 
-    image: img1,
+    image: img2,
     rating: 5.0,
     reviews: 12,
     isBestSeller: false,
@@ -37,7 +40,7 @@ export const ALL_PRODUCTS = [
     name: "Hebron Glass Vase", 
     category: "ceramics", 
     price: 65, 
-    image: img1,
+    image: img3,
     rating: 4.5,
     reviews: 8,
     isBestSeller: false,
@@ -50,7 +53,7 @@ export const ALL_PRODUCTS = [
     name: "Tatreez Pattern Cushion", 
     category: "embroidery", 
     price: 85, 
-    image: img1,
+    image: img4,
     rating: 4.9,
     reviews: 45,
     isBestSeller: true,

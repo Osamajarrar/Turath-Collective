@@ -6,12 +6,10 @@ import Navbar from "@/components/navbar";
 import { cn } from "@/lib/utils";
 
 // Mock assets
-import burgundyBowl from "@assets/burgundy_bowl_1770124696039.png";
-import burgundyMezze from "@assets/burgundy_mezze_1770124696040.png";
-import burgundyMug from "@assets/burgundy_mug_1770124696041.png";
-import classicBowl from "@assets/classic_bowl_1770124706114.png";
-import classicMezze from "@assets/classic_mezze_plate_1770124706115.png";
-import classicMug from "@assets/classic_mug_1770124706116.png";
+import burgundyBowl from "@/assets/burgundy-bowl.png";
+import burgundyMezze from "@/assets/burgundy-mezze.png";
+import classicBowl from "@/assets/classic-bowl.png";
+import classicMezze from "@/assets/classic-mezze-plate.png";
 import img1 from "@/assets/social-1.png";
 import img2 from "@/assets/social-2.png";
 

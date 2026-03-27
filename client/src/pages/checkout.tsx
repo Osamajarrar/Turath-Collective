@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, CreditCard, Apple, Truck, ShieldCheck, Lock, Instagram } from "lucide-react";
 import { Link } from "wouter";
-
+import img1 from "@/assets/burgundy-mug.png";
 export default function CheckoutPage() {
   const cartItems = [
     { id: 1, name: "Classic Indigo Mug", price: 38.00, quantity: 1 },
@@ -107,7 +107,7 @@ export default function CheckoutPage() {
                 {cartItems.map(item => (
                   <div key={item.id} className="flex justify-between items-start gap-4">
                     <div className="flex gap-4">
-                      <div className="w-16 h-20 bg-muted rounded-none" />
+                      <div className="w-16 h-20 bg-muted rounded-none"><img src={img1} alt="Product" className="w-full h-full object-cover" /></div>
                       <div>
                         <p className="font-serif text-lg leading-none mb-1">{item.name}</p>
                         <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>

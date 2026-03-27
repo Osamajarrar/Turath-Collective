@@ -16,7 +16,7 @@ export default function Home() {
       <Hero />
       <div className="space-y-0">
         <CollectionCards />
-        <ProductGrid />
+        {/* <ProductGrid /> */}
         <StorySection />
         <Heritage />
         <ValuesSection />
@@ -34,7 +34,14 @@ export default function Home() {
                 Elevating the everyday through heritage craftsmanship. Based in Montreal, crafted in Hebron. We exist to preserve and share the living traditions of Palestine.
               </p>
               <div className="flex gap-6">
-                <a href="#" className="text-foreground/40 hover:text-primary transition-colors"><Instagram className="w-5 h-5" /></a>
+                <a
+                  href="https://www.instagram.com/turathcollective"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/40 hover:text-primary transition-colors"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
               </div>
             </div>
             <div>
