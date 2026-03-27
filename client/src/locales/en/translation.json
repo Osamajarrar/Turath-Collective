@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "about": "About",
+    "contact": "Contact",
+    "allProducts": "All Products",
+    "ceramics": "Ceramics",
+    "embroidery": "Embroidery",
+    "ourStory": "Our Story",
+    "account": "Account",
+    "collections": "Collections",
+    "brand": "Brand"
+  },
+  "announcement": "Free shipping on orders above 100 CAD",
+  "lang": {
+    "label": "Language",
+    "region": "Region & Language",
+    "country": "Country / Region",
+    "save": "Save Selection",
+    "en": "English",
+    "fr": "Français",
+    "ar": "العربية"
+  },
+  "hero": {
+    "heading": "Connect through",
+    "headingItalic": "Heritage",
+    "cta": "Shop Heritage",
+    "watchStory": "Watch Our Story",
+    "craftedIn": "Crafted in Hebron"
+  },
+  "contact": {
+    "badge": "Get in Touch",
+    "heading": "Connect with",
+    "headingItalic": "The Collective",
+    "visitStudio": "Visit our Montreal Studio",
+    "address": "Address",
+    "email": "Email",
+    "phone": "Phone",
+    "wholesale": "Wholesale & Press",
+    "wholesaleDesc": "Interested in partnering with us or featuring our artisans? We'd love to hear from you.",
+    "formName": "Full Name",
+    "formEmail": "Email Address",
+    "formSubject": "Subject",
+    "formMessage": "Message",
+    "formSend": "Send Message",
+    "formSending": "Sending...",
+    "successTitle": "Message Sent",
+    "successDesc": "Thank you for reaching out. We'll get back to you within 1–2 business days.",
+    "errorTitle": "Something went wrong",
+    "errorDesc": "Please try again or email us directly."
+  },
+  "footer": {
+    "tagline": "Elevating the everyday through heritage craftsmanship. Based in Montreal, crafted in Hebron. We exist to preserve and share the living traditions of Palestine.",
+    "explore": "Explore",
+    "support": "Support",
+    "allCollections": "All Collections",
+    "ourStory": "Our Story",
+    "artisanProcess": "Artisan Process",
+    "journal": "Journal",
+    "shipping": "Shipping & Returns",
+    "careGuide": "Artisan Care Guide",
+    "wholesale": "Wholesale",
+    "contactUs": "Contact Us",
+    "copyright": "© 2026 Turath Collective. Preserving tradition, one piece at a time.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "newsletter": {
+    "heading": "Join the Next Kiln Firing",
+    "desc": "Be the first to know about our limited drops and studio stories.",
+    "placeholder": "Your email address",
+    "cta": "Subscribe"
+  }
+}
