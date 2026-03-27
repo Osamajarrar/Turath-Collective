@@ -22,10 +22,15 @@ export function setupAuth(app: Express) {
   const PgSession = connectPgSimple(session);
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+  const sessionSecret = process.env.SESSION_SECRET;
+  if (!sessionSecret && process.env.NODE_ENV === "production") {
+    throw new Error("SESSION_SECRET environment variable must be set in production");
+  }
+
   app.use(
     session({
       store: new PgSession({ pool, createTableIfMissing: true }),
-      secret: process.env.SESSION_SECRET || "turath-dev-secret-change-in-prod",
+      secret: sessionSecret || "turath-dev-secret-change-in-prod",
       resave: false,
       saveUninitialized: false,
       cookie: {

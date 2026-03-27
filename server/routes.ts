@@ -10,8 +10,8 @@ import { insertContactSchema, insertNewsletterSchema } from "@shared/schema";
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  firstName: z.string().min(1).optional(),
-  lastName: z.string().min(1).optional(),
+  firstName: z.string().optional().transform(v => v?.trim() || null),
+  lastName: z.string().optional().transform(v => v?.trim() || null),
 });
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
