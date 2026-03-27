@@ -88,13 +88,44 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     return res.status(201).json({ message: "Subscribed successfully" });
   });
 
+  // ── Shopify Storefront proxy ──────────────────────────────
+
+  app.post("/api/shopify", async (req: Request, res: Response) => {
+    const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
+    const domain = process.env.SHOPIFY_STORE_DOMAIN;
+
+    if (!token || !domain) {
+      return res.status(503).json({
+        shopifyDisabled: true,
+        message: "Shopify is not configured. Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_TOKEN to enable live products.",
+      });
+    }
+
+    try {
+      const shopifyRes = await fetch(`https://${domain}/api/2024-01/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": token,
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      const data = await shopifyRes.json();
+      return res.status(shopifyRes.status).json(data);
+    } catch (err) {
+      console.error("[Shopify proxy] Error:", err);
+      return res.status(502).json({ message: "Failed to reach Shopify" });
+    }
+  });
+
   // ── Health ────────────────────────────────────────────────
 
   app.get("/api/health", (_req: Request, res: Response) => {
     res.json({
       status: "ok",
       email: !!process.env.RESEND_API_KEY ? "live" : "dev (no RESEND_API_KEY)",
-      shopify: !!process.env.SHOPIFY_STOREFRONT_TOKEN ? "connected" : "not connected",
+      shopify: !!process.env.SHOPIFY_STOREFRONT_TOKEN && !!process.env.SHOPIFY_STORE_DOMAIN ? "connected" : "not configured",
     });
   });
 
