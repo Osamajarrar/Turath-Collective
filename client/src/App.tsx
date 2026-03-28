@@ -14,8 +14,8 @@ import ContactPage from "@/pages/contact";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import GenericPage from "@/pages/generic";
 import ComingSoon from "@/pages/coming-soon";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import ScrollToTop from "@/components/scroll-to-top";
 
