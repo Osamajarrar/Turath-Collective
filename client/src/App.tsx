@@ -7,41 +7,35 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ProductPage from "@/pages/product";
 import CheckoutPage from "@/pages/checkout";
-import LoginPage from "@/pages/login";
-import SignupPage from "@/pages/signup";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
-import ForgotPasswordPage from "@/pages/forgot-password";
 import GenericPage from "@/pages/generic";
 import ComingSoon from "@/pages/coming-soon";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-
 import ScrollToTop from "@/components/scroll-to-top";
+
+// Auth pages (login, signup, forgot-password) removed for launch v1.
+// Shopify handles customer accounts. Re-add imports + routes when needed.
 
 function Router() {
   return (
     <>
       <ScrollToTop />
       <Switch>
-        {/* ── Coming Soon (active until launch) ──────────────────
-            To launch the full site: change this to component={Home}
-            The full site remains accessible at /preview during dev.
-        ──────────────────────────────────────────────────────── */}
+        {/* ── Coming Soon (active until launch) ──────────────────────────────
+            To go live: change component={ComingSoon} → component={Home}
+            Full site preview remains at /preview during development.
+        ─────────────────────────────────────────────────────────────────── */}
         <Route path="/" component={ComingSoon} />
 
-        {/* Full site preview — for development only */}
+        {/* Full site preview — development only */}
         <Route path="/preview" component={Home} />
 
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
         <Route path="/checkout" component={CheckoutPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/signup" component={SignupPage} />
-        <Route path="/forgot-password" component={ForgotPasswordPage} />
 
-        {/* Footer Pages */}
+        {/* Footer pages */}
         <Route path="/about">
           <GenericPage title="Our Story" />
         </Route>
@@ -80,8 +74,6 @@ function App() {
         <Toaster />
         <Router />
       </TooltipProvider>
-      <Analytics />
-      <SpeedInsights />
     </QueryClientProvider>
   );
 }

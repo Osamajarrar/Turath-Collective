@@ -9,7 +9,10 @@
     "ourStory": "Notre histoire",
     "account": "Mon compte",
     "collections": "Collections",
-    "brand": "Marque"
+    "brand": "Marque",
+    "tagline": "Artisanat du Patrimoine",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer"
   },
   "announcement": "Livraison gratuite pour les commandes supérieures à 100 CAD",
   "lang": {
@@ -20,6 +23,12 @@
     "en": "English",
     "fr": "Français",
     "ar": "العربية"
+  },
+  "cart": {
+    "heading": "Votre panier",
+    "qty": "Qté",
+    "subtotal": "Sous-total",
+    "checkout": "Commander"
   },
   "hero": {
     "heading": "Connectez-vous par le",
@@ -38,13 +47,21 @@
     "phone": "Téléphone",
     "wholesale": "Vente en gros et Presse",
     "wholesaleDesc": "Vous souhaitez collaborer ou présenter nos artisans ? Nous serions ravis de vous entendre.",
+    "addressDetails": "1234 Heritage Way, Plateau Mont-Royal\nMontréal, QC H2X 3Y4, Canada",
+    "phoneNumber": "+1 (514) 555-0123",
+    "emailAddress": "hello@turathcollective.com",
+    "partnerEmail": "partnerships@turathcollective.com",
+    "placeholderName": "Layla Sami",
+    "placeholderEmail": "layla@exemple.com",
+    "placeholderSubject": "Renseignements sur les céramiques",
+    "placeholderMessage": "Comment pouvons-nous vous aider ?",
     "formName": "Nom complet",
     "formEmail": "Adresse courriel",
     "formSubject": "Sujet",
     "formMessage": "Message",
     "formSend": "Envoyer le message",
     "formSending": "Envoi en cours...",
-    "successTitle": "Message envoyé",
+    "successTitle": "Message reçu",
     "successDesc": "Merci de nous avoir contactés. Nous vous répondrons dans 1 à 2 jours ouvrables.",
     "errorTitle": "Une erreur est survenue",
     "errorDesc": "Veuillez réessayer ou nous écrire directement."

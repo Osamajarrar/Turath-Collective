@@ -2,10 +2,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Instagram, ArrowRight, Check } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { applyRtl } from "@/lib/i18n";
 import brandVideo from "@/assets/brand-video.mp4";
+
+// Newsletter form is UI-only for launch v1.
+// Connect to Mailchimp / Klaviyo when ready by replacing the handleSubscribe stub.
 
 const LANGUAGES = ["en", "fr", "ar"] as const;
 
@@ -14,6 +15,7 @@ export default function ComingSoon() {
   const [email, setEmail] = useState("");
   const [fieldError, setFieldError] = useState("");
   const [done, setDone] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isRtl = i18n.language === "ar";
 
@@ -22,26 +24,17 @@ export default function ComingSoon() {
     applyRtl(lang);
   }
 
-  const subscribe = useMutation({
-    mutationFn: (email: string) =>
-      apiRequest("POST", "/api/newsletter", { email }),
-    onSuccess: () => {
-      setDone(true);
-      setFieldError("");
-    },
-    onError: () => {
-      setFieldError(t("comingSoon.errorServer"));
-    },
-  });
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed) return setFieldError(t("comingSoon.errorEmpty"));
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed))
-      return setFieldError(t("comingSoon.errorInvalid"));
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return setFieldError(t("comingSoon.errorInvalid"));
     setFieldError("");
-    subscribe.mutate(trimmed);
+    setIsSubmitting(true);
+    // Stub: replace with Mailchimp/Klaviyo API call when ready
+    await new Promise((r) => setTimeout(r, 700));
+    setIsSubmitting(false);
+    setDone(true);
   }
 
   return (
@@ -49,7 +42,7 @@ export default function ComingSoon() {
       className="relative min-h-screen w-full overflow-hidden bg-[#0c0703] flex flex-col"
       dir={isRtl ? "rtl" : "ltr"}
     >
-      {/* ── Background Video ─────────────────────────────────────── */}
+      {/* Background video */}
       <div className="absolute inset-0 z-0">
         <video
           autoPlay
@@ -59,12 +52,11 @@ export default function ComingSoon() {
           className="w-full h-full object-cover opacity-40"
           src={brandVideo}
         />
-        {/* warm vignette overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0c0703] via-[#0c0703]/60 to-[#0c0703]/30" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0c0703]/70 via-transparent to-[#0c0703]/80" />
       </div>
 
-      {/* ── Subtle grain texture ─────────────────────────────────── */}
+      {/* Film grain texture */}
       <div
         className="absolute inset-0 z-0 opacity-[0.035] pointer-events-none"
         style={{
@@ -74,21 +66,18 @@ export default function ComingSoon() {
         }}
       />
 
-      {/* ── Top Bar ──────────────────────────────────────────────── */}
+      {/* Top bar */}
       <header className="relative z-10 flex items-center justify-between px-8 md:px-14 pt-10">
-        {/* Brand wordmark */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center gap-3"
         >
           <span className="font-serif text-[#F5EDD6] text-lg tracking-widest uppercase">
             Turath Collective
           </span>
         </motion.div>
 
-        {/* Language switcher */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -119,7 +108,7 @@ export default function ComingSoon() {
         </motion.div>
       </header>
 
-      {/* ── Main Content ─────────────────────────────────────────── */}
+      {/* Main content */}
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center">
 
         {/* Badge */}
@@ -151,25 +140,14 @@ export default function ComingSoon() {
             className="font-serif text-[#F5EDD6] leading-[0.88] tracking-tight"
             style={{ fontSize: "clamp(4rem, 14vw, 11rem)" }}
           >
-            {i18n.language === "ar" ? (
-              <>
-                <span className="block font-bold">{t("comingSoon.heading")}</span>
-                <span className="block italic font-light opacity-70 text-[0.65em]">
-                  {t("comingSoon.headingItalic")}
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="block font-bold">{t("comingSoon.heading")}</span>
-                <span className="block italic font-light opacity-70">
-                  {t("comingSoon.headingItalic")}
-                </span>
-              </>
-            )}
+            <span className="block font-bold">{t("comingSoon.heading")}</span>
+            <span className="block italic font-light opacity-70">
+              {t("comingSoon.headingItalic")}
+            </span>
           </h1>
         </motion.div>
 
-        {/* Arabic script accent (shown in EN/FR only) */}
+        {/* Arabic accent (shown in EN/FR only) */}
         {i18n.language !== "ar" && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -243,54 +221,39 @@ export default function ComingSoon() {
             ) : (
               <motion.form
                 key="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubscribe}
                 className="flex flex-col sm:flex-row gap-0"
               >
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setFieldError("");
-                  }}
+                  onChange={(e) => { setEmail(e.target.value); setFieldError(""); }}
                   placeholder={t("comingSoon.emailPlaceholder")}
                   data-testid="input-email"
-                  disabled={subscribe.isPending}
+                  disabled={isSubmitting}
                   className={`
                     flex-1 bg-transparent border text-[#F5EDD6] placeholder-[#F5EDD6]/30
-                    text-xs tracking-widest px-5 py-4 outline-none
-                    transition-colors duration-300
+                    text-xs tracking-widest px-5 py-4 outline-none transition-colors duration-300
                     ${fieldError
                       ? "border-red-500/60 focus:border-red-500"
                       : "border-[#F5EDD6]/15 focus:border-[#800000]/70"
                     }
-                    sm:border-r-0
-                    ${isRtl ? "sm:border-r sm:border-l-0" : ""}
+                    sm:border-r-0 ${isRtl ? "sm:border-r sm:border-l-0" : ""}
                   `}
                 />
                 <button
                   type="submit"
                   data-testid="button-notify"
-                  disabled={subscribe.isPending}
-                  className="
-                    group bg-[#800000] hover:bg-[#6d0000] text-white
-                    px-7 py-4 flex items-center justify-center gap-3
-                    text-[9px] font-bold uppercase tracking-[0.35em]
-                    transition-all duration-300 border border-[#800000]
-                    disabled:opacity-60 whitespace-nowrap
-                  "
+                  disabled={isSubmitting}
+                  className="group bg-[#800000] hover:bg-[#6d0000] text-white px-7 py-4 flex items-center justify-center gap-3 text-[9px] font-bold uppercase tracking-[0.35em] transition-all duration-300 border border-[#800000] disabled:opacity-60 whitespace-nowrap"
                 >
-                  {subscribe.isPending ? (
+                  {isSubmitting ? (
                     <span className="w-3 h-3 border border-white/40 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       {t("comingSoon.subscribe")}
                       <ArrowRight
-                        className={`
-                          w-3 h-3 transition-transform duration-300
-                          group-hover:translate-x-1
-                          ${isRtl ? "rotate-180 group-hover:-translate-x-1 group-hover:translate-x-0" : ""}
-                        `}
+                        className={`w-3 h-3 transition-transform duration-300 group-hover:translate-x-1 ${isRtl ? "rotate-180 group-hover:-translate-x-1 group-hover:translate-x-0" : ""}`}
                       />
                     </>
                   )}
@@ -299,7 +262,6 @@ export default function ComingSoon() {
             )}
           </AnimatePresence>
 
-          {/* Field error */}
           {fieldError && (
             <motion.p
               initial={{ opacity: 0, y: -4 }}
@@ -310,7 +272,6 @@ export default function ComingSoon() {
             </motion.p>
           )}
 
-          {/* Privacy note */}
           {!done && (
             <p className="mt-4 text-[#F5EDD6]/25 text-[10px] tracking-wide">
               {t("comingSoon.privacy")}
@@ -319,9 +280,8 @@ export default function ComingSoon() {
         </motion.div>
       </main>
 
-      {/* ── Footer ───────────────────────────────────────────────── */}
+      {/* Footer */}
       <footer className="relative z-10 flex flex-col sm:flex-row items-center justify-between px-8 md:px-14 pb-10 pt-8 gap-4">
-        {/* Crafted in line */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -331,7 +291,6 @@ export default function ComingSoon() {
           {t("comingSoon.craftedIn")}
         </motion.p>
 
-        {/* Instagram */}
         <motion.a
           href="https://instagram.com/turathcollective"
           target="_blank"
@@ -340,15 +299,12 @@ export default function ComingSoon() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
           data-testid="link-instagram"
-          className="flex items-center gap-2.5 text-[#F5EDD6]/35 hover:text-[#F5EDD6]/80 transition-colors duration-300 group order-1 sm:order-2"
+          className="flex items-center gap-2.5 text-[#F5EDD6]/35 hover:text-[#F5EDD6]/80 transition-colors duration-300 order-1 sm:order-2"
         >
           <Instagram className="w-4 h-4" />
-          <span className="text-[9px] tracking-[0.3em] uppercase font-bold">
-            @turathcollective
-          </span>
+          <span className="text-[9px] tracking-[0.3em] uppercase font-bold">@turathcollective</span>
         </motion.a>
 
-        {/* Location */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

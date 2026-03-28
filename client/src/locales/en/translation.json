@@ -9,7 +9,10 @@
     "ourStory": "Our Story",
     "account": "Account",
     "collections": "Collections",
-    "brand": "Brand"
+    "brand": "Brand",
+    "tagline": "Heritage Craftsmanship",
+    "openMenu": "Open menu",
+    "closeMenu": "Close"
   },
   "announcement": "Free shipping on orders above 100 CAD",
   "lang": {
@@ -20,6 +23,12 @@
     "en": "English",
     "fr": "Français",
     "ar": "العربية"
+  },
+  "cart": {
+    "heading": "Your Bag",
+    "qty": "Qty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout"
   },
   "hero": {
     "heading": "Connect through",
@@ -38,13 +47,21 @@
     "phone": "Phone",
     "wholesale": "Wholesale & Press",
     "wholesaleDesc": "Interested in partnering with us or featuring our artisans? We'd love to hear from you.",
+    "addressDetails": "1234 Heritage Way, Plateau Mont-Royal\nMontreal, QC H2X 3Y4, Canada",
+    "phoneNumber": "+1 (514) 555-0123",
+    "emailAddress": "hello@turathcollective.com",
+    "partnerEmail": "partnerships@turathcollective.com",
+    "placeholderName": "Layla Sami",
+    "placeholderEmail": "layla@example.com",
+    "placeholderSubject": "Inquiry about Ceramics",
+    "placeholderMessage": "How can we help you?",
     "formName": "Full Name",
     "formEmail": "Email Address",
     "formSubject": "Subject",
     "formMessage": "Message",
     "formSend": "Send Message",
     "formSending": "Sending...",
-    "successTitle": "Message Sent",
+    "successTitle": "Message Received",
     "successDesc": "Thank you for reaching out. We'll get back to you within 1–2 business days.",
     "errorTitle": "Something went wrong",
     "errorDesc": "Please try again or email us directly."

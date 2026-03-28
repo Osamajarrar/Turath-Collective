@@ -1,19 +1,19 @@
 import { eq } from "drizzle-orm";
 import { db } from "./db";
 import {
-  users, contactMessages, newsletterSubscribers,
+  users, contactMessages,
   type User, type InsertUser,
   type ContactMessage, type InsertContact,
-  type NewsletterSubscriber, type InsertNewsletter,
 } from "@shared/schema";
 
 export interface IStorage {
+  // User auth (backend kept; UI deferred to future launch)
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // Contact messages (route deferred; table ready for future use)
   createContactMessage(msg: InsertContact): Promise<ContactMessage>;
-  getSubscriber(email: string): Promise<NewsletterSubscriber | undefined>;
-  createSubscriber(data: InsertNewsletter): Promise<NewsletterSubscriber>;
 }
 
 export class DrizzleStorage implements IStorage {
@@ -35,16 +35,6 @@ export class DrizzleStorage implements IStorage {
   async createContactMessage(data: InsertContact): Promise<ContactMessage> {
     const [msg] = await db.insert(contactMessages).values(data).returning();
     return msg;
-  }
-
-  async getSubscriber(email: string) {
-    const [sub] = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
-    return sub;
-  }
-
-  async createSubscriber(data: InsertNewsletter): Promise<NewsletterSubscriber> {
-    const [sub] = await db.insert(newsletterSubscribers).values(data).returning();
-    return sub;
   }
 }
 

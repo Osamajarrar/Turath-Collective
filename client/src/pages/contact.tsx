@@ -14,31 +14,15 @@ export default function ContactPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Contact backend is deferred for launch v1.
+  // Form shows a success state to acknowledge the user; emails to be wired later.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const form = e.target as HTMLFormElement;
-    const data = Object.fromEntries(new FormData(form));
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          subject: data.subject || "General Inquiry",
-          message: data.message,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      toast({ title: t("contact.successTitle"), description: t("contact.successDesc") });
-      form.reset();
-    } catch {
-      toast({ title: t("contact.errorTitle"), description: t("contact.errorDesc"), variant: "destructive" });
-    } finally {
-      setIsSubmitting(false);
-    }
+    await new Promise((r) => setTimeout(r, 800));
+    toast({ title: t("contact.successTitle"), description: t("contact.successDesc") });
+    (e.target as HTMLFormElement).reset();
+    setIsSubmitting(false);
   };
 
   return (
@@ -47,6 +31,7 @@ export default function ContactPage() {
 
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
+
           <header className="mb-20 text-center">
             <motion.span
               initial={{ opacity: 0, y: 10 }}
@@ -67,6 +52,7 @@ export default function ContactPage() {
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+
             {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -77,13 +63,13 @@ export default function ContactPage() {
               <div>
                 <h3 className="font-serif text-2xl mb-8">{t("contact.visitStudio")}</h3>
                 <div className="space-y-6">
+
                   <div className="flex gap-4 items-start rtl:flex-row-reverse">
                     <MapPin className="w-5 h-5 text-primary shrink-0 mt-1" />
                     <div>
                       <p className="text-sm font-bold uppercase tracking-widest mb-1">{t("contact.address")}</p>
-                      <p className="text-muted-foreground font-light leading-relaxed">
-                        1234 Heritage Way, Plateau Mont-Royal<br />
-                        Montreal, QC H2X 3Y4, Canada
+                      <p className="text-muted-foreground font-light leading-relaxed whitespace-pre-line">
+                        {t("contact.addressDetails")}
                       </p>
                     </div>
                   </div>
@@ -92,7 +78,12 @@ export default function ContactPage() {
                     <Mail className="w-5 h-5 text-primary shrink-0 mt-1" />
                     <div>
                       <p className="text-sm font-bold uppercase tracking-widest mb-1">{t("contact.email")}</p>
-                      <p className="text-muted-foreground font-light">hello@turathcollective.com</p>
+                      <a
+                        href={`mailto:${t("contact.emailAddress")}`}
+                        className="text-muted-foreground font-light hover:text-primary transition-colors"
+                      >
+                        {t("contact.emailAddress")}
+                      </a>
                     </div>
                   </div>
 
@@ -100,9 +91,15 @@ export default function ContactPage() {
                     <Phone className="w-5 h-5 text-primary shrink-0 mt-1" />
                     <div>
                       <p className="text-sm font-bold uppercase tracking-widest mb-1">{t("contact.phone")}</p>
-                      <p className="text-muted-foreground font-light">+1 (514) 555-0123</p>
+                      <a
+                        href={`tel:${t("contact.phoneNumber")}`}
+                        className="text-muted-foreground font-light hover:text-primary transition-colors"
+                      >
+                        {t("contact.phoneNumber")}
+                      </a>
                     </div>
                   </div>
+
                 </div>
               </div>
 
@@ -112,10 +109,10 @@ export default function ContactPage() {
                   {t("contact.wholesaleDesc")}
                 </p>
                 <a
-                  href="mailto:partners@turathcollective.com"
+                  href={`mailto:${t("contact.partnerEmail")}`}
                   className="text-[10px] uppercase tracking-widest font-bold border-b border-primary/30 pb-1 hover:border-primary transition-colors"
                 >
-                  partnerships@turathcollective.com →
+                  {t("contact.partnerEmail")} →
                 </a>
               </div>
             </motion.div>
@@ -125,48 +122,56 @@ export default function ContactPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white p-10 md:p-12 border border-border/50 shadow-2xl relative"
+              className="bg-white p-10 md:p-12 border border-border/50 shadow-2xl"
             >
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">{t("contact.formName")}</Label>
+                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
+                    {t("contact.formName")}
+                  </Label>
                   <Input
                     name="name"
                     required
-                    placeholder="Layla Sami"
+                    placeholder={t("contact.placeholderName")}
                     data-testid="input-contact-name"
                     className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">{t("contact.formEmail")}</Label>
+                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
+                    {t("contact.formEmail")}
+                  </Label>
                   <Input
                     name="email"
                     required
                     type="email"
-                    placeholder="layla@example.com"
+                    placeholder={t("contact.placeholderEmail")}
                     data-testid="input-contact-email"
                     className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">{t("contact.formSubject")}</Label>
+                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
+                    {t("contact.formSubject")}
+                  </Label>
                   <Input
                     name="subject"
-                    placeholder="Inquiry about Ceramics"
+                    placeholder={t("contact.placeholderSubject")}
                     data-testid="input-contact-subject"
                     className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">{t("contact.formMessage")}</Label>
+                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
+                    {t("contact.formMessage")}
+                  </Label>
                   <Textarea
                     name="message"
                     required
-                    placeholder="How can we help you?"
+                    placeholder={t("contact.placeholderMessage")}
                     data-testid="input-contact-message"
                     className="min-h-[150px] rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent resize-none"
                   />
@@ -182,6 +187,7 @@ export default function ContactPage() {
                 </Button>
               </form>
             </motion.div>
+
           </div>
         </div>
       </div>

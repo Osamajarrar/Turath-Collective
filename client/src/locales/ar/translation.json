@@ -9,7 +9,10 @@
     "ourStory": "قصتنا",
     "account": "حسابي",
     "collections": "المجموعات",
-    "brand": "العلامة"
+    "brand": "العلامة",
+    "tagline": "الحرف التراثية",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق"
   },
   "announcement": "شحن مجاني للطلبات التي تتجاوز 100 دولار كندي",
   "lang": {
@@ -20,6 +23,12 @@
     "en": "English",
     "fr": "Français",
     "ar": "العربية"
+  },
+  "cart": {
+    "heading": "حقيبتك",
+    "qty": "الكمية",
+    "subtotal": "المجموع الجزئي",
+    "checkout": "إتمام الطلب"
   },
   "hero": {
     "heading": "تواصل عبر",
@@ -38,13 +47,21 @@
     "phone": "الهاتف",
     "wholesale": "البيع بالجملة والإعلام",
     "wholesaleDesc": "هل تهتم بالشراكة معنا أو إبراز حرفيينا؟ يسعدنا سماعك.",
+    "addressDetails": "1234 Heritage Way، بلاتو مون-رويال\nمونتريال، كيبيك H2X 3Y4، كندا",
+    "phoneNumber": "+1 (514) 555-0123",
+    "emailAddress": "hello@turathcollective.com",
+    "partnerEmail": "partnerships@turathcollective.com",
+    "placeholderName": "ليلى سامي",
+    "placeholderEmail": "layla@example.com",
+    "placeholderSubject": "استفسار عن الخزف",
+    "placeholderMessage": "كيف يمكننا مساعدتك؟",
     "formName": "الاسم الكامل",
     "formEmail": "عنوان البريد الإلكتروني",
     "formSubject": "الموضوع",
     "formMessage": "الرسالة",
     "formSend": "إرسال الرسالة",
     "formSending": "جارٍ الإرسال...",
-    "successTitle": "تم إرسال الرسالة",
+    "successTitle": "تم استلام رسالتك",
     "successDesc": "شكراً لتواصلك معنا. سنرد عليك في غضون يوم إلى يومين عمل.",
     "errorTitle": "حدث خطأ ما",
     "errorDesc": "يرجى المحاولة مرة أخرى أو مراسلتنا مباشرةً."

@@ -4,8 +4,6 @@ import { z } from "zod";
 import passport from "passport";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
-import { sendContactEmail, sendContactConfirmation, sendNewsletterWelcome } from "./email";
-import { insertContactSchema, insertNewsletterSchema } from "@shared/schema";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -16,7 +14,8 @@ const registerSchema = z.object({
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
 
-  // ── Auth ──────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  // Backend + session kept for future launch; UI pages are currently removed.
 
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     const parsed = registerSchema.safeParse(req.body);
@@ -60,35 +59,14 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     return res.json(req.user);
   });
 
-  // ── Contact ───────────────────────────────────────────────
+  // ── Contact ───────────────────────────────────────────────────────────────
+  // DEFERRED: route disabled for launch v1. UI form remains visible.
+  // Re-enable by restoring this route and wiring sendContactEmail / storage.
 
-  app.post("/api/contact", async (req: Request, res: Response) => {
-    const parsed = insertContactSchema.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ message: "Invalid input", errors: parsed.error.flatten() });
+  // ── Newsletter ────────────────────────────────────────────────────────────
+  // DEFERRED: DB storage removed. Connect to Mailchimp/Klaviyo when ready.
 
-    const msg = await storage.createContactMessage(parsed.data);
-    sendContactEmail(parsed.data).catch(console.error);
-    sendContactConfirmation(parsed.data.email, parsed.data.name).catch(console.error);
-
-    return res.status(201).json({ message: "Message received", id: msg.id });
-  });
-
-  // ── Newsletter ────────────────────────────────────────────
-
-  app.post("/api/newsletter", async (req: Request, res: Response) => {
-    const parsed = insertNewsletterSchema.safeParse(req.body);
-    if (!parsed.success) return res.status(400).json({ message: "Invalid email" });
-
-    const existing = await storage.getSubscriber(parsed.data.email);
-    if (existing) return res.status(200).json({ message: "Already subscribed" });
-
-    await storage.createSubscriber(parsed.data);
-    sendNewsletterWelcome(parsed.data.email).catch(console.error);
-
-    return res.status(201).json({ message: "Subscribed successfully" });
-  });
-
-  // ── Shopify Storefront proxy ──────────────────────────────
+  // ── Shopify Storefront proxy ──────────────────────────────────────────────
 
   app.post("/api/shopify", async (req: Request, res: Response) => {
     const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
@@ -119,13 +97,14 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     }
   });
 
-  // ── Health ────────────────────────────────────────────────
+  // ── Health ────────────────────────────────────────────────────────────────
 
   app.get("/api/health", (_req: Request, res: Response) => {
     res.json({
       status: "ok",
-      email: !!process.env.RESEND_API_KEY ? "live" : "dev (no RESEND_API_KEY)",
-      shopify: !!process.env.SHOPIFY_STOREFRONT_TOKEN && !!process.env.SHOPIFY_STORE_DOMAIN ? "connected" : "not configured",
+      shopify: !!process.env.SHOPIFY_STOREFRONT_TOKEN && !!process.env.SHOPIFY_STORE_DOMAIN
+        ? "connected"
+        : "not configured",
     });
   });
 

@@ -23,21 +23,29 @@ Palestinian heritage craftsmanship e-commerce brand based in Montreal (ceramics 
 - SESSION_SECRET is required in production — auth.ts throws on startup if absent.
 
 ## Database tables
-- users (id uuid, email, password_hash, first_name, last_name, created_at)
-- contact_messages (id uuid, name, email, subject, message, created_at)
-- newsletter_subscribers (id uuid, email, subscribed, created_at)
+- users (id uuid, email, password_hash, first_name, last_name, created_at) — backend kept; auth UI removed for v1
+- contact_messages (id uuid, name, email, subject, message, created_at) — table kept; /api/contact route disabled for v1
 - session (auto-created by connect-pg-simple)
+- newsletter_subscribers REMOVED — DB storage deferred; form UI remains for future Mailchimp/Klaviyo integration
+
+## Deferred for launch v1
+- /api/contact route disabled (contact form shows UI-only success state)
+- /api/newsletter route removed (newsletter form is UI-only; connect Mailchimp/Klaviyo when ready)
+- Auth UI pages (login/signup/forgot-password) removed from router — auth backend + sessions + users table kept intact
+- Navbar: globe icon opens language+currency dialog (EN/FR/AR) on all screen sizes
 
 ## Required secrets
 - DATABASE_URL — auto-set by Replit PostgreSQL
 - SESSION_SECRET — required in production (32+ char random string)
-- RESEND_API_KEY — optional; emails log to console without it
 - SHOPIFY_STORE_DOMAIN — optional; mock data used without it
 - SHOPIFY_STOREFRONT_TOKEN — optional; mock data used without it
 - VITE_GA_MEASUREMENT_ID — optional; analytics disabled without it (format: G-XXXXXXXXXX)
+- RESEND_API_KEY — optional; ready for when /api/contact is re-enabled
 
 ## What is NOT yet implemented
-- Password reset flow (forgot-password page exists; backend token/email flow missing)
+- Contact form backend (route deferred; table and email helpers exist)
+- Newsletter integration (Mailchimp / Klaviyo — form UI ready)
+- Auth UI (login, signup, forgot-password — backend ready, routes kept)
 - Cookie consent / GDPR-PIPEDA banner
 - sitemap.xml and robots.txt
 - Rate limiting and security headers (Helmet.js)
