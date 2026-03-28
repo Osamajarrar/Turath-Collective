@@ -70,5 +70,23 @@
     "desc": "Soyez le premier informé de nos éditions limitées et de nos histoires d'atelier.",
     "placeholder": "Votre adresse courriel",
     "cta": "S'abonner"
+  },
+  "comingSoon": {
+    "badge": "Bientôt disponible",
+    "heading": "Turath",
+    "headingItalic": "Collective",
+    "arabicWord": "تُراث",
+    "tagline": "L'artisanat palestinien du patrimoine, soigneusement curé à Montréal.",
+    "desc": "Nous préparons quelque chose de beau. Soyez les premiers à le découvrir.",
+    "emailPlaceholder": "Votre adresse courriel",
+    "subscribe": "M'avertir",
+    "subscribed": "Vous êtes inscrit — merci.",
+    "privacy": "Pas de spam, jamais. Désinscription à tout moment.",
+    "location": "Montréal, QC",
+    "craftedIn": "Fabriqué à Hébron · Curé à Montréal",
+    "instagram": "Suivre sur Instagram",
+    "errorEmpty": "Veuillez entrer votre adresse courriel.",
+    "errorInvalid": "Veuillez entrer une adresse courriel valide.",
+    "errorServer": "Une erreur est survenue. Veuillez réessayer."
   }
 }

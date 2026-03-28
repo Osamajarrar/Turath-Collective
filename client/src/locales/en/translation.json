@@ -70,5 +70,23 @@
     "desc": "Be the first to know about our limited drops and studio stories.",
     "placeholder": "Your email address",
     "cta": "Subscribe"
+  },
+  "comingSoon": {
+    "badge": "Coming Soon",
+    "heading": "Turath",
+    "headingItalic": "Collective",
+    "arabicWord": "تُراث",
+    "tagline": "Palestinian heritage craftsmanship, thoughtfully curated in Montréal.",
+    "desc": "We're preparing something beautiful. Be the first to know when we open our doors.",
+    "emailPlaceholder": "Your email address",
+    "subscribe": "Notify Me",
+    "subscribed": "You're on the list — thank you.",
+    "privacy": "No spam, ever. Unsubscribe at any time.",
+    "location": "Montréal, QC",
+    "craftedIn": "Crafted in Hebron · Curated in Montréal",
+    "instagram": "Follow on Instagram",
+    "errorEmpty": "Please enter your email address.",
+    "errorInvalid": "Please enter a valid email.",
+    "errorServer": "Something went wrong. Please try again."
   }
 }

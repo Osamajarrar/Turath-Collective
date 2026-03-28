@@ -13,6 +13,7 @@ import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import GenericPage from "@/pages/generic";
+import ComingSoon from "@/pages/coming-soon";
 
 import ScrollToTop from "@/components/scroll-to-top";
 
@@ -21,7 +22,15 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        <Route path="/" component={Home} />
+        {/* ── Coming Soon (active until launch) ──────────────────
+            To launch the full site: change this to component={Home}
+            The full site remains accessible at /preview during dev.
+        ──────────────────────────────────────────────────────── */}
+        <Route path="/" component={ComingSoon} />
+
+        {/* Full site preview — for development only */}
+        <Route path="/preview" component={Home} />
+
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
@@ -29,7 +38,7 @@ function Router() {
         <Route path="/login" component={LoginPage} />
         <Route path="/signup" component={SignupPage} />
         <Route path="/forgot-password" component={ForgotPasswordPage} />
-        
+
         {/* Footer Pages */}
         <Route path="/about">
           <GenericPage title="Our Story" />
