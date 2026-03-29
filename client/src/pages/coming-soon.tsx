@@ -39,7 +39,7 @@ export default function ComingSoon() {
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden bg-[#0c0703] flex flex-col"
+      className="relative min-h-screen w-full overflow-hidden bg-[#ffffff] flex flex-col"
       dir={isRtl ? "rtl" : "ltr"}
     >
       {/* Background video */}
@@ -120,11 +120,11 @@ export default function ComingSoon() {
         >
           <span
             data-testid="badge-coming-soon"
-            className="inline-flex items-center gap-2.5 border border-[#800000]/60 text-[#800000] px-5 py-2 text-[9px] font-bold uppercase tracking-[0.4em]"
+            className="bg-primary text-white inline-flex items-center gap-2.5 border border-primary/60 text-primary px-5 py-2 text-[9px] font-bold uppercase tracking-[0.4em]"
           >
-            <span className="w-1 h-1 rounded-full bg-[#800000] inline-block" />
+            <span className="w-1 h-1 rounded-full bg-primary inline-block" />
             {t("comingSoon.badge")}
-            <span className="w-1 h-1 rounded-full bg-[#800000] inline-block" />
+            <span className="w-1 h-1 rounded-full bg-primary inline-block" />
           </span>
         </motion.div>
 
@@ -147,18 +147,7 @@ export default function ComingSoon() {
           </h1>
         </motion.div>
 
-        {/* Arabic accent (shown in EN/FR only) */}
-        {i18n.language !== "ar" && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.5 }}
-            className="font-serif text-[#F5EDD6]/25 text-3xl md:text-4xl mb-10 tracking-wide"
-            dir="rtl"
-          >
-            {t("comingSoon.arabicWord")}
-          </motion.p>
-        )}
+        
 
         {/* Ornamental divider */}
         <motion.div
@@ -167,9 +156,9 @@ export default function ComingSoon() {
           transition={{ duration: 1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center gap-4 mb-10 w-full max-w-xs"
         >
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#800000]/50" />
-          <div className="w-1.5 h-1.5 rotate-45 bg-[#800000]/60" />
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#800000]/50" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-primary/50" />
+          <div className="w-1.5 h-1.5 rotate-45 bg-primary/60" />
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-primary/50" />
         </motion.div>
 
         {/* Tagline */}
@@ -209,9 +198,9 @@ export default function ComingSoon() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
                 data-testid="text-subscribed"
-                className="flex items-center justify-center gap-3 py-5 border border-[#800000]/30 text-[#F5EDD6]/80"
+                className="flex items-center justify-center gap-3 py-5 border border-primary/30 text-[#F5EDD6]/80"
               >
-                <span className="w-5 h-5 rounded-full bg-[#800000] flex items-center justify-center flex-shrink-0">
+                <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                   <Check className="w-3 h-3 text-white" />
                 </span>
                 <span className="text-xs tracking-widest uppercase font-bold">
@@ -236,7 +225,7 @@ export default function ComingSoon() {
                     text-xs tracking-widest px-5 py-4 outline-none transition-colors duration-300
                     ${fieldError
                       ? "border-red-500/60 focus:border-red-500"
-                      : "border-[#F5EDD6]/15 focus:border-[#800000]/70"
+                      : "border-[#F5EDD6]/15 focus:border-primary/70"
                     }
                     sm:border-r-0 ${isRtl ? "sm:border-r sm:border-l-0" : ""}
                   `}
@@ -245,7 +234,7 @@ export default function ComingSoon() {
                   type="submit"
                   data-testid="button-notify"
                   disabled={isSubmitting}
-                  className="group bg-[#800000] hover:bg-[#6d0000] text-white px-7 py-4 flex items-center justify-center gap-3 text-[9px] font-bold uppercase tracking-[0.35em] transition-all duration-300 border border-[#800000] disabled:opacity-60 whitespace-nowrap"
+                  className="group bg-primary hover:bg-[#6d0000] text-white px-7 py-4 flex items-center justify-center gap-3 text-[9px] font-bold uppercase tracking-[0.35em] transition-all duration-300 border border-primary disabled:opacity-60 whitespace-nowrap"
                 >
                   {isSubmitting ? (
                     <span className="w-3 h-3 border border-white/40 border-t-white rounded-full animate-spin" />
@@ -305,14 +294,6 @@ export default function ComingSoon() {
           <span className="text-[9px] tracking-[0.3em] uppercase font-bold">@turathcollective</span>
         </motion.a>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.2 }}
-          className="text-[#F5EDD6]/25 text-[9px] tracking-[0.35em] uppercase order-3"
-        >
-          {t("comingSoon.location")}
-        </motion.p>
       </footer>
     </div>
   );

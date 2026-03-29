@@ -280,7 +280,7 @@ export default function ProductPage() {
                         <div
                           className={cn(
                             "h-full w-full rounded-full",
-                            v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-[#800000]"
+                            v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-primary"
                           )}
                         />
                       </button>

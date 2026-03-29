@@ -45,12 +45,12 @@ export default function Hero() {
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />
               </button>
             </Link>
-            <button className="flex items-center gap-4 group" data-testid="button-watch-story">
+            {/* <button className="flex items-center gap-4 group" data-testid="button-watch-story">
               <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />
               </div>
               <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-black">{t("hero.watchStory")}</span>
-            </button>
+            </button> */}
           </div>
         </motion.div>
       </div>
