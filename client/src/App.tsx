@@ -13,7 +13,6 @@ import CheckoutPage from "@/pages/checkout";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
 import GenericPage from "@/pages/generic";
-import ComingSoon from "@/pages/coming-soon";
 import ScrollToTop from "@/components/scroll-to-top";
 
 // Auth pages (login, signup, forgot-password) removed for launch v1.
@@ -24,15 +23,8 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        {/* ── Coming Soon (active until launch) ──────────────────────────────
-            To go live: change component={ComingSoon} → component={Home}
-            Full site preview remains at /preview during development.
-        ─────────────────────────────────────────────────────────────────── */}
-        <Route path="/" component={ComingSoon} />
-
-        {/* Full site preview — development only */}
-        <Route path="/preview" component={Home} />
-
+      
+        <Route path="/" component={Home} />
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
