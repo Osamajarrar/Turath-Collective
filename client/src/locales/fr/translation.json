@@ -28,7 +28,11 @@
     "heading": "Votre panier",
     "qty": "Qté",
     "subtotal": "Sous-total",
-    "checkout": "Commander"
+    "checkout": "Commander",
+    "empty": "Votre panier est vide.",
+    "remove": "Retirer",
+    "increaseQty": "Augmenter la quantité",
+    "decreaseQty": "Diminuer la quantité"
   },
   "hero": {
     "heading": "Connectez-vous par le",

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ShoppingBag, Globe, X, Menu } from "lucide-react";
+import { ShoppingBag, Globe, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { applyRtl } from "@/lib/i18n";
-import img1 from "@/assets/burgundy-mug.png";
+import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
 
 const LANGS = [
   { code: "en", label: "EN", full: "English" },
@@ -21,6 +21,15 @@ const CURRENCIES = [
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const {
+    cart,
+    mockLines,
+    hasMockCart,
+    totalQuantity,
+    isBusy,
+    updateLineQuantity,
+    removeLine,
+  } = useCart();
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -28,6 +37,17 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currency, setCurrency] = useState("CAD");
   const { scrollY } = useScroll();
+
+  const mockSubtotal = mockLines.reduce(
+    (sum, line) => sum + line.price * line.quantity,
+    0
+  );
+  const mockCurrency = mockLines[0]?.currencyCode ?? "CAD";
+  const subtotalLabel = cart
+    ? `${cart.cost.subtotalAmount.currencyCode} $${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}`
+    : hasMockCart
+      ? `${mockCurrency} $${mockSubtotal.toFixed(2)}`
+      : "—";
 
   useEffect(() => {
     applyRtl(i18n.language);
@@ -51,8 +71,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Banner */}
-      <div className="bg-secondary text-secondary-foreground py-2 text-center text-[10px] uppercase tracking-[0.2em] font-medium z-[60] relative">
+      {/* Announcement Banner — fixed, always visible above the nav */}
+      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
         {t("announcement")}
       </div>
 
@@ -61,10 +81,10 @@ export default function Navbar() {
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
         className={cn(
-          "fixed left-0 right-0 z-50 transition-all duration-300 border-b",
+          "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
           isScrolled || isCartOpen || isLangOpen || isMenuOpen
-            ? "bg-background/80 backdrop-blur-md border-border py-4 top-0"
-            : "bg-transparent border-transparent py-6 top-10"
+            ? "border-border bg-background/80 py-4 backdrop-blur-md"
+            : "border-transparent bg-transparent py-6"
         )}
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -121,14 +141,16 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="p-1.5 hover:bg-muted rounded-full transition-colors relative"
+              className="relative rounded-full p-1.5 transition-colors hover:bg-muted"
               data-testid="button-cart-open"
               aria-label={t("cart.heading")}
             >
               <ShoppingBag className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
-              <span className="absolute top-0 right-0 h-3 w-3 bg-primary rounded-full flex items-center justify-center text-[7px] text-white font-bold">
-                2
-              </span>
+              {totalQuantity > 0 && (
+                <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[7px] font-bold text-white">
+                  {totalQuantity > 99 ? "99+" : totalQuantity}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -308,37 +330,185 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Mock cart item — will be replaced by live Shopify cart data */}
-              <div className="flex-1 p-8 overflow-y-auto">
-                <div className="flex gap-6 mb-8 rtl:flex-row-reverse">
-                  <div className="w-20 h-24 bg-muted flex-shrink-0">
-                    <img src={img1} alt="Product" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
-                      <h4 className="font-serif text-lg">Classic Indigo Mug</h4>
-                      <p className="text-[10px] uppercase tracking-widest font-bold opacity-40 mt-1">
-                        {t("cart.qty")}: 1
-                      </p>
+              <div className="flex-1 overflow-y-auto p-8">
+                {totalQuantity === 0 && (
+                  <p className="text-center text-sm text-muted-foreground">{t("cart.empty")}</p>
+                )}
+
+                {cart &&
+                  cart.lines.edges.map(({ node: line }) => {
+                    const img = lineDisplayImage(line);
+                    const unit = lineUnitPrice(line);
+                    const lineTotal = unit * line.quantity;
+                    return (
+                      <div
+                        key={line.id}
+                        className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
+                      >
+                        <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                          {img ? (
+                            <img
+                              src={img}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="h-full w-full bg-muted" />
+                          )}
+                        </div>
+                        <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
+                          <div>
+                            <h4 className="font-serif text-lg leading-tight">
+                              {line.merchandise.product.title}
+                            </h4>
+                            {line.merchandise.title && line.merchandise.title !== "Default Title" && (
+                              <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40">
+                                {line.merchandise.title}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex items-center border border-border">
+                              <button
+                                type="button"
+                                disabled={isBusy}
+                                onClick={() =>
+                                  updateLineQuantity(line.id, Math.max(0, line.quantity - 1))
+                                }
+                                className="p-2 transition-colors hover:bg-muted disabled:opacity-50"
+                                aria-label={t("cart.decreaseQty")}
+                              >
+                                <Minus className="h-3.5 w-3.5" />
+                              </button>
+                              <span className="min-w-[2rem] text-center text-sm font-medium">
+                                {line.quantity}
+                              </span>
+                              <button
+                                type="button"
+                                disabled={isBusy}
+                                onClick={() => updateLineQuantity(line.id, line.quantity + 1)}
+                                className="p-2 transition-colors hover:bg-muted disabled:opacity-50"
+                                aria-label={t("cart.increaseQty")}
+                              >
+                                <Plus className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                            <button
+                              type="button"
+                              disabled={isBusy}
+                              onClick={() => removeLine(line.id)}
+                              className="text-muted-foreground transition-colors hover:text-destructive"
+                              aria-label={t("cart.remove")}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                            <span className="ml-auto text-sm font-bold">
+                              {line.merchandise.price.currencyCode} ${lineTotal.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                {!cart &&
+                  hasMockCart &&
+                  mockLines.map((line) => (
+                    <div
+                      key={line.lineId}
+                      className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
+                    >
+                      <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                        {line.imageUrl ? (
+                          <img
+                            src={line.imageUrl}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-muted" />
+                        )}
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
+                        <div>
+                          <h4 className="font-serif text-lg leading-tight">{line.productTitle}</h4>
+                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40">
+                            {line.variantTitle}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex items-center border border-border">
+                            <button
+                              type="button"
+                              disabled={isBusy}
+                              onClick={() =>
+                                updateLineQuantity(line.lineId, Math.max(0, line.quantity - 1))
+                              }
+                              className="p-2 transition-colors hover:bg-muted disabled:opacity-50"
+                              aria-label={t("cart.decreaseQty")}
+                            >
+                              <Minus className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="min-w-[2rem] text-center text-sm font-medium">
+                              {line.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              disabled={isBusy}
+                              onClick={() => updateLineQuantity(line.lineId, line.quantity + 1)}
+                              className="p-2 transition-colors hover:bg-muted disabled:opacity-50"
+                              aria-label={t("cart.increaseQty")}
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                          <button
+                            type="button"
+                            disabled={isBusy}
+                            onClick={() => removeLine(line.lineId)}
+                            className="text-muted-foreground transition-colors hover:text-destructive"
+                            aria-label={t("cart.remove")}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                          <span className="ml-auto text-sm font-bold">
+                            {line.currencyCode} ${(line.price * line.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-sm font-bold">CAD $38.00</p>
-                  </div>
-                </div>
+                  ))}
               </div>
 
-              <div className="p-8 bg-muted/20 border-t border-border space-y-4">
-                <div className="flex justify-between font-bold text-xs uppercase tracking-widest rtl:flex-row-reverse">
+              <div className="space-y-4 border-t border-border bg-muted/20 p-8">
+                <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse">
                   <span>{t("cart.subtotal")}</span>
-                  <span>CAD $90.00</span>
+                  <span>{subtotalLabel}</span>
                 </div>
-                <Link href="/checkout">
+                {cart?.checkoutUrl ? (
                   <button
-                    className="w-full bg-primary text-white py-5 uppercase tracking-[0.2em] text-[10px] font-bold"
+                    type="button"
+                    disabled={isBusy || totalQuantity === 0}
+                    onClick={() => {
+                      window.location.href = cart.checkoutUrl;
+                    }}
+                    className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
                     data-testid="button-cart-checkout"
                   >
                     {t("cart.checkout")}
                   </button>
-                </Link>
+                ) : (
+                  <Link href="/checkout" className="block">
+                    <button
+                      type="button"
+                      disabled={isBusy || !hasMockCart || totalQuantity === 0}
+                      className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
+                      data-testid="button-cart-checkout"
+                    >
+                      {t("cart.checkout")}
+                    </button>
+                  </Link>
+                )}
               </div>
             </motion.div>
           </>

@@ -26,7 +26,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-24">
+    <main className="min-h-screen bg-background pt-36 pb-24">
       <Navbar />
 
       <div className="container mx-auto px-6 md:px-12">

@@ -33,16 +33,20 @@ export default function CollectionCards() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: idx * 0.2 }}
-              className="group cursor-pointer"
+              className="group"
             >
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] mb-8">
+              <Link
+                href={collection.link}
+                className="relative mb-8 block aspect-[16/10] cursor-pointer overflow-hidden rounded-[2rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
                 <img 
                   src={collection.image} 
-                  alt={collection.title}
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+                  alt=""
+                  className="h-full w-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors duration-500" />
-              </div>
+                <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/20" />
+                <span className="sr-only">{collection.title} — {collection.cta}</span>
+              </Link>
               <div className="px-4">
                 <h3 className="font-serif text-4xl mb-4 text-foreground">{collection.title}</h3>
                 <p className="text-foreground/60 font-light mb-8 max-w-sm leading-relaxed">{collection.description}</p>

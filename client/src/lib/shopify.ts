@@ -58,10 +58,18 @@ export interface ShopifyCollection {
   image: ShopifyImage | null;
 }
 
+export interface ShopifyCartLineMerchandise {
+  id: string;
+  title: string;
+  price: ShopifyMoneyV2;
+  image: ShopifyImage | null;
+  product: { title: string; handle: string };
+}
+
 export interface ShopifyCartLine {
   id: string;
   quantity: number;
-  merchandise: { id: string; title: string; price: ShopifyMoneyV2; product: { title: string; handle: string } };
+  merchandise: ShopifyCartLineMerchandise;
 }
 
 export interface ShopifyCart {
@@ -88,6 +96,30 @@ const PRODUCT_FRAGMENT = `
         price { amount currencyCode }
         compareAtPrice { amount currencyCode }
         selectedOptions { name value }
+      }
+    }
+  }
+`;
+
+/** Cart fields reused by create, add, get, update, remove mutations */
+const CART_SELECTION = `
+  id checkoutUrl totalQuantity
+  cost {
+    totalAmount { amount currencyCode }
+    subtotalAmount { amount currencyCode }
+  }
+  lines(first: 100) {
+    edges {
+      node {
+        id quantity
+        merchandise {
+          ... on ProductVariant {
+            id title
+            image { url altText }
+            price { amount currencyCode }
+            product { title handle }
+          }
+        }
       }
     }
   }
@@ -172,27 +204,7 @@ export const shopifyService = {
     const data = await shopifyQuery<{ cartCreate: { cart: ShopifyCart; userErrors: Array<{ message: string }> } }>(
       `mutation CartCreate($input: CartInput!) {
         cartCreate(input: $input) {
-          cart {
-            id checkoutUrl totalQuantity
-            cost {
-              totalAmount { amount currencyCode }
-              subtotalAmount { amount currencyCode }
-            }
-            lines(first: 100) {
-              edges {
-                node {
-                  id quantity
-                  merchandise {
-                    ... on ProductVariant {
-                      id title
-                      price { amount currencyCode }
-                      product { title handle }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          cart { ${CART_SELECTION} }
           userErrors { message }
         }
       }`,
@@ -206,32 +218,23 @@ export const shopifyService = {
     return data.cartCreate.cart;
   },
 
+  /** Fetch cart by id (e.g. after page load). Returns null if missing or unconfigured. */
+  async getCart(cartId: string): Promise<ShopifyCart | null> {
+    const data = await shopifyQuery<{ cart: ShopifyCart | null }>(
+      `query GetCart($cartId: ID!) {
+        cart(id: $cartId) { ${CART_SELECTION} }
+      }`,
+      { cartId }
+    );
+    return data?.cart ?? null;
+  },
+
   /** Add a line item to an existing cart. Returns the updated cart or null. */
   async addToCart(cartId: string, lines: Array<{ merchandiseId: string; quantity: number }>): Promise<ShopifyCart | null> {
     const data = await shopifyQuery<{ cartLinesAdd: { cart: ShopifyCart; userErrors: Array<{ message: string }> } }>(
       `mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
         cartLinesAdd(cartId: $cartId, lines: $lines) {
-          cart {
-            id checkoutUrl totalQuantity
-            cost {
-              totalAmount { amount currencyCode }
-              subtotalAmount { amount currencyCode }
-            }
-            lines(first: 100) {
-              edges {
-                node {
-                  id quantity
-                  merchandise {
-                    ... on ProductVariant {
-                      id title
-                      price { amount currencyCode }
-                      product { title handle }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          cart { ${CART_SELECTION} }
           userErrors { message }
         }
       }`,
@@ -243,6 +246,47 @@ export const shopifyService = {
       return null;
     }
     return data.cartLinesAdd.cart;
+  },
+
+  /** Update line quantities. */
+  async updateCartLines(
+    cartId: string,
+    lines: Array<{ id: string; quantity: number }>
+  ): Promise<ShopifyCart | null> {
+    const data = await shopifyQuery<{ cartLinesUpdate: { cart: ShopifyCart; userErrors: Array<{ message: string }> } }>(
+      `mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+        cartLinesUpdate(cartId: $cartId, lines: $lines) {
+          cart { ${CART_SELECTION} }
+          userErrors { message }
+        }
+      }`,
+      { cartId, lines }
+    );
+    if (!data) return null;
+    if (data.cartLinesUpdate.userErrors.length > 0) {
+      console.warn("[Shopify] Cart update errors", data.cartLinesUpdate.userErrors);
+      return null;
+    }
+    return data.cartLinesUpdate.cart;
+  },
+
+  /** Remove lines by cart line id. */
+  async removeCartLines(cartId: string, lineIds: string[]): Promise<ShopifyCart | null> {
+    const data = await shopifyQuery<{ cartLinesRemove: { cart: ShopifyCart; userErrors: Array<{ message: string }> } }>(
+      `mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+          cart { ${CART_SELECTION} }
+          userErrors { message }
+        }
+      }`,
+      { cartId, lineIds }
+    );
+    if (!data) return null;
+    if (data.cartLinesRemove.userErrors.length > 0) {
+      console.warn("[Shopify] Cart remove errors", data.cartLinesRemove.userErrors);
+      return null;
+    }
+    return data.cartLinesRemove.cart;
   },
 
   /** Convenience: create a cart with one item and return the checkout URL. */

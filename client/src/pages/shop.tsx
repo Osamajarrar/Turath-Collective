@@ -2,12 +2,13 @@ import { useState, useMemo, useEffect } from "react";
 import { Link } from "wouter";
 import Navbar from "@/components/navbar";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
 import img3 from "@/assets/burgundy-bowl.png";
 import img4 from "@/assets/burgundy-mezze.png";
+import classicBowl from "@/assets/classic-bowl.png";
+import classicMezze from "@/assets/classic-mezze-plate.png";
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
 
@@ -20,8 +21,7 @@ export const MOCK_PRODUCTS = [
     price: 45,
     currencyCode: "CAD",
     image: img1,
-    rating: 4.8,
-    reviews: 24,
+    imageSecondary: classicMezze,
     isBestSeller: true,
     isNew: false,
     isLimited: false,
@@ -35,8 +35,7 @@ export const MOCK_PRODUCTS = [
     price: 120,
     currencyCode: "CAD",
     image: img2,
-    rating: 5.0,
-    reviews: 12,
+    imageSecondary: classicBowl,
     isBestSeller: false,
     isNew: true,
     isLimited: true,
@@ -50,8 +49,7 @@ export const MOCK_PRODUCTS = [
     price: 65,
     currencyCode: "CAD",
     image: img3,
-    rating: 4.5,
-    reviews: 8,
+    imageSecondary: img4,
     isBestSeller: false,
     isNew: false,
     isLimited: true,
@@ -65,8 +63,7 @@ export const MOCK_PRODUCTS = [
     price: 85,
     currencyCode: "CAD",
     image: img4,
-    rating: 4.9,
-    reviews: 45,
+    imageSecondary: img1,
     isBestSeller: true,
     isNew: false,
     isLimited: false,
@@ -90,8 +87,7 @@ interface DisplayProduct {
   price: number;
   currencyCode: string;
   image: string;
-  rating: number;
-  reviews: number;
+  imageSecondary: string | null;
   isBestSeller: boolean;
   isNew: boolean;
   isLimited: boolean;
@@ -107,12 +103,10 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     price: parseFloat(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
-    rating: 5.0,
-    reviews: 0,
+    imageSecondary: p.images.edges[1]?.node.url ?? null,
     isBestSeller: p.tags?.includes("best-seller") ?? false,
     isNew: p.tags?.includes("new") ?? false,
     isLimited: p.tags?.includes("limited") ?? false,
-    // Use real Shopify createdAt for accurate "newest" sorting
     dateAdded: p.createdAt ? p.createdAt.split("T")[0] : new Date().toISOString().split("T")[0],
   };
 }
@@ -128,17 +122,14 @@ export default function ShopPage() {
   const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
   const [categories, setCategories] = useState<string[]>(MOCK_CATEGORIES);
 
-  // Attempt to load live Shopify data; fall back silently to mock data
   useEffect(() => {
     let cancelled = false;
 
-    // Load products
     shopifyService.getProducts().then((result) => {
       if (cancelled || !result || result.length === 0) return;
       setProducts(result.map(normaliseShopify));
     });
 
-    // Load collections for filter categories
     shopifyService.getCollections().then((cols) => {
       if (cancelled || !cols || cols.length === 0) return;
       const liveCategories = ["all", ...cols.map((c) => c.handle.toLowerCase())];
@@ -164,9 +155,6 @@ export default function ShopPage() {
       case "best-seller":
         result.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
         break;
-      case "highest-rated":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
       case "newest":
       default:
         result.sort(
@@ -177,23 +165,21 @@ export default function ShopPage() {
     return result;
   }, [selectedCategory, sortBy, products]);
 
-  // Build the href: /product/<handle> for Shopify, /product/<id> for mock
   const productHref = (p: DisplayProduct) =>
     p.handle ? `/product/${p.handle}` : `/product/${p.id}`;
 
-  // Derive display label for a category (handle → title-case)
   const categoryLabel = (cat: string) =>
     cat === "all" ? "All" : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <main className="min-h-screen bg-background pt-32">
+    <main className="min-h-screen bg-background pt-36">
       <Navbar />
 
-      <div className="container mx-auto px-6 md:px-12 py-12">
+      <div className="container mx-auto px-6 py-12 md:px-12">
         <header className="mb-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
-              <h1 className="font-serif text-5xl md:text-6xl mb-6 capitalize">
+              <h1 className="mb-6 font-serif text-5xl capitalize md:text-6xl">
                 {selectedCategory === "all" ? "The Collection" : categoryLabel(selectedCategory)}
               </h1>
               <div className="flex flex-wrap gap-4">
@@ -203,9 +189,9 @@ export default function ShopPage() {
                     data-testid={`filter-${cat}`}
                     onClick={() => setSelectedCategory(cat)}
                     className={cn(
-                      "px-6 py-2 text-[10px] uppercase tracking-widest font-bold border transition-all",
+                      "border px-6 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
                       selectedCategory === cat
-                        ? "bg-primary text-white border-primary"
+                        ? "border-primary bg-primary text-white"
                         : "border-border hover:border-primary"
                     )}
                   >
@@ -216,26 +202,25 @@ export default function ShopPage() {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-[10px] uppercase tracking-widest font-bold opacity-40">
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
                 Sort By
               </span>
               <select
                 data-testid="select-sort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-transparent border-b border-border py-2 text-[10px] uppercase tracking-widest font-bold focus:outline-none focus:border-primary cursor-pointer"
+                className="cursor-pointer border-b border-border bg-transparent py-2 text-[10px] font-bold uppercase tracking-widest focus:border-primary focus:outline-none"
               >
                 <option value="newest">Newest</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
                 <option value="best-seller">Best Seller</option>
-                <option value="highest-rated">Highest Rated</option>
               </select>
             </div>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
           {filteredAndSortedProducts.map((product, idx) => (
             <Link href={productHref(product)} key={product.id}>
               <motion.div
@@ -245,40 +230,48 @@ export default function ShopPage() {
                 className="group cursor-pointer"
                 data-testid={`card-product-${product.id}`}
               >
-                <div className="aspect-[4/5] overflow-hidden bg-muted mb-6 relative">
-                  <img
-                    src={product.image}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    alt={product.name}
-                  />
+                <div className="relative mb-6 aspect-[4/5] overflow-hidden bg-muted">
+                  {product.imageSecondary ? (
+                    <div className="absolute inset-0">
+                      <img
+                        src={product.image}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity duration-700 ease-in-out group-hover:opacity-0"
+                      />
+                      <img
+                        src={product.imageSecondary}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
+                      />
+                    </div>
+                  ) : (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-full w-full object-cover"
+                    />
+                  )}
 
-                  {/* Badges */}
-                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+                  <div className="pointer-events-none absolute left-4 top-4 flex flex-col gap-2">
                     {product.isBestSeller && (
-                      <span className="bg-primary text-white text-[8px] uppercase tracking-widest font-bold px-3 py-1">
+                      <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
                         Best Seller
                       </span>
                     )}
                     {product.isNew && (
-                      <span className="bg-black text-white text-[8px] uppercase tracking-widest font-bold px-3 py-1">
+                      <span className="bg-black px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
                         New
                       </span>
                     )}
                     {product.isLimited && (
-                      <span className="bg-secondary text-secondary-foreground text-[8px] uppercase tracking-widest font-bold px-3 py-1">
+                      <span className="bg-secondary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-secondary-foreground">
                         Limited Stock
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-serif text-xl">{product.name}</h3>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-primary text-primary" />
-                    <span className="text-[10px] font-bold">{product.rating}</span>
-                  </div>
-                </div>
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                <h3 className="mb-2 font-serif text-xl">{product.name}</h3>
+                <p className="mb-4 text-xs uppercase tracking-widest text-muted-foreground">
                   {product.category}
                 </p>
                 <p className="font-bold">

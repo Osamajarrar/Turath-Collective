@@ -28,7 +28,11 @@
     "heading": "حقيبتك",
     "qty": "الكمية",
     "subtotal": "المجموع الجزئي",
-    "checkout": "إتمام الطلب"
+    "checkout": "إتمام الطلب",
+    "empty": "حقيبتك فارغة.",
+    "remove": "إزالة",
+    "increaseQty": "زيادة الكمية",
+    "decreaseQty": "تقليل الكمية"
   },
   "hero": {
     "heading": "تواصل عبر",

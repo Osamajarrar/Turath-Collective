@@ -48,7 +48,7 @@ export default function Heritage() {
             </div>
             
             <div className="mt-12">
-              <a href="#" className="inline-block border-b border-primary text-primary pb-1 hover:text-foreground hover:border-foreground transition-all duration-300 uppercase tracking-widest text-sm font-medium">
+              <a href="/about" className="inline-block border-b border-primary text-primary pb-1 hover:text-foreground hover:border-foreground transition-all duration-300 uppercase tracking-widest text-sm font-medium">
                 Read Our Story
               </a>
             </div>

@@ -28,7 +28,11 @@
     "heading": "Your Bag",
     "qty": "Qty",
     "subtotal": "Subtotal",
-    "checkout": "Checkout"
+    "checkout": "Checkout",
+    "empty": "Your bag is empty.",
+    "remove": "Remove",
+    "increaseQty": "Increase quantity",
+    "decreaseQty": "Decrease quantity"
   },
   "hero": {
     "heading": "Connect through",

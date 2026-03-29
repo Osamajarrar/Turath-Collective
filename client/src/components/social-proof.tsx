@@ -55,7 +55,7 @@ export default function SocialProof() {
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground">Share your #TurathCollective</h2>
         </div>
         <div className="flex items-center gap-8">
-          <a href="https://instagram.com" className="flex items-center gap-3 group">
+          <a href="https://instagram.com/turathcollective" className="flex items-center gap-3 group">
             <Instagram className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold border-b border-primary/20 pb-1 group-hover:border-primary transition-all">Follow</span>
           </a>
