@@ -23,10 +23,13 @@ function Router() {
   return (
     <>
       <ScrollToTop />
+      {console.log("COMING_SOON:", import.meta.env.VITE_COMING_SOON)}
       <Switch>
-        import.meta.env.VITE_COMING_SOON === 'true' ?{" "}
-        <Route path="/" component={ComingSoon} />
-        : <Route path="/" component={Home} />
+        {import.meta.env.VITE_COMING_SOON === "true" ? (
+          <Route path="/" component={ComingSoon} />
+        ) : (
+          <Route path="/" component={Home} />
+        )}
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
