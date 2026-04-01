@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import Navbar from "@/components/navbar";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
@@ -9,6 +9,11 @@ import img3 from "@/assets/burgundy-bowl.png";
 import img4 from "@/assets/burgundy-mezze.png";
 import classicBowl from "@/assets/classic-bowl.png";
 import classicMezze from "@/assets/classic-mezze-plate.png";
+import {
+  isCategoryAvailable,
+  availableCategories,
+  shopCategories,
+} from "@/lib/collections";
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
 
@@ -71,11 +76,7 @@ export const MOCK_PRODUCTS = [
   },
 ];
 
-// Expose the original ALL_PRODUCTS name for any existing imports
 export const ALL_PRODUCTS = MOCK_PRODUCTS;
-
-// Static category list used in mock mode
-const MOCK_CATEGORIES = ["all", "ceramics", "embroidery"];
 
 // ── Normalise a Shopify product into a display-friendly shape ──────────────
 
@@ -99,7 +100,8 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     id: p.id,
     name: p.title,
     handle: p.handle,
-    category: p.productType?.toLowerCase() || p.tags?.[0]?.toLowerCase() || "ceramics",
+    category:
+      p.productType?.toLowerCase() || p.tags?.[0]?.toLowerCase() || "ceramics",
     price: parseFloat(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
@@ -107,43 +109,64 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     isBestSeller: p.tags?.includes("best-seller") ?? false,
     isNew: p.tags?.includes("new") ?? false,
     isLimited: p.tags?.includes("limited") ?? false,
-    dateAdded: p.createdAt ? p.createdAt.split("T")[0] : new Date().toISOString().split("T")[0],
+    dateAdded: p.createdAt
+      ? p.createdAt.split("T")[0]
+      : new Date().toISOString().split("T")[0],
   };
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function ShopPage() {
-  const searchParams = new URLSearchParams(window.location.search);
-  const initialCategory = searchParams.get("category") || "all";
-
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [, navigate] = useLocation();
+  const search = useSearch();
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
-  const [categories, setCategories] = useState<string[]>(MOCK_CATEGORIES);
 
+  // Single source of truth: availableCategories from collections.ts
+  const isSingleCategory = availableCategories.length === 1;
+  const showFilters = !isSingleCategory;
+
+  // Determine effective category: if single category, always use it; else read from URL
+  const getSelectedCategoryFromURL = () => {
+    const params = new URLSearchParams(search);
+    const cat = params.get("category") || "all";
+    return isCategoryAvailable(cat) ? cat : "all";
+  };
+
+  const selectedCategory = getSelectedCategoryFromURL();
+
+  // Filter products to only show those in available categories
+  const visibleProducts = products.filter((p) =>
+    availableCategories.includes(p.category),
+  );
+
+  // Sync selectedCategory with URL whenever location changes (multi-category mode only)
+  useEffect(() => {
+    const params = new URLSearchParams(search); // ← same fix here
+    const urlCategory = params.get("category") || "all";
+    if (!isCategoryAvailable(urlCategory)) {
+      navigate("/shop", { replace: true });
+    }
+  }, [search, navigate]);
+
+  // Fetch live Shopify data
   useEffect(() => {
     let cancelled = false;
-
     shopifyService.getProducts().then((result) => {
-      if (cancelled || !result || result.length === 0) return;
+      if (cancelled || !result?.length) return;
       setProducts(result.map(normaliseShopify));
     });
-
-    shopifyService.getCollections().then((cols) => {
-      if (cancelled || !cols || cols.length === 0) return;
-      const liveCategories = ["all", ...cols.map((c) => c.handle.toLowerCase())];
-      setCategories(liveCategories);
-    });
-
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const filteredAndSortedProducts = useMemo(() => {
     let result =
       selectedCategory === "all"
-        ? [...products]
-        : products.filter((p) => p.category === selectedCategory);
+        ? [...visibleProducts]
+        : visibleProducts.filter((p) => p.category === selectedCategory);
 
     switch (sortBy) {
       case "price-low":
@@ -153,52 +176,59 @@ export default function ShopPage() {
         result.sort((a, b) => b.price - a.price);
         break;
       case "best-seller":
-        result.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
+        result.sort(
+          (a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0),
+        );
         break;
       case "newest":
       default:
         result.sort(
-          (a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime()
+          (a, b) =>
+            new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime(),
         );
-        break;
     }
     return result;
-  }, [selectedCategory, sortBy, products]);
+  }, [selectedCategory, sortBy, visibleProducts]);
 
-  const productHref = (p: DisplayProduct) =>
-    p.handle ? `/product/${p.handle}` : `/product/${p.id}`;
+  const productHref = (p: DisplayProduct) => `/product/${p.handle}`;
 
   const categoryLabel = (cat: string) =>
-    cat === "all" ? "All" : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    cat === "all"
+      ? "All"
+      : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <main className="min-h-screen bg-background pt-36">
       <Navbar />
-
       <div className="container mx-auto px-6 py-12 md:px-12">
         <header className="mb-16">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
               <h1 className="mb-6 font-serif text-5xl capitalize md:text-6xl">
-                {selectedCategory === "all" ? "The Collection" : categoryLabel(selectedCategory)}
+                {selectedCategory === "all"
+                  ? "The Collection"
+                  : categoryLabel(selectedCategory)}
               </h1>
-              <div className="flex flex-wrap gap-4">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    data-testid={`filter-${cat}`}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={cn(
-                      "border px-6 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
-                      selectedCategory === cat
-                        ? "border-primary bg-primary text-white"
-                        : "border-border hover:border-primary"
-                    )}
-                  >
-                    {categoryLabel(cat)}
-                  </button>
-                ))}
-              </div>
+              {showFilters && (
+                <div className="flex flex-wrap gap-4">
+                  {shopCategories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        navigate(`/shop?category=${cat}`);
+                      }}
+                      className={cn(
+                        "border px-6 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
+                        selectedCategory === cat
+                          ? "border-primary bg-primary text-white"
+                          : "border-border hover:border-primary",
+                      )}
+                    >
+                      {categoryLabel(cat)}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-4">
@@ -220,7 +250,9 @@ export default function ShopPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          className={`grid gap-12 ${visibleProducts.length > 1 ? "md:grid-cols-2 lg:grid-cols-3" : "justify-center"}`}
+        >
           {filteredAndSortedProducts.map((product, idx) => (
             <Link href={productHref(product)} key={product.id}>
               <motion.div

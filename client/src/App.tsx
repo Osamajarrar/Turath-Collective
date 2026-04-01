@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "@/context/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Analytics } from "@vercel/analytics/react"; 
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ProductPage from "@/pages/product";
@@ -11,8 +13,8 @@ import CheckoutPage from "@/pages/checkout";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
 import GenericPage from "@/pages/generic";
-import ComingSoon from "@/pages/coming-soon";
 import ScrollToTop from "@/components/scroll-to-top";
+import ComingSoon from "@/pages/coming-soon";
 
 // Auth pages (login, signup, forgot-password) removed for launch v1.
 // Shopify handles customer accounts. Re-add imports + routes when needed.
@@ -22,9 +24,11 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        import.meta.env.VITE_COMING_SOON === 'true' ?{" "}
-        <Route path="/" component={ComingSoon} />
-        : <Route path="/" component={Home} />
+        {import.meta.env.VITE_COMING_SOON === "true" ? (
+          <Route path="/" component={ComingSoon} />
+        ) : (
+          <Route path="/" component={Home} />
+        )}
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
@@ -68,6 +72,8 @@ function App() {
           <Toaster />
           <Router />
         </TooltipProvider>
+        <Analytics />
+        <SpeedInsights />
       </CartProvider>
     </QueryClientProvider>
   );
