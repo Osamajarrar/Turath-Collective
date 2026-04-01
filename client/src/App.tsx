@@ -22,20 +22,13 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        {/* ── Coming Soon (active until launch) ──────────────────────────────
-            To go live: change component={ComingSoon} → component={Home}
-            Full site preview remains at /preview during development.
-        ─────────────────────────────────────────────────────────────────── */}
+        import.meta.env.VITE_COMING_SOON === 'true' ?{" "}
         <Route path="/" component={ComingSoon} />
-
-        {/* Full site preview — development only */}
-        <Route path="/preview" component={Home} />
-
+        : <Route path="/" component={Home} />
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
         <Route path="/checkout" component={CheckoutPage} />
-
         {/* Footer pages */}
         <Route path="/about">
           <GenericPage title="Our Story" />
@@ -61,7 +54,6 @@ function Router() {
         <Route path="/terms">
           <GenericPage title="Terms of Service" />
         </Route>
-
         <Route component={NotFound} />
       </Switch>
     </>
