@@ -14,6 +14,7 @@ import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
 import GenericPage from "@/pages/generic";
 import ScrollToTop from "@/components/scroll-to-top";
+import ComingSoon from "@/pages/coming-soon";
 
 // Auth pages (login, signup, forgot-password) removed for launch v1.
 // Shopify handles customer accounts. Re-add imports + routes when needed.
@@ -23,13 +24,13 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-      
-        <Route path="/" component={Home} />
+        import.meta.env.VITE_COMING_SOON === 'true' ?{" "}
+        <Route path="/" component={ComingSoon} />
+        : <Route path="/" component={Home} />
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
         <Route path="/checkout" component={CheckoutPage} />
-
         {/* Footer pages */}
         <Route path="/about">
           <GenericPage title="Our Story" />
@@ -55,7 +56,6 @@ function Router() {
         <Route path="/terms">
           <GenericPage title="Terms of Service" />
         </Route>
-
         <Route component={NotFound} />
       </Switch>
     </>
