@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft, Minus, Plus, ShoppingBag, ChevronDown, ChevronUp,
 } from "lucide-react";
-import Navbar from "@/components/navbar";
+import PageLayout from "@/components/PageLayout";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
@@ -188,8 +188,7 @@ export default function ProductPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-12 pt-36">
-      <Navbar />
+      <PageLayout>
 
       <div className="container mx-auto px-6 md:px-12">
         <Link href="/shop">
@@ -358,6 +357,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 }

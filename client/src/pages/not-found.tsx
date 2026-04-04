@@ -1,21 +1,36 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import PageLayout from "@/components/PageLayout";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <h1 className="text-2xl font-bold text-gray-900">404 Page Not Found</h1>
-          </div>
+    <PageLayout>
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="max-w-2xl mx-auto text-center py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h1 className="font-serif text-6xl md:text-7xl mb-6">404</h1>
 
-          <p className="mt-4 text-sm text-gray-600">
-            Did you forget to add the page to the router?
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+            <p className="text-2xl md:text-3xl font-serif mb-4 text-foreground">
+              Page Not Found
+            </p>
+
+            <p className="text-muted-foreground font-light leading-relaxed mb-12 max-w-md mx-auto">
+              It seems this page has been lost in time. Let's get you back to
+              exploring our collections.
+            </p>
+
+            <Link href="/">
+              <button className="bg-primary text-white px-12 py-4 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-primary/90 transition-colors">
+                Return Home
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </PageLayout>
   );
 }

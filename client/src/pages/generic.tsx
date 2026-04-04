@@ -1,10 +1,8 @@
-import { motion } from "framer-motion";
-import Navbar from "@/components/navbar";
+import PageLayout from "@/components/PageLayout";
 
 export default function GenericPage({ title }: { title: string }) {
   return (
-    <main className="min-h-screen bg-background pt-36 pb-24">
-      <Navbar />
+    <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-3xl mx-auto">
           <h1 className="font-serif text-5xl mb-12">{title}</h1>
@@ -17,6 +15,6 @@ export default function GenericPage({ title }: { title: string }) {
           </div>
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 }

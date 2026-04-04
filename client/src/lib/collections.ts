@@ -19,7 +19,7 @@ export const collections = [
       link: "/shop?category=embroidery",
       category: "embroidery",
       comingSoon: false,
-      hidden: false,
+      hidden: true,
     },
   ];
   

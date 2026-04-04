@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
-import Navbar from "@/components/navbar";
+import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/hero";
 import CollectionCards from "@/components/collection-cards";
 import StorySection from "@/components/story-section";
@@ -14,8 +14,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   return (
-    <main className="min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
-      <Navbar />
+    <PageLayout noPadding>
       <Hero />
       <div className="space-y-0">
         <CollectionCards />
@@ -194,6 +193,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </main>
+    </PageLayout>
   );
 }

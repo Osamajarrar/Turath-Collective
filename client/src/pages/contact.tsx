@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { useState } from "react";
-import Navbar from "@/components/navbar";
+import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,9 +26,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pt-36 pb-24">
-      <Navbar />
-
+    <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
 
@@ -191,6 +189,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 }

@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "@/context/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Analytics } from "@vercel/analytics/react"; 
+import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
@@ -12,9 +12,13 @@ import ProductPage from "@/pages/product";
 import CheckoutPage from "@/pages/checkout";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
-import GenericPage from "@/pages/generic";
 import ScrollToTop from "@/components/scroll-to-top";
 import ComingSoon from "@/pages/coming-soon";
+import About from "./pages/about";
+import ShippingAndReturns from "./pages/ShippingAndReturns";
+import Care from "./pages/care";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 // Auth pages (login, signup, forgot-password) removed for launch v1.
 // Shopify handles customer accounts. Re-add imports + routes when needed.
@@ -35,28 +39,28 @@ function Router() {
         <Route path="/checkout" component={CheckoutPage} />
         {/* Footer pages */}
         <Route path="/about">
-          <GenericPage title="Our Story" />
+          <About />
         </Route>
-        <Route path="/process">
+        {/* <Route path="/process">
           <GenericPage title="Artisan Process" />
-        </Route>
-        <Route path="/journal">
+        </Route> */}
+        {/* <Route path="/journal">
           <GenericPage title="The Journal" />
-        </Route>
+        </Route> */}
         <Route path="/shipping">
-          <GenericPage title="Shipping & Returns" />
+          <ShippingAndReturns />
         </Route>
         <Route path="/care">
-          <GenericPage title="Artisan Care Guide" />
+          <Care />
         </Route>
-        <Route path="/wholesale">
+        {/* <Route path="/wholesale">
           <GenericPage title="Wholesale" />
-        </Route>
+        </Route> */}
         <Route path="/privacy">
-          <GenericPage title="Privacy Policy" />
+          <PrivacyPolicy />
         </Route>
         <Route path="/terms">
-          <GenericPage title="Terms of Service" />
+          <TermsAndConditions />
         </Route>
         <Route component={NotFound} />
       </Switch>

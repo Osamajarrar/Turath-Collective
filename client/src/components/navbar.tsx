@@ -175,7 +175,7 @@ export default function Navbar() {
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
               <div className="p-8 flex items-center justify-between border-b border-border">
-                <span className="font-serif text-xl tracking-[0.1em]">TURATH</span>
+                <span className="font-serif text-xl tracking-[0.1em]">TURATH COLLECTIVE</span>
                 <button onClick={() => setIsMenuOpen(false)} data-testid="button-menu-close" aria-label={t("nav.closeMenu")}>
                   <X className="w-6 h-6" />
                 </button>

@@ -51,3 +51,55 @@
     @apply font-serif;
   }
 }
+
+@layer utilities {
+  /* Cursor indicators for all interactive elements */
+  button,
+  a,
+  [role="button"],
+  [role="menuitem"],
+  [role="tab"],
+  [role="link"],
+  select,
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [data-clickable],
+  label[for],
+  .cursor-pointer {
+    @apply cursor-pointer;
+  }
+
+  /* Disabled states */
+  button:disabled,
+  select:disabled,
+  [role="checkbox"][aria-disabled="true"],
+  [role="radio"][aria-disabled="true"],
+  [role="switch"][aria-disabled="true"],
+  [aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+
+  /* Preserve text cursor for text inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea {
+    @apply cursor-text;
+  }
+
+  /* Draggable elements */
+  [draggable="true"],
+  .cursor-grab {
+    @apply cursor-grab;
+
+    &:active,
+    &.active {
+      @apply cursor-grabbing;
+    }
+  }
+}

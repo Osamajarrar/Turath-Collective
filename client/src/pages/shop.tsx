@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
-import Navbar from "@/components/navbar";
+import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import img1 from "@/assets/burgundy-mug.png";
@@ -198,8 +198,7 @@ export default function ShopPage() {
       : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <main className="min-h-screen bg-background pt-36">
-      <Navbar />
+    <PageLayout>
       <div className="container mx-auto px-6 py-12 md:px-12">
         <header className="mb-16">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
@@ -314,7 +313,7 @@ export default function ShopPage() {
           ))}
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 }
 
