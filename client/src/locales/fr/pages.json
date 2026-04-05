@@ -28,27 +28,26 @@
     }
   },
   "heritage": {
-    "title": "Fabriqué au cœur de Hébron",
-    "subtitle": "Patrimoine",
-    "paragraph1": "Il y a un rythme à la roue qui reflète le rythme de la vie. Dans notre petit atelier, le temps ralentit. L'argile, provenant des lits de rivières locaux, porte la mémoire de la terre.",
-    "paragraph2": "Chaque pièce n'est pas simplement fabriquée, mais engendrée par le feu et la patience. Nous honorons les imperfections — le léger vacillement d'un bord, le dégoulinement imprévisible d'une glaçure — comme la signature de la main humaine.",
+    "title": "L'Esprit du Turath",
+    "subtitle": "Notre Mission",
+    "paragraph1": "Le Turath est plus qu'une histoire ; c'est un rythme vivant. Depuis notre studio à Montréal, nous recherchons des ateliers de maîtres où le temps ralentit et l'âme de l'artisanat est préservée. Nous honorons la signature humaine. Ces légères variations de texture et de ligne sont le véritable gage d'authenticité face à la production de masse.",
     "cta": "Lire notre histoire"
   },
   "story": {
-    "mainHeading": "Un dialogue entre la terre et la main",
-    "body": "Chaque courbe raconte une histoire de patience. Notre processus est une méditation lente, transformant l'argile brute de Hébron en des vases qui honorent les moments tranquilles de votre jour.",
+    "mainHeading": "Relier la Terre et la Maison",
+    "body": "Chaque pièce porte une histoire de patience. Nous recherchons des ateliers de maîtres qui pratiquent un artisanat lent et intentionnel, apportant dans votre espace des objets qui honorent vos moments de quiétude.",
     "stats": {
       "stat1": {
         "value": "100%",
-        "label": "Argile locale"
+        "label": "Fait Main"
       },
       "stat2": {
-        "value": "48h",
-        "label": "Cuit au four"
+        "value": "Sélectionné à",
+        "label": "Montréal"
       }
     },
     "quote": "Les plus beaux objets sont ceux qui nous invitent à être présents.",
-    "attribution": "— Philosophie de l'atelier"
+    "attribution": "— Notre Philosophie"
   },
   "values": {
     "title": "Nos valeurs",

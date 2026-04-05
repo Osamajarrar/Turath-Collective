@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
 import ArrowLink from "@/components/ArrowLink";
 import { useTranslation } from "react-i18next";
+import { getFaqCategories } from "@/lib/collections";
 import {
   Accordion,
   AccordionItem,
@@ -12,19 +13,7 @@ import {
 export default function FAQPage() {
   const { t } = useTranslation("pages");
 
-  const faqCategories = [
-    "aboutCraft",
-    "productCare",
-    "shippingDelivery",
-    "returnsExchanges",
-    "sustainability",
-  ];
-
-  // Helper to safely get FAQ items with fallback
-  const getFaqItems = (categoryKey: string) => {
-    const items = t(`faq.categories.${categoryKey}.items`, { returnObjects: true });
-    return Array.isArray(items) ? items : [];
-  };
+  const faqCategories = getFaqCategories(t);
 
   return (
     <PageLayout>
@@ -65,16 +54,16 @@ export default function FAQPage() {
             className="space-y-4"
           >
             <Accordion type="multiple" className="space-y-2">
-              {faqCategories.map((categoryKey) => (
-                <AccordionItem key={categoryKey} value={categoryKey}>
+              {faqCategories.map((category) => (
+                <AccordionItem key={category.key} value={category.key}>
                   <AccordionTrigger className="text-left font-serif text-2xl md:text-3xl font-light text-foreground hover:text-primary transition-colors py-4">
-                    {t(`faq.categories.${categoryKey}.title`)}
+                    {category.title}
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-6">
                     <Accordion type="multiple" className="space-y-3">
-                      {getFaqItems(categoryKey)?.map(
+                      {category.items?.map(
                         (item: { question: string; answer: string }, itemIdx: number) => (
-                          <AccordionItem key={`${categoryKey}-${itemIdx}`} value={`${categoryKey}-${itemIdx}`}>
+                          <AccordionItem key={`${category.key}-${itemIdx}`} value={`${category.key}-${itemIdx}`}>
                             <AccordionTrigger className="text-left font-light text-lg text-foreground hover:text-primary transition-colors">
                               {item.question}
                             </AccordionTrigger>

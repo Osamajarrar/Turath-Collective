@@ -5,7 +5,7 @@ import lifestyle1 from "@/assets/lifestyle-1.png";
 export default function StorySection() {
   const { t } = useTranslation('pages');
   return (
-    <section className="py-24 bg-muted">
+    <section className="py-12 bg-muted">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <motion.div 

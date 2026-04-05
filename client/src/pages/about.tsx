@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
+import { getAvailableCategories } from "@/lib/collections";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -13,6 +14,7 @@ const fadeUp = {
 
 export default function About() {
   const { t } = useTranslation("pages");
+  const categories = getAvailableCategories(t);
   return (
   <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
@@ -76,23 +78,17 @@ export default function About() {
               <p className="mb-6">
                 {t('about.whatWeCarry.intro')}
               </p>
-              <div className="border-l-2 border-[#C9A96E] pl-6 space-y-6">
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    {t('about.whatWeCarry.ceramics.title')}
-                  </p>
-                  <p>
-                    {t('about.whatWeCarry.ceramics.description')}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    {t('about.whatWeCarry.embroidery.title')}
-                  </p>
-                  <p>
-                    {t('about.whatWeCarry.embroidery.description')}
-                  </p>
-                </div>
+              <div className="border-l-2 border-primary pl-6 space-y-6">
+                {categories.map((category, idx) => (
+                  <div key={category.handle}>
+                    <p className="font-medium text-foreground mb-1">
+                      {t(`about.whatWeCarry.${category.handle}.title`)}
+                    </p>
+                    <p>
+                      {t(`about.whatWeCarry.${category.handle}.description`)}
+                    </p>
+                  </div>
+                ))}
               </div>
             </motion.div>
 

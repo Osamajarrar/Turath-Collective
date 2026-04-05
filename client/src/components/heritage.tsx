@@ -5,7 +5,7 @@ import workshopImage from "@/assets/workshop.png";
 export default function Heritage() {
   const { t } = useTranslation("pages");
   return (
-    <section className="py-24 md:py-32 bg-background border-t border-border/40">
+    <section className="py-12 bg-background border-t border-border/40">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           <motion.div
@@ -38,7 +38,6 @@ export default function Heritage() {
             </h2>
             <div className="space-y-6 text-foreground/80 font-light leading-relaxed text-lg">
               <p>{t("heritage.paragraph1")}</p>
-              <p>{t("heritage.paragraph2")}</p>
             </div>
 
             <div className="mt-12">

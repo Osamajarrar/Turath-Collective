@@ -1,31 +1,32 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
-import { getCollections, Collection } from "@/lib/collections";
+import { getVisibleCategories, Category } from "@/lib/collections";
 
 function SingleCard({
-  collection,
+  category,
   idx,
   t,
 }: {
-  collection: Collection;
+  category: Category;
   idx: number;
   t: (key: string) => string;
 }) {
-  const href = collection.link; // Always use collection.link which includes category param
-
+  // Use the first collection for CTA if present, else fallback
+  const mainCollection = category.collections?.[0];
+  const href = `/shop?category=${category.handle}`;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: idx * 0.2 }}
-      className={`group ${collection.comingSoon ? "pointer-events-none" : ""}`}
+      className={`group ${category.comingSoon ? "pointer-events-none" : ""}`}
     >
-      {collection.comingSoon ? (
+      {category.comingSoon ? (
         <div className="relative mb-8 block aspect-[16/10] overflow-hidden rounded-[2rem]">
           <img
-            src={collection.image}
+            src={category.image}
             alt=""
             className="h-full w-full object-cover"
           />
@@ -46,34 +47,34 @@ function SingleCard({
           className="relative mb-8 block aspect-[16/10] cursor-pointer overflow-hidden rounded-[2rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <img
-            src={collection.image}
+            src={category.image}
             alt=""
             className="h-full w-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/20" />
           <span className="sr-only">
-            {collection.title} — {collection.cta}
+            {category.title} — {mainCollection?.cta || "Shop Now"}
           </span>
         </Link>
       )}
 
       <div className="px-4">
         <h3
-          className={`font-serif text-4xl mb-4 ${collection.comingSoon ? "text-foreground/40" : "text-foreground"}`}
+          className={`font-serif text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
         >
-          {collection.title}
+          {category.title}
         </h3>
         <p className="text-foreground/60 font-light mb-8 max-w-sm leading-relaxed">
-          {collection.description}
+          {category.description}
         </p>
-        {collection.comingSoon ? (
+        {category.comingSoon ? (
           <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/30">
             {t("collectionCards.availableSoon")}
           </span>
         ) : (
           <Link href={href}>
             <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary group-hover:text-foreground">
-              {collection.cta} →
+              {mainCollection?.cta || "Shop Now"} →
             </button>
           </Link>
         )}
@@ -89,12 +90,11 @@ function getGridClass(count: number): string {
 
 export default function CollectionCards() {
   const { t } = useTranslation("common");
-  const collections = getCollections(t);
-  const visibleCollections = collections.filter((c) => !c.hidden);
-  const isSingle = visibleCollections.length === 1;
+  const categories = getVisibleCategories(t);
+  const isSingle = categories.length === 1;
 
   return (
-    <section className="py-32 bg-background">
+    <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12">
         {/* Header row */}
         <div
@@ -126,18 +126,18 @@ export default function CollectionCards() {
             </div>
             <div className="flex justify-center">
               <div className="w-full md:w-7/12">
-                <SingleCard collection={visibleCollections[0]} idx={0} t={t} />
+                <SingleCard category={categories[0]} idx={0} t={t} />
               </div>
             </div>
           </>
         ) : (
           <div
-            className={`grid gap-10 ${getGridClass(visibleCollections.length)}`}
+            className={`grid gap-10 ${getGridClass(categories.length)}`}
           >
-            {visibleCollections.map((collection, idx) => (
+            {categories.map((category, idx) => (
               <SingleCard
-                key={collection.title}
-                collection={collection}
+                key={category.title}
+                category={category}
                 idx={idx}
                 t={t}
               />

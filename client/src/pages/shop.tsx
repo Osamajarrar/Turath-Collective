@@ -1,19 +1,17 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useLocation, useSearch } from "wouter";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
+import { cn } from "@/lib/utils";
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
 import img3 from "@/assets/burgundy-bowl.png";
 import img4 from "@/assets/burgundy-mezze.png";
 import classicBowl from "@/assets/classic-bowl.png";
 import classicMezze from "@/assets/classic-mezze-plate.png";
-import {
-  isCategoryAvailable,
-  availableCategories,
-  shopCategories,
-} from "@/lib/collections";
+import { getAvailableCategories } from "@/lib/collections";
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
 
@@ -96,12 +94,37 @@ interface DisplayProduct {
 }
 
 function normaliseShopify(p: ShopifyProduct): DisplayProduct {
+  const sourceCategory = p.productType || p.tags?.[0] || "";
+  const normalizedCategory = sourceCategory.trim().toLowerCase();
+
+  const inferCategoryHandle = (value: string) => {
+    if (!value) return "ceramics";
+    if (
+      value.includes("embroider") ||
+      value.includes("tatreez") ||
+      value.includes("textile") ||
+      value.includes("linen")
+    ) {
+      return "embroidery";
+    }
+    if (
+      value.includes("ceramic") ||
+      value.includes("potter") ||
+      value.includes("clay") ||
+      value.includes("mug") ||
+      value.includes("bowl") ||
+      value.includes("plate")
+    ) {
+      return "ceramics";
+    }
+    return value.replace(/\s+/g, "-").replace(/&/g, "and");
+  };
+
   return {
     id: p.id,
     name: p.title,
     handle: p.handle,
-    category:
-      p.productType?.toLowerCase() || p.tags?.[0]?.toLowerCase() || "ceramics",
+    category: inferCategoryHandle(normalizedCategory),
     price: parseFloat(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
@@ -118,10 +141,24 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function ShopPage() {
+  const { t } = useTranslation("common");
   const [, navigate] = useLocation();
   const search = useSearch();
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
+
+  const availableCategories = useMemo(() => getAvailableCategories(t), [t]);
+  const availableCategoryHandles = useMemo(
+    () => availableCategories.map((category) => category.handle),
+    [availableCategories],
+  );
+  const shopCategories = useMemo(
+    () => ["all", ...availableCategoryHandles],
+    [availableCategoryHandles],
+  );
+
+  const isCategoryAvailable = (category: string) =>
+    category === "all" || availableCategoryHandles.includes(category);
 
   // Single source of truth: availableCategories from collections.ts
   const isSingleCategory = availableCategories.length === 1;
@@ -136,9 +173,9 @@ export default function ShopPage() {
 
   const selectedCategory = getSelectedCategoryFromURL();
 
-  // Filter products to only show those in available categories
+  // Filter products to only show those in available categories (by handle)
   const visibleProducts = products.filter((p) =>
-    availableCategories.includes(p.category),
+    availableCategoryHandles.includes(p.category),
   );
 
   // Sync selectedCategory with URL whenever location changes (multi-category mode only)
@@ -155,12 +192,20 @@ export default function ShopPage() {
     let cancelled = false;
     shopifyService.getProducts().then((result) => {
       if (cancelled || !result?.length) return;
-      setProducts(result.map(normaliseShopify));
+      const fallbackCategory = availableCategoryHandles[0] || "ceramics";
+      const normalizedProducts = result.map((item) => {
+        const normalized = normaliseShopify(item);
+        if (availableCategoryHandles.includes(normalized.category)) {
+          return normalized;
+        }
+        return { ...normalized, category: fallbackCategory };
+      });
+      setProducts(normalizedProducts);
     });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [availableCategoryHandles]);
 
   const filteredAndSortedProducts = useMemo(() => {
     let result =
@@ -192,10 +237,11 @@ export default function ShopPage() {
 
   const productHref = (p: DisplayProduct) => `/product/${p.handle}`;
 
-  const categoryLabel = (cat: string) =>
-    cat === "all"
-      ? "All"
-      : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const categoryLabel = (cat: string) => {
+    if (cat === "all") return "All";
+    const found = availableCategories.find((c) => c.handle === cat);
+    return found ? found.title : cat.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  };
 
   return (
     <PageLayout>
@@ -315,8 +361,4 @@ export default function ShopPage() {
       </div>
     </PageLayout>
   );
-}
-
-function cn(...classes: unknown[]) {
-  return (classes.filter(Boolean) as string[]).join(" ");
 }

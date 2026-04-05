@@ -9,7 +9,7 @@ export default function ValuesSection() {
     description: string;
   }>;
   return (
-    <section className="py-24 bg-background border-t border-border/40">
+    <section className="py-12 bg-background border-t border-border/40">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {values.map((value, idx) => (

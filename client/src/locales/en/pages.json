@@ -2,53 +2,62 @@
   "about": {
     "title": "Our Story",
     "intro": "Some things are too important to forget.",
-    "paragraph1": "Turath Collective was born from a simple conviction: that the hands shaping clay in Hebron and threading needle through fabric in Palestinian villages deserve a place in the world — not as artifacts of the past, but as living expressions of a culture that endures.",
-    "paragraph2": "Turath — تراث — means heritage in Arabic. It is the thread connecting generations, the knowledge passed quietly from artisan to apprentice, the pattern in embroidery that tells a story older than any border.",
-    "paragraph3": "We are a Montreal-based collective dedicated to bringing Palestinian heritage craftsmanship to homes around the world. Every piece we carry is made by hand, by artisans who have inherited centuries of tradition and continue to practice it with extraordinary skill.",
+    "paragraph1": "Turath Collective is a Montreal-based studio born from a singular conviction. We believe the hands shaping clay in Hebron and threading needles in Palestinian villages deserve a place in the modern world. These are not artifacts of the past. They are living expressions of a culture that endures.",
+    "paragraph2": "Turath — تراث — is the Arabic word for heritage. It is the invisible thread connecting generations. It is the quiet knowledge passed from artisan to apprentice, and the patterns that tell stories older than any border.",
+    "paragraph3": "We are dedicated to bringing these heritage traditions to homes around the world. Every piece we carry is handmade by masters who have inherited centuries of skill and continue to practice it with extraordinary precision.",
     "whatWeCarry": {
-      "title": "What We Carry",
-      "intro": "We work with two foundational crafts — chosen because they represent the depth and diversity of Palestinian artistic heritage.",
+      "title": "Foundational Collections",
+      "intro": "We currently focus on two foundational crafts. We chose them because they represent the profound depth and diversity of Palestinian artistic heritage.",
       "ceramics": {
-        "title": "Hebron Ceramics",
-        "description": "The city of Hebron (Al-Khalil) has been a centre of ceramic artistry for over five hundred years. The distinctive deep blues, teals, and earthy tones of Hebron pottery emerge from natural mineral glazes and wood-fired kilns. Each piece carries the slight variations that only handwork produces — no two are identical."
+        "title": "Ceramics",
+        "description": "Hand-thrown Hebron clay vessels, painted with the rhythm of the wheel."
       },
       "embroidery": {
+        "title": "Embroidery",
+        "description": "Centuries-old Tatreez patterns, hand-stitched on the finest local linens."
+      }
+    },
+    "collections": {
+      "hebron": {
+        "title": "Hebron Ceramics",
+        "description": "The city of Hebron has been a center of ceramic artistry for over five hundred years. The distinctive deep blues, teals, and earthy tones of this pottery emerge from natural mineral glazes and wood-fired kilns. Each piece carries the slight variations that only handwork produces. No two are identical."
+      },
+      "tatreez": {
         "title": "Tatreez Embroidery",
-        "description": "Palestinian cross-stitch embroidery is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language: a map of village, season, and lineage encoded in thread. Tatreez was inscribed on UNESCO's list of Intangible Cultural Heritage in 2021 — recognition long overdue."
+        "description": "Palestinian cross-stitch is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language. It is a map of village, season, and lineage encoded in thread. Recognized by UNESCO in 2021, Tatreez is a testament to the endurance of the human hand."
       }
     },
     "commitment": {
       "title": "Our Commitment",
-      "paragraph1": "We work directly with artisan communities, ensuring that the people whose skill makes this work possible are fairly compensated and properly credited. We do not romanticize poverty. We believe craft should sustain the people who practice it.",
-      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a tradition that the world cannot afford to lose."
+      "paragraph1": "We believe that exceptional craft should sustain the people who practice it. We work directly with artisan communities to ensure that the masters of these traditions are fairly compensated and properly credited.",
+      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a legacy that the world cannot afford to lose."
     },
     "authenticity": {
       "title": "A Note on Authenticity",
-      "description": "We do not carry mass-produced imitations. Every product is sourced directly and verified for craftsmanship. If it carries the Turath Collective name, it is the real thing."
+      "description": "We do not carry mass-produced imitations. Every product is sourced directly and verified for craftsmanship. If it carries the Turath Collective name, it is an authentic original."
     }
   },
   "heritage": {
-    "title": "Crafted in the Heart of Hebron",
-    "subtitle": "Heritage",
-    "paragraph1": "There is a rhythm to the wheel that mirrors the rhythm of life. In our small workshop, time slows down. The clay, sourced from local riverbeds, carries the memory of the earth.",
-    "paragraph2": "Each piece is not merely manufactured, but birthed through fire and patience. We honor the imperfections—the slight wobble of a rim, the unpredictable drip of a glaze—as the signature of the human hand.",
+    "title": "The Spirit of Turath",
+    "subtitle": "Our Mission",
+    "paragraph1": "Turath is more than history; it is a living rhythm. From our Montreal studio, we seek out master workshops where time slows down and the soul of the craft is preserved in every detail. We honor the human signature. Those slight variations in texture and the organic flow of a line are the true marks of authenticity in a world of mass production.",
     "cta": "Read Our Story"
   },
   "story": {
-    "mainHeading": "A Dialogue Between Earth and Hand",
-    "body": "Every curve tells a story of patience. Our process is a slow meditation, transforming raw Hebron clay into vessels that honor the quiet moments of your day.",
+    "mainHeading": "Connecting Earth & Home",
+    "body": "Every piece carries a story of patience. We seek out master workshops that practice slow, intentional craftsmanship, bringing objects into your space that honor the quiet moments of your day.",
     "stats": {
       "stat1": {
         "value": "100%",
-        "label": "Local Clay"
+        "label": "Handmade"
       },
       "stat2": {
-        "value": "48hrs",
-        "label": "Kiln Fired"
+        "value": "Curated in",
+        "label": "Montreal"
       }
     },
     "quote": "The most beautiful objects are those that invite us to be present.",
-    "attribution": "— Studio Philosophy"
+    "attribution": "— Our Philosophy"
   },
   "values": {
     "title": "Our Values",

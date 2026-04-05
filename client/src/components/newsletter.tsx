@@ -5,7 +5,7 @@ export default function Newsletter() {
   const { t } = useTranslation();
 
   return (
-    <section className="py-32 bg-background relative overflow-hidden">
+    <section className="py-12 bg-background relative overflow-hidden">
       <div className="container mx-auto px-6 text-center max-w-2xl relative z-10">
         <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
           {t("newsletter.heading")}
