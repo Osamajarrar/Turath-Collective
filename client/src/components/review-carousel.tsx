@@ -66,7 +66,7 @@ export default function ReviewCarousel() {
                     <div className="w-12 h-px bg-primary/20" />
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary">{reviews[active].author}</p>
-                      <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{reviews[active].location} • {reviews[active].product}</p>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{reviews[active].location} • {reviews[active].product}</p>
                     </div>
                   </div>
                 </motion.div>

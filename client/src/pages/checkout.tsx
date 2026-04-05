@@ -28,7 +28,7 @@ export default function CheckoutPage() {
               <span className="font-serif text-2xl tracking-[0.15em] text-foreground">
                 TURATH COLLECTIVE
               </span>
-              <span className="text-[8px] uppercase tracking-[0.4em] text-primary font-bold mt-1">Heritage Craftsmanship</span>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mt-1">Heritage Craftsmanship</span>
             </div>
           </Link>
         </div>
@@ -63,12 +63,30 @@ export default function CheckoutPage() {
                   <Truck className="w-4 h-4" /> 01. Shipping Address
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <input placeholder="First Name" className="col-span-1 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                  <input placeholder="Last Name" className="col-span-1 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                  <input placeholder="Address" className="col-span-2 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                  <input placeholder="Apartment, suite, etc. (optional)" className="col-span-2 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                  <input placeholder="City" className="col-span-1 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                  <input placeholder="Postal Code" className="col-span-1 bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  <div className="col-span-1">
+                    <label htmlFor="first-name" className="sr-only">First Name</label>
+                    <input id="first-name" placeholder="First Name" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
+                  <div className="col-span-1">
+                    <label htmlFor="last-name" className="sr-only">Last Name</label>
+                    <input id="last-name" placeholder="Last Name" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="address" className="sr-only">Address</label>
+                    <input id="address" placeholder="Address" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="apartment" className="sr-only">Apartment, suite, etc. (optional)</label>
+                    <input id="apartment" placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
+                  <div className="col-span-1">
+                    <label htmlFor="city" className="sr-only">City</label>
+                    <input id="city" placeholder="City" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
+                  <div className="col-span-1">
+                    <label htmlFor="postal-code" className="sr-only">Postal Code</label>
+                    <input id="postal-code" placeholder="Postal Code" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
                 </div>
               </div>
 
@@ -84,10 +102,19 @@ export default function CheckoutPage() {
                       <div className="w-8 h-5 bg-foreground rounded-sm" />
                     </div>
                   </div>
-                  <input placeholder="Card Number" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  <div>
+                    <label htmlFor="card-number" className="sr-only">Card Number</label>
+                    <input id="card-number" placeholder="Card Number" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <input placeholder="MM / YY" className="bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
-                    <input placeholder="CVV" className="bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                    <div>
+                      <label htmlFor="card-expiry" className="sr-only">MM / YY</label>
+                      <input id="card-expiry" placeholder="MM / YY" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                    </div>
+                    <div>
+                      <label htmlFor="card-cvv" className="sr-only">CVV</label>
+                      <input id="card-cvv" placeholder="CVV" className="w-full bg-transparent border-b border-border py-3 focus:outline-none focus:border-primary" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -101,7 +128,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary Side */}
           <div className="lg:col-span-5">
-            <div className="bg-[#F4F2EE] p-8 lg:sticky lg:top-32">
+            <div className="bg-muted p-8 lg:sticky lg:top-32">
               <h2 className="font-serif text-2xl mb-8">Order Summary</h2>
               <div className="space-y-6 mb-8">
                 {cartItems.map(item => (
@@ -147,9 +174,9 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <footer className="py-12 border-t border-border/40 bg-[#FDFCFB]">
+      <footer className="py-12 border-t border-border/40 bg-accent">
         <div className="container mx-auto px-6 md:px-12 text-center">
-          <p className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
+          <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
             © 2026 Turath Collective. All Rights Reserved.
           </p>
         </div>

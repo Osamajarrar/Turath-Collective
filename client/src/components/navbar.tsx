@@ -111,7 +111,7 @@ export default function Navbar() {
                 TURATH COLLECTIVE
               </span>
             </Link>
-            <span className="text-[8px] uppercase tracking-[0.4em] text-primary font-bold mt-1">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mt-1">
               {t("nav.tagline")}
             </span>
           </div>
@@ -140,7 +140,7 @@ export default function Navbar() {
             >
               <ShoppingBag className="w-4.5 h-4.5 text-foreground transition-colors group-hover:text-primary" strokeWidth={1.5} />
               {totalQuantity > 0 && (
-                <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[7px] font-bold text-white">
+                <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-bold text-white">
                   {totalQuantity > 99 ? "99+" : totalQuantity}
                 </span>
               )}

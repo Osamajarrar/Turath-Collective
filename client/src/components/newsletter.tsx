@@ -14,7 +14,11 @@ export default function Newsletter() {
         </p>
 
         <form className="flex flex-col md:flex-row gap-4 w-full" onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="newsletter-email" className="sr-only">
+            {t("newsletter.placeholder")}
+          </label>
           <input
+            id="newsletter-email"
             type="email"
             placeholder={t("newsletter.placeholder")}
             data-testid="input-newsletter-email"

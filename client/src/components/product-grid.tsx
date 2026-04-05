@@ -78,7 +78,7 @@ function ProductCard({ product }: any) {
       <motion.div className="group cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         <div className="relative aspect-[4/5] overflow-hidden bg-[#F4F2EE] mb-8">
           {product.badge && (
-            <Badge className="absolute top-6 left-6 z-20 bg-secondary text-secondary-foreground text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-none border-none font-bold shadow-sm">
+            <Badge className="absolute top-6 left-6 z-20 bg-secondary text-secondary-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-none border-none font-bold shadow-sm">
               {product.badge}
             </Badge>
           )}
