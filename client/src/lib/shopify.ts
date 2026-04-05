@@ -1,3 +1,13 @@
+// Category type for Shopify-driven structure
+export interface ShopifyCategory {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  image: ShopifyImage | null;
+  collections: ShopifyCollection[];
+}
+
 /**
  * Shopify Storefront API v2024-01 — Full GraphQL Service Layer
  *
@@ -157,6 +167,26 @@ async function shopifyQuery<T>(query: string, variables: Record<string, unknown>
 // ── Service methods ───────────────────────────────────────────────────────────
 
 export const shopifyService = {
+    /**
+     * Fetch categories with nested collections from Shopify (using custom metafields or tags).
+     * This is a placeholder for when categories are modeled in Shopify (e.g., via custom collections or metafields).
+     * For now, returns all collections as a single category.
+     */
+    async getCategories(): Promise<ShopifyCategory[]> {
+      const collections = await this.getCollections();
+      if (!collections) return [];
+      // Example: all collections under a single "Shop" category
+      return [
+        {
+          id: "shop",
+          title: "Shop",
+          handle: "shop",
+          description: "All collections",
+          image: collections[0]?.image ?? null,
+          collections,
+        },
+      ];
+    },
   /** Fetch all products (first 50). Returns null when Shopify is not configured. */
   async getProducts(first = 50): Promise<ShopifyProduct[] | null> {
     const data = await shopifyQuery<{ products: { edges: Array<{ node: ShopifyProduct }> } }>(

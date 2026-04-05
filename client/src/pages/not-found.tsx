@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
-        <div className="max-w-2xl mx-auto text-center py-24">
+        <div className="max-w-2xl mx-auto text-center py-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

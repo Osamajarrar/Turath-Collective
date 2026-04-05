@@ -29,7 +29,7 @@ export default function ProductGrid() {
   const [activeTab, setActiveTab] = useState("ceramics");
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>

@@ -26,7 +26,7 @@ export default function ReviewCarousel() {
   }, []);
 
   return (
-    <section className="py-32 bg-white">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="order-2 lg:order-1 relative h-[500px] overflow-hidden rounded-2xl">
