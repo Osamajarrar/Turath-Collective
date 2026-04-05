@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { useState } from "react";
+import { Link } from "wouter";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +30,6 @@ export default function ContactPage() {
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
-
           <header className="mb-20 text-center">
             <motion.span
               initial={{ opacity: 0, y: 10 }}
@@ -45,14 +45,31 @@ export default function ContactPage() {
               className="font-serif text-5xl md:text-7xl mb-6"
             >
               {t("contact.heading")} <br />
-              <span className="italic font-light">{t("contact.headingItalic")}</span>
+              <span className="italic font-light">
+                {t("contact.headingItalic")}
+              </span>
             </motion.h1>
+            {/* FAQ CTA */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-12 pt-8 border-t border-border/40 text-center"
+            >
+              <p className="text-foreground/60 font-light mb-4">
+                {t("contact.checkFaq", "Looking for quick answers?")}
+              </p>
+              <Link
+                href="/faq"
+                className="text-primary hover:text-primary/80 transition-colors font-light underline"
+              >
+                {t("contact.viewFaq", "Check our FAQ")}
+              </Link>
+            </motion.div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-
-            {/* Contact Info */}
-            <motion.div
+          {/* Contact Info */}
+          {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -113,80 +130,82 @@ export default function ContactPage() {
                   {t("contact.partnerEmail")} →
                 </a>
               </div>
-            </motion.div>
+            </motion.div> */}
 
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white p-10 md:p-12 border border-border/50 shadow-2xl"
-            >
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("contact.formName")}
-                  </Label>
-                  <Input
-                    name="name"
-                    required
-                    placeholder={t("contact.placeholderName")}
-                    data-testid="input-contact-name"
-                    className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
-                  />
-                </div>
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white p-10 md:p-12 border border-border/50 shadow-2xl"
+          >
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold text-black tracking-wider">
+                  {t("contact.formName")}
+                </Label>
+                <Input
+                  name="name"
+                  required
+                  placeholder={t("contact.placeholderName")}
+                  data-testid="input-contact-name"
+                  className="rounded-sm border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-450 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-transparent transition-all"
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("contact.formEmail")}
-                  </Label>
-                  <Input
-                    name="email"
-                    required
-                    type="email"
-                    placeholder={t("contact.placeholderEmail")}
-                    data-testid="input-contact-email"
-                    className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
-                  />
-                </div>
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold text-black tracking-wider">
+                  {t("contact.formEmail")}
+                </Label>
+                <Input
+                  name="email"
+                  required
+                  type="email"
+                  placeholder={t("contact.placeholderEmail")}
+                  data-testid="input-contact-email"
+                  className="rounded-sm border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-450 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-transparent transition-all"
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("contact.formSubject")}
-                  </Label>
-                  <Input
-                    name="subject"
-                    placeholder={t("contact.placeholderSubject")}
-                    data-testid="input-contact-subject"
-                    className="rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent"
-                  />
-                </div>
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold text-black tracking-wider">
+                  {t("contact.formSubject")}
+                </Label>
+                <Input
+                  name="subject"
+                  placeholder={t("contact.placeholderSubject")}
+                  data-testid="input-contact-subject"
+                  className="rounded-sm border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-450 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-transparent transition-all"
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("contact.formMessage")}
-                  </Label>
-                  <Textarea
-                    name="message"
-                    required
-                    placeholder={t("contact.placeholderMessage")}
-                    data-testid="input-contact-message"
-                    className="min-h-[150px] rounded-none border-b border-t-0 border-l-0 border-r-0 focus-visible:ring-0 focus-visible:border-primary px-0 bg-transparent resize-none"
-                  />
-                </div>
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold text-black tracking-wider">
+                  {t("contact.formMessage")}
+                </Label>
+                <Textarea
+                  name="message"
+                  required
+                  placeholder={t("contact.placeholderMessage")}
+                  data-testid="input-contact-message"
+                  className="min-h-[150px] rounded-sm border border-gray-300 bg-white px-4 py-3 text-base placeholder:text-gray-450 focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-transparent transition-all resize-none"
+                />
+              </div>
 
-                <Button
-                  disabled={isSubmitting}
-                  data-testid="button-contact-submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-white rounded-none py-7 uppercase tracking-[0.2em] text-[10px] font-bold shadow-xl shadow-primary/20"
-                >
-                  {isSubmitting ? t("contact.formSending") : t("contact.formSend")}
-                  {!isSubmitting && <Send className="w-3.5 h-3.5 ml-2 rtl:ml-0 rtl:mr-2" />}
-                </Button>
-              </form>
-            </motion.div>
-
-          </div>
+              <Button
+                disabled={isSubmitting}
+                data-testid="button-contact-submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-none py-7 uppercase tracking-[0.2em] text-[10px] font-bold shadow-xl shadow-primary/20"
+              >
+                {isSubmitting
+                  ? t("contact.formSending")
+                  : t("contact.formSend")}
+                {!isSubmitting && (
+                  <Send className="w-3.5 h-3.5 ml-2 rtl:ml-0 rtl:mr-2" />
+                )}
+              </Button>
+            </form>
+          </motion.div>
         </div>
       </div>
     </PageLayout>

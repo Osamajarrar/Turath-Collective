@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ShoppingBag, Globe, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
+import { ShoppingBag, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -10,13 +10,6 @@ import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context
 const LANGS = [
   { code: "en", label: "EN", full: "English" },
   { code: "fr", label: "FR", full: "Français" },
-  { code: "ar", label: "AR", full: "العربية" },
-] as const;
-
-const CURRENCIES = [
-  { value: "CAD", label: "Canada (CAD $)" },
-  { value: "USD", label: "United States (USD $)" },
-  { value: "ILS", label: "Palestine (ILS ₪)" },
 ] as const;
 
 export default function Navbar() {
@@ -33,9 +26,7 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currency, setCurrency] = useState("CAD");
   const { scrollY } = useScroll();
 
   const mockSubtotal = mockLines.reduce(
@@ -51,17 +42,16 @@ export default function Navbar() {
 
   useEffect(() => {
     applyRtl(i18n.language);
+    setHidden(false);
   }, [i18n.language]);
 
   const switchLang = (code: string) => {
     i18n.changeLanguage(code);
     applyRtl(code);
+    setHidden(false);
   };
 
-  const saveLangDialog = () => {
-    setIsLangOpen(false);
-    setIsMenuOpen(false);
-  };
+
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -82,7 +72,7 @@ export default function Navbar() {
         transition={{ duration: 0.35, ease: "easeInOut" }}
         className={cn(
           "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
-          isScrolled || isCartOpen || isLangOpen || isMenuOpen
+          isScrolled || isCartOpen || isMenuOpen
             ? "border-border bg-background/80 py-4 backdrop-blur-md"
             : "border-transparent bg-transparent py-6"
         )}
@@ -126,26 +116,29 @@ export default function Navbar() {
             </span>
           </div>
 
-          {/* Right: icons (globe replaces inline pill on all breakpoints) */}
+          {/* Right: icons */}
           <div className="flex items-center gap-3 md:gap-4 w-1/3 justify-end">
-            {/* Globe icon — opens language + currency dialog */}
+            {/* Language Toggle - Desktop only */}
             <button
-              onClick={() => setIsLangOpen(true)}
-              className="p-1.5 hover:bg-muted rounded-full transition-colors"
-              data-testid="button-lang-open"
-              aria-label={t("lang.region")}
+              onClick={() => {
+                setHidden(false);
+                switchLang(i18n.language === "en" ? "fr" : "en");
+              }}
+              className="hidden md:block text-[10px] font-bold uppercase tracking-widest hover:text-primary transition-colors"
+              data-testid="button-lang-toggle"
+              aria-label={t("lang.label")}
             >
-              <Globe className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              {i18n.language === "en" ? "FR" : "EN"}
             </button>
 
             {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative rounded-full p-1.5 transition-colors hover:bg-muted"
+              className="group relative rounded-full p-1.5 transition-colors"
               data-testid="button-cart-open"
               aria-label={t("cart.heading")}
             >
-              <ShoppingBag className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              <ShoppingBag className="w-4.5 h-4.5 text-foreground transition-colors group-hover:text-primary" strokeWidth={1.5} />
               {totalQuantity > 0 && (
                 <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[7px] font-bold text-white">
                   {totalQuantity > 99 ? "99+" : totalQuantity}
@@ -216,87 +209,6 @@ export default function Navbar() {
               </div>
             </motion.div>
           </>
-        )}
-      </AnimatePresence>
-
-      {/* ── Language + Currency Dialog ─────────────────────────────────────── */}
-      <AnimatePresence>
-        {isLangOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsLangOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative bg-background w-full max-w-md p-8 shadow-2xl border border-border"
-            >
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="font-serif text-2xl uppercase tracking-wider">{t("lang.region")}</h3>
-                <button onClick={() => setIsLangOpen(false)} aria-label={t("nav.closeMenu")}>
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {/* Currency selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("lang.country")}
-                  </label>
-                  <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    data-testid="select-currency"
-                    className="w-full bg-muted/50 border border-border p-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                  >
-                    {CURRENCIES.map(({ value, label }) => (
-                      <option key={value} value={value}>{label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Language selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("lang.label")}
-                  </label>
-                  <div className="flex gap-3">
-                    {LANGS.map(({ code, label, full }) => (
-                      <button
-                        key={code}
-                        onClick={() => switchLang(code)}
-                        data-testid={`button-dialog-lang-${code}`}
-                        className={cn(
-                          "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border transition-all",
-                          i18n.language === code
-                            ? "bg-primary text-white border-primary"
-                            : "border-border hover:border-primary"
-                        )}
-                        title={full}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Save button */}
-                <button
-                  onClick={saveLangDialog}
-                  data-testid="button-lang-save"
-                  className="w-full bg-primary text-white py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-primary/90 transition-colors"
-                >
-                  {t("lang.save")}
-                </button>
-              </div>
-            </motion.div>
-          </div>
         )}
       </AnimatePresence>
 

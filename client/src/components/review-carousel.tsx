@@ -1,36 +1,21 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import img1 from "@/assets/social-1.png";
 import img2 from "@/assets/social-2.png";
 import img3 from "@/assets/social-3.png";
 
-const reviews = [
-  {
-    text: "The quality of the ceramic bowl is breathtaking. You can truly feel the weight of tradition in your hands. A stunning addition to my home.",
-    author: "Elena M.",
-    location: "Montreal, QC",
-    product: "Indigo Mosaic Bowl",
-    image: img1
-  },
-  {
-    text: "The embroidery on the cushions is so intricate. It's more than just decor; it's a conversation piece about heritage and resilience.",
-    author: "Sami K.",
-    location: "Toronto, ON",
-    product: "Tatreez Pattern Cushion",
-    image: img2
-  },
-  {
-    text: "Beautifully packaged and the craftsmanship is unparalleled. Turath Collective has become my go-to for thoughtful, cultural gifts.",
-    author: "Amira J.",
-    location: "Vancouver, BC",
-    product: "Hebron Glass Vase",
-    image: img3
-  }
-];
-
 export default function ReviewCarousel() {
+  const { t } = useTranslation("common");
+  const reviews = t("reviewCarousel.reviews", { returnObjects: true }) as Array<{
+    text: string;
+    author: string;
+    location: string;
+    product: string;
+  }>;
+  const images = [img1, img2, img3];
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -48,7 +33,7 @@ export default function ReviewCarousel() {
             <AnimatePresence mode="wait">
               <motion.img
                 key={active}
-                src={reviews[active].image}
+                src={images[active]}
                 initial={{ opacity: 0, scale: 1.1 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -60,8 +45,8 @@ export default function ReviewCarousel() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-6 block font-bold">Patron Stories</span>
-            <h2 className="font-serif text-5xl md:text-6xl text-foreground mb-8">Voices of the <br/><span className="italic">Collective</span></h2>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-6 block font-bold">{t("reviewCarousel.badge")}</span>
+            <h2 className="font-serif text-5xl md:text-6xl text-foreground mb-8">{t("reviewCarousel.heading")} <br/><span className="italic">{t("reviewCarousel.headingItalic")}</span></h2>
             
             <div className="relative h-64 flex items-center mb-12">
               <AnimatePresence mode="wait">

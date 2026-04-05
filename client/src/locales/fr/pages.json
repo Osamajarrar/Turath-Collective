@@ -1,0 +1,273 @@
+{
+  "about": {
+    "title": "Notre histoire",
+    "intro": "Certaines choses sont trop importantes pour être oubliées.",
+    "paragraph1": "Turath Collective est née d'une conviction simple : les mains qui façonnent l'argile à Hébron et enfilent l'aiguille dans les villages palestiniens méritent une place dans le monde — non pas comme des artefacts du passé, mais comme des expressions vivantes d'une culture qui perdure.",
+    "paragraph2": "Turath — تراث — signifie patrimoine en arabe. C'est le fil qui relie les générations, le savoir transmis discrètement d'artisan à apprenti, le motif en broderie qui raconte une histoire plus ancienne que toute frontière.",
+    "paragraph3": "Nous sommes un collectif basé à Montréal dédié à apporter l'artisanat palestinien du patrimoine dans les foyers du monde entier. Chaque pièce que nous proposons est faite à la main par des artisans qui ont hérité de siècles de tradition et continuent de la pratiquer avec une habileté extraordinaire.",
+    "whatWeCarry": {
+      "title": "Ce que nous proposons",
+      "intro": "Nous travaillons avec deux métiers fondamentaux — choisis parce qu'ils représentent la profondeur et la diversité du patrimoine artistique palestinien.",
+      "ceramics": {
+        "title": "Céramiques de Hébron",
+        "description": "La ville de Hébron (Al-Khalil) a été un centre d'artisanat céramique depuis plus de cinq cents ans. Les bleus profonds distinctifs, les teintes turquoise et les tons terreux de la poterie de Hébron émergent de glaçures minérales naturelles et de fours à bois. Chaque pièce porte les légères variations que seul le travail manuel produit — aucune n'est identique."
+      },
+      "embroidery": {
+        "title": "Broderie Tatreez",
+        "description": "La broderie palestinienne au point de croix est l'une des traditions textiles les plus sophistiquées du monde. Chaque motif régional est un langage visuel : une carte de village, de saison et de lignée encodée dans le fil. Tatreez a été inscrit sur la liste du patrimoine culturel immatériel de l'UNESCO en 2021 — une reconnaissance longtemps attendue."
+      }
+    },
+    "commitment": {
+      "title": "Notre engagement",
+      "paragraph1": "Nous travaillons directement avec les communautés artisanales, en veillant à ce que les personnes dont l'habileté rend ce travail possible soient rémunérées équitablement et correctement créditées. Nous ne romantisons pas la pauvreté. Nous croyons que l'artisanat devrait soutenir les personnes qui le pratiquent.",
+      "paragraph2": "Chaque achat auprès de Turath Collective soutient une famille d'artisans qui perpétue une tradition que le monde ne peut pas se permettre de perdre."
+    },
+    "authenticity": {
+      "title": "Une note sur l'authenticité",
+      "description": "Nous ne proposons pas d'imitations de masse. Chaque produit est sourcé directement et vérifié pour son artisanat. S'il porte le nom de Turath Collective, c'est la vraie chose."
+    }
+  },
+  "heritage": {
+    "title": "Fabriqué au cœur de Hébron",
+    "subtitle": "Patrimoine",
+    "paragraph1": "Il y a un rythme à la roue qui reflète le rythme de la vie. Dans notre petit atelier, le temps ralentit. L'argile, provenant des lits de rivières locaux, porte la mémoire de la terre.",
+    "paragraph2": "Chaque pièce n'est pas simplement fabriquée, mais engendrée par le feu et la patience. Nous honorons les imperfections — le léger vacillement d'un bord, le dégoulinement imprévisible d'une glaçure — comme la signature de la main humaine.",
+    "cta": "Lire notre histoire"
+  },
+  "story": {
+    "mainHeading": "Un dialogue entre la terre et la main",
+    "body": "Chaque courbe raconte une histoire de patience. Notre processus est une méditation lente, transformant l'argile brute de Hébron en des vases qui honorent les moments tranquilles de votre jour.",
+    "stats": {
+      "stat1": {
+        "value": "100%",
+        "label": "Argile locale"
+      },
+      "stat2": {
+        "value": "48h",
+        "label": "Cuit au four"
+      }
+    },
+    "quote": "Les plus beaux objets sont ceux qui nous invitent à être présents.",
+    "attribution": "— Philosophie de l'atelier"
+  },
+  "values": {
+    "title": "Nos valeurs",
+    "items": [
+      {
+        "number": "01",
+        "title": "Intégrité artisanale",
+        "description": "Chaque pièce est tournée à la main et peinte à la main par des maîtres artisans de Hébron, préservant des techniques pluricentenaires."
+      },
+      {
+        "number": "02",
+        "title": "Vie lente",
+        "description": "Nous concevons pour le rituel du matin — des objets qui vous encouragent à vous arrêter, à respirer et à savourer le moment."
+      },
+      {
+        "number": "03",
+        "title": "Provenance organique",
+        "description": "Nos matériaux sont sourcés directement de la terre, en utilisant des pigments naturels et des glaçures sans plomb."
+      }
+    ]
+  },
+  "care": {
+    "title": "Guide d'entretien artisanal",
+    "intro": "Les objets faits à la main demandent quelque chose de nous — un peu plus d'attention, un peu plus d'intention. Les conseils ci-dessous vous aideront votre pièce à rester aussi belle dans dix ans qu'aujourd'hui.",
+    "ceramics": {
+      "title": "Céramiques de Hébron",
+      "intro": "La poterie de Hébron est cuite à haute température et finie avec des glaçures minérales naturelles. Elle est durable, mais pas indestructible.",
+      "handling": {
+        "label": "Manipulation",
+        "items": [
+          "Manipulez avec soin. La céramique est susceptible de s'ébrécher si elle est frappée contre des surfaces dures.",
+          "Évitez de laisser tomber ou d'empiler les pièces sans rembourrage protecteur entre elles."
+        ]
+      },
+      "cleaning": {
+        "label": "Nettoyage",
+        "items": [
+          "Lavez à la main uniquement avec un savon à vaisselle doux et de l'eau tiède.",
+          "N'utilisez pas d'éponges abrasives, de laine d'acier ou de nettoyants chimiques agressifs — ceux-ci endommagent la glaçure au fil du temps.",
+          "Séchez complètement après le lavage. L'exposition prolongée à l'eau stagnante peut affecter les zones non émaillées."
+        ]
+      },
+      "use": {
+        "label": "Utilisation",
+        "items": [
+          "La plupart des pièces de céramique de Hébron sont décoratives. Les pièces sans danger pour les aliments sont clairement indiquées sur la fiche produit.",
+          "Non recommandé pour une utilisation au micro-ondes ou au lave-vaisselle sauf indication contraire sur la fiche produit.",
+          "Évitez les changements de température soudains (par exemple, placer une pièce froide sur une surface chaude) car le choc thermique peut causer des fissures."
+        ]
+      },
+      "displayStorage": {
+        "label": "Affichage et entreposage",
+        "items": [
+          "Gardez à l'écart de la lumière directe du soleil pendant des périodes prolongées, car l'exposition aux UV peut progressivement affecter la couleur de la glaçure.",
+          "Stockez dans un endroit frais et sec lorsqu'il n'est pas en affichage."
+        ]
+      }
+    },
+    "embroidery": {
+      "title": "Broderie Tatreez",
+      "intro": "La broderie palestinienne est travaillée avec du fil de coton ou de soie sur du tissu. Les couleurs et les motifs sont le résultat d'une habileté minutieuse — ils méritent un entretien tout aussi soigné.",
+      "washing": {
+        "label": "Lavage",
+        "items": [
+          "Lavez à la main uniquement à l'eau froide avec un détergent doux et sans danger pour les couleurs.",
+          "Ne pas tordre ou essorer le tissu. Pressez délicatement l'excès d'eau.",
+          "Ne pas blanchir sous aucune circonstance — les fils de broderie sont sensibles aux produits chimiques agressifs et les couleurs s'estomperont ou saigneront.",
+          "Le lavage à la machine n'est pas recommandé, même à des cycles délicats."
+        ]
+      },
+      "drying": {
+        "label": "Séchage",
+        "items": [
+          "Laissez sécher à plat loin de la lumière du soleil directe ou des sources de chaleur.",
+          "Ne pas mettre au sèche-linge.",
+          "Remodelez délicatement l'humidité si nécessaire."
+        ]
+      },
+      "ironing": {
+        "label": "Repassage",
+        "items": [
+          "Si le repassage est nécessaire, retournez la pièce et repassez à basse température.",
+          "Ne pas repasser directement sur les zones brodées — utilisez un tissu de protection comme barrière."
+        ]
+      },
+      "storage": {
+        "label": "Entreposage",
+        "items": [
+          "Stockez plié (non suspendu) pour éviter l'étirement.",
+          "Gardez à l'écart de la lumière directe du soleil pour préserver la couleur du fil.",
+          "Pour un stockage à long terme, enveloppez dans du papier de soie sans acide pour éviter le jaunissement."
+        ]
+      }
+    },
+    "general": {
+      "title": "Conseils généraux",
+      "paragraph1": "Chaque pièce proposée par Turath Collective est faite à la main. Les variations mineures de couleur, texture, taille et motif ne sont pas des imperfections — elles sont la preuve de l'habileté humaine derrière chaque objet. Ces variations sont ce qui distingue le véritable artisanat de la production de masse.",
+      "paragraph2": "Si vous êtes jamais incertain sur la façon d'entretenir une pièce spécifique, contactez-nous à support@turathcollective.com et nous vous conseillerons directement."
+    }
+  },
+  "contact": {
+    "title": "Nous contacter"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "heading": "Questions fréquemment posées",
+    "subtitle": "Tout ce que vous devez savoir sur nos céramiques et nos services.",
+    "stillHaveQuestions": "Vous ne trouvez pas ce que vous cherchez?",
+    "contactUs": "Contactez notre équipe",
+    "categories": {
+      "aboutCraft": {
+        "title": "À propos de notre artisanat",
+        "items": [
+          {
+            "question": "Où sont fabriqués les produits Turath?",
+            "answer": "Notre collection de céramiques est fabriquée à la main à Hébron, en Palestine — une ville avec plus de 2 000 ans de tradition continue de poterie. Chaque pièce voyage des mains des artisans palestiniens directement à votre domicile."
+          },
+          {
+            "question": "Qui sont les artisans derrière les pièces?",
+            "answer": "Nos céramiques sont fabriquées par un atelier familial à Hébron qui pratique ce métier depuis des générations. En achetant chez Turath, vous soutenez directement leur gagne-pain et vous contribuez à maintenir cette tradition vivante."
+          },
+          {
+            "question": "Pourquoi chaque pièce semble-t-elle légèrement différente?",
+            "answer": "Parce que chaque pièce est faite à la main, aucune n'est exactement identique. Les variations subtiles de couleur, l'accumulation de glaçure et la forme ne sont pas des défauts — ce sont la signature de l'artisanat authentique. C'est ce qui rend votre pièce véritablement unique."
+          },
+          {
+            "question": "Quels matériaux utilisez-vous?",
+            "answer": "Nos céramiques de Hébron sont fabriquées à partir d'argile locale, peintes à la main avec des pigments naturels et finies avec une glaçure protectrice. Elles sont complètement sans plomb et sans cadmium, et sûres pour un usage quotidien alimentaire et pour les boissons."
+          }
+        ]
+      },
+      "productCare": {
+        "title": "Entretien des produits",
+        "items": [
+          {
+            "question": "Vos céramiques sont-elles lavables au lave-vaisselle?",
+            "answer": "Oui, nos céramiques sont lavables au lave-vaisselle. Cependant, nous recommandons un lavage à la main avec une éponge douce et un savon doux pour préserver la glaçure et prolonger la vie de votre pièce. L'action mécanique à l'intérieur des lave-vaisselle peut causer une légère ébréchure au fil du temps, en particulier si les pièces se cognent les unes contre les autres."
+          },
+          {
+            "question": "Vos céramiques sont-elles compatibles avec le micro-ondes?",
+            "answer": "Non. Veuillez ne pas utiliser nos céramiques au micro-ondes."
+          },
+          {
+            "question": "Puis-je utiliser vos céramiques au four?",
+            "answer": "Oui, nos céramiques peuvent aller au four. Nous recommandons d'éviter les changements brusques de température — ne transférez pas une pièce froide directement dans un four chaud ou vice versa, car un choc thermique peut causer une fissure."
+          },
+          {
+            "question": "Vos produits contiennent-ils du plomb ou des métaux lourds?",
+            "answer": "Non. Nos céramiques sont sans plomb et sans cadmium, et complètement sûres pour une utilisation alimentaire et pour les boissons."
+          },
+          {
+            "question": "Les ustensiles en métal égratignent-ils la glaçure?",
+            "answer": "Notre glaçure est durable pour un usage quotidien. Le contact de routine avec les couverts ne l'endommagera pas. Nous recommandons d'éviter de gratter fortement avec des outils en métal pointus, qui pourraient marquer la surface au fil du temps."
+          },
+          {
+            "question": "Comment dois-je ranger mes pièces?",
+            "answer": "Rangez vos céramiques avec soin — évitez d'empiler les pièces directement les unes sur les autres sans protection, car cela peut causer des ébréchures. Un chiffon doux ou un tampon de feutre entre les pièces empilées fonctionne bien."
+          }
+        ]
+      },
+      "shippingDelivery": {
+        "title": "Expédition et livraison",
+        "items": [
+          {
+            "question": "Où livrez-vous?",
+            "answer": "Nous livrons actuellement partout au Canada."
+          },
+          {
+            "question": "Combien de temps prend la livraison?",
+            "answer": "La livraison standard prend 5 à 10 jours ouvrables. Une livraison accélérée est disponible à la caisse pour une livraison en 2 à 4 jours ouvrables."
+          },
+          {
+            "question": "Comment serai-je avisé quand ma commande sera expédiée?",
+            "answer": "Vous recevrez un email de confirmation avec vos informations de suivi une fois votre commande expédiée. Si vous ne le voyez pas, veuillez vérifier votre dossier spam ou indésirables. Si vous avez entré une adresse email incorrecte à la caisse, contactez-nous à support@turathcollective.com et nous arrangerons cela."
+          },
+          {
+            "question": "Puis-je changer mon adresse de livraison après avoir passé une commande?",
+            "answer": "Si vous devez mettre à jour votre adresse de livraison, veuillez nous contacter à support@turathcollective.com dès que possible après avoir passé votre commande. Nous ferons de notre mieux pour accepter les modifications avant que votre commande ne soit expédiée, mais nous ne pouvons pas garantir les mises à jour une fois l'exécution commencée."
+          },
+          {
+            "question": "Mon article est arrivé endommagé — que dois-je faire?",
+            "answer": "Nous sommes désolés de l'apprendre. Veuillez photographier l'emballage et l'article endommagé, puis envoyer les photos à support@turathcollective.com. Nous arrangerons un remplacement sans frais. Consultez notre politique complète dans la section Retours et échanges ci-dessous."
+          }
+        ]
+      },
+      "returnsExchanges": {
+        "title": "Retours et échanges",
+        "items": [
+          {
+            "question": "Quelle est votre politique de retour?",
+            "answer": "Nous acceptons les retours dans les 14 jours suivant votre date de livraison. Les articles doivent être inutilisés et en parfait état. Pour initier un retour, contactez-nous à support@turathcollective.com avec les détails de votre commande."
+          },
+          {
+            "question": "Qu'est-ce qui compte comme variation normale par rapport à un défaut?",
+            "answer": "Parce que nos pièces sont faites à la main, la variation naturelle fait partie de ce qui les rend spéciales. Cela inclut les différences subtiles de couleur, l'accumulation de glaçure, la texture de surface et la variation mineure de taille entre les pièces — aucune de ces n'est un défaut. Un défaut est défini comme un dommage structurel qui affecte l'intégrité ou l'utilisabilité de la pièce: ébréchure, fissure ou rupture. Si votre article arrive dans cet état, veuillez voir la question ci-dessous."
+          },
+          {
+            "question": "Mon article est arrivé endommagé ou défectueux — que dois-je faire?",
+            "answer": "Veuillez photographier l'article et son emballage et envoyer les images à support@turathcollective.com dans les 14 jours suivant la réception de votre commande. Nous vous enverrons un remplacement sans frais. Nous ne vous demandons pas de retourner la pièce endommagée."
+          }
+        ]
+      },
+      "sustainability": {
+        "title": "Durabilité et éthique",
+        "items": [
+          {
+            "question": "Comment Turath soutient-il les artisans palestiniens?",
+            "answer": "Nous travaillons directement avec nos artisans et payons les prix justes pour leur métier — pas d'intermédiaires, pas d'exploitation. Quand vous achetez chez Turath, les personnes qui ont fabriqué votre pièce sont payées selon la valeur de leur travail. C'est une idée simple, et cela compte."
+          },
+          {
+            "question": "Vos produits sont-ils fabriqués de manière durable?",
+            "answer": "Les céramiques de Hébron précèdent la fabrication moderne. Elles sont fabriquées à partir d'argile naturelle, façonnées à la main et construites pour durer. Il n'y a pas de raccourcis industriels, pas de production de mass, et pas de matériaux jetables. Acheter une seule pièce bien fabriquée qui dure une vie est le choix le plus durable que vous pouvez faire."
+          },
+          {
+            "question": "Quelle est la mission plus large de Turath?",
+            "answer": "Turath existe pour revitaliser le patrimoine vivant des communautés artisanales du monde entier — en commençant par la Palestine. Nous croyons que les beaux objets fonctionnels devraient raconter une histoire, que les personnes qui les fabriquent méritent d'être payées équitablement, et que les maisons sont plus riches quand elles contiennent quelque chose de réel."
+          }
+        ]
+      }
+    }
+  }
+}

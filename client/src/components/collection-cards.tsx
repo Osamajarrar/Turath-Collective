@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { collections } from "@/lib/collections";
-
-type Collection = (typeof collections)[number];
+import { useTranslation } from "react-i18next";
+import { getCollections, Collection } from "@/lib/collections";
 
 function SingleCard({
   collection,
   idx,
+  t,
 }: {
   collection: Collection;
   idx: number;
+  t: (key: string) => string;
 }) {
   const href = collection.link; // Always use collection.link which includes category param
 
@@ -31,11 +32,11 @@ function SingleCard({
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.5em] text-white/70 font-bold">
-              Coming Soon
+              {t("collectionCards.comingSoon")}
             </span>
             <div className="h-px w-12 bg-white/30" />
             <span className="font-serif text-white text-2xl italic">
-              In the works
+              {t("collectionCards.inTheWorks")}
             </span>
           </div>
         </div>
@@ -67,7 +68,7 @@ function SingleCard({
         </p>
         {collection.comingSoon ? (
           <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/30">
-            Available Soon
+            {t("collectionCards.availableSoon")}
           </span>
         ) : (
           <Link href={href}>
@@ -87,6 +88,8 @@ function getGridClass(count: number): string {
 }
 
 export default function CollectionCards() {
+  const { t } = useTranslation("common");
+  const collections = getCollections(t);
   const visibleCollections = collections.filter((c) => !c.hidden);
   const isSingle = visibleCollections.length === 1;
 
@@ -100,12 +103,12 @@ export default function CollectionCards() {
           <span
             className={`text-[10px] uppercase tracking-[0.4em] text-primary font-bold ${isSingle ? "text-center" : ""}`}
           >
-            Explore the Collections
+            {t("collectionCards.badge")}
           </span>
           {!isSingle && (
             <Link href="/shop">
               <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary mb-6">
-                Shop All →
+                {t("collectionCards.shopAll")} →
               </button>
             </Link>
           )}
@@ -117,13 +120,13 @@ export default function CollectionCards() {
             <div className="flex justify-center mb-8">
               <Link href="/shop">
                 <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
-                  Shop All →
+                  {t("collectionCards.shopAll")} →
                 </button>
               </Link>
             </div>
             <div className="flex justify-center">
               <div className="w-full md:w-7/12">
-                <SingleCard collection={visibleCollections[0]} idx={0} />
+                <SingleCard collection={visibleCollections[0]} idx={0} t={t} />
               </div>
             </div>
           </>
@@ -136,6 +139,7 @@ export default function CollectionCards() {
                 key={collection.title}
                 collection={collection}
                 idx={idx}
+                t={t}
               />
             ))}
           </div>

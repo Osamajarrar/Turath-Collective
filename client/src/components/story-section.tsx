@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import lifestyle1 from "@/assets/lifestyle-1.png";
 
 export default function StorySection() {
+  const { t } = useTranslation('pages');
   return (
     <section className="py-24 bg-[#F4F2EE]">
       <div className="container mx-auto px-6 md:px-12">
@@ -13,19 +15,19 @@ export default function StorySection() {
             className="lg:col-span-5"
           >
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-8 leading-tight">
-              A Dialogue Between <span className="italic">Earth and Hand</span>
+              {t('story.mainHeading')}
             </h2>
             <p className="text-lg text-foreground/70 mb-8 font-light leading-relaxed">
-              Every curve tells a story of patience. Our process is a slow meditation, transforming raw Hebron clay into vessels that honor the quiet moments of your day.
+              {t('story.body')}
             </p>
             <div className="grid grid-cols-2 gap-8 border-t border-border pt-8">
               <div>
-                <span className="block text-2xl font-serif mb-1">100%</span>
-                <span className="text-xs uppercase tracking-widest text-primary font-medium">Local Clay</span>
+                <span className="block text-2xl font-serif mb-1">{t('story.stats.stat1.value')}</span>
+                <span className="text-xs uppercase tracking-widest text-primary font-medium">{t('story.stats.stat1.label')}</span>
               </div>
               <div>
-                <span className="block text-2xl font-serif mb-1">48hrs</span>
-                <span className="text-xs uppercase tracking-widest text-primary font-medium">Kiln Fired</span>
+                <span className="block text-2xl font-serif mb-1">{t('story.stats.stat2.value')}</span>
+                <span className="text-xs uppercase tracking-widest text-primary font-medium">{t('story.stats.stat2.label')}</span>
               </div>
             </div>
           </motion.div>
@@ -46,9 +48,9 @@ export default function StorySection() {
             </div>
             <div className="absolute -bottom-6 -left-6 bg-background p-8 hidden md:block max-w-xs shadow-sm">
               <p className="text-sm italic font-serif leading-relaxed">
-                "The most beautiful objects are those that invite us to be present."
+                "{t('story.quote')}"
               </p>
-              <span className="block text-[10px] uppercase tracking-widest mt-4 text-primary font-bold">— Studio Philosophy</span>
+              <span className="block text-[10px] uppercase tracking-widest mt-4 text-primary font-bold">{t('story.attribution')}</span>
             </div>
           </motion.div>
         </div>

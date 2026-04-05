@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 
 const fadeUp = {
@@ -49,6 +50,7 @@ function CareRule({ label, items }: { label: string; items: string[] }) {
 }
 
 export default function Care() {
+  const { t } = useTranslation("pages");
   return (
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
@@ -59,7 +61,7 @@ export default function Care() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            Artisan Care Guide
+            {t('care.title')}
           </motion.h1>
 
           <motion.p
@@ -68,109 +70,69 @@ export default function Care() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Handmade objects ask something of us — a little more attention, a
-            little more intention. The guidance below will help your piece
-            remain as beautiful in ten years as it is today.
+            {t('care.intro')}
           </motion.p>
 
           <div className="space-y-14 text-muted-foreground font-light leading-relaxed">
-            <CareSection title="Hebron Ceramics" index={1}>
+            <CareSection title={t('care.ceramics.title')} index={1}>
               <p className="mb-6">
-                Hebron pottery is fired at high temperatures and finished with
-                natural mineral glazes. It is durable, but it is not
-                indestructible.
+                {t('care.ceramics.intro')}
               </p>
 
               <CareRule
-                label="Handling"
-                items={[
-                  "Handle with care. Ceramic is susceptible to chipping if knocked against hard surfaces.",
-                  "Avoid dropping or stacking pieces without protective padding between them.",
-                ]}
+                label={t('care.ceramics.handling.label')}
+                items={t('care.ceramics.handling.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Cleaning"
-                items={[
-                  "Hand wash only with mild dish soap and warm water.",
-                  "Do not use abrasive sponges, steel wool, or harsh chemical cleaners — these will damage the glaze over time.",
-                  "Dry thoroughly after washing. Prolonged exposure to standing water can affect unglazed areas.",
-                ]}
+                label={t('care.ceramics.cleaning.label')}
+                items={t('care.ceramics.cleaning.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Use"
-                items={[
-                  "Most Hebron ceramic pieces are decorative. Food-safe pieces are clearly indicated on the product listing.",
-                  "Not recommended for microwave or dishwasher use unless explicitly stated on the product listing.",
-                  "Avoid sudden temperature changes (e.g. placing a cold piece on a hot surface) as thermal shock can cause cracking.",
-                ]}
+                label={t('care.ceramics.use.label')}
+                items={t('care.ceramics.use.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Display & Storage"
-                items={[
-                  "Keep away from direct sunlight for extended periods, as UV exposure can gradually affect glaze colour.",
-                  "Store in a cool, dry place when not on display.",
-                ]}
+                label={t('care.ceramics.displayStorage.label')}
+                items={t('care.ceramics.displayStorage.items', { returnObjects: true }) as string[]}
               />
             </CareSection>
 
             <div className="border-t border-border" />
 
-            <CareSection title="Tatreez Embroidery" index={2}>
+            <CareSection title={t('care.embroidery.title')} index={2}>
               <p className="mb-6">
-                Palestinian embroidery is worked in cotton or silk thread on
-                fabric. The colours and patterns are the result of painstaking
-                skill — they deserve equally careful maintenance.
+                {t('care.embroidery.intro')}
               </p>
 
               <CareRule
-                label="Washing"
-                items={[
-                  "Hand wash only in cold water with a gentle, colour-safe detergent.",
-                  "Do not wring or twist the fabric. Gently press out excess water.",
-                  "Do not bleach under any circumstances — embroidery threads are sensitive to harsh chemicals and colours will fade or bleed.",
-                  "Machine washing is not recommended even on delicate cycles.",
-                ]}
+                label={t('care.embroidery.washing.label')}
+                items={t('care.embroidery.washing.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Drying"
-                items={[
-                  "Lay flat to dry away from direct sunlight or heat sources.",
-                  "Do not tumble dry.",
-                  "Reshape gently while damp if needed.",
-                ]}
+                label={t('care.embroidery.drying.label')}
+                items={t('care.embroidery.drying.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Ironing"
-                items={[
-                  "If ironing is necessary, turn the piece inside out and iron on a low setting.",
-                  "Do not iron directly over embroidered areas — use a pressing cloth as a barrier.",
-                ]}
+                label={t('care.embroidery.ironing.label')}
+                items={t('care.embroidery.ironing.items', { returnObjects: true }) as string[]}
               />
 
               <CareRule
-                label="Storage"
-                items={[
-                  "Store folded (not hung) to prevent stretching.",
-                  "Keep away from direct sunlight to preserve thread colour.",
-                  "For long-term storage, wrap in acid-free tissue paper to prevent yellowing.",
-                ]}
+                label={t('care.embroidery.storage.label')}
+                items={t('care.embroidery.storage.items', { returnObjects: true }) as string[]}
               />
             </CareSection>
 
             <div className="border-t border-border" />
 
-            <CareSection title="General Guidance" index={3}>
+            <CareSection title={t('care.general.title')} index={3}>
               <p className="mb-4">
-                Every piece carried by Turath Collective is made by hand. Minor
-                variations in colour, texture, size, and pattern are not
-                imperfections — they are evidence of the human skill behind each
-                object. These variations are what distinguish genuine craft from
-                mass production.
+                {t('care.general.paragraph1')}
               </p>
               <p>
                 If you are ever unsure how to care for a specific piece, reach
@@ -181,7 +143,7 @@ export default function Care() {
                 >
                   support@turathcollective.com
                 </a>{" "}
-                and we will advise you directly.
+                and {t('care.general.paragraph2')}
               </p>
             </CareSection>
           </div>

@@ -1,0 +1,82 @@
+{
+  "shop": {
+    "title": "La Collection",
+    "sortBy": "Trier par",
+    "sortOptions": {
+      "newest": "Les plus récents",
+      "priceLow": "Prix : du moins cher au plus cher",
+      "priceHigh": "Prix : du plus cher au moins cher",
+      "bestSeller": "Meilleures ventes"
+    },
+    "badges": {
+      "bestSeller": "Meilleure vente",
+      "new": "Nouveau",
+      "limitedStock": "Stock limité"
+    },
+    "categoryFilter": {
+      "all": "Tous",
+      "ceramics": "Céramiques",
+      "embroidery": "Broderie"
+    }
+  },
+  "product": {
+    "backButton": "Retour à la collection",
+    "addToBag": "Ajouter au panier",
+    "soldOut": "Épuisé",
+    "buyNow": "Acheter maintenant",
+    "colorLabel": "Couleur:",
+    "quantityLabel": "Quantité",
+    "accordion": {
+      "description": "Description",
+      "specifications": "Spécifications",
+      "shippingReturns": "Livraison et retours"
+    },
+    "specifications": {
+      "material": "Matériau",
+      "size": "Taille",
+      "weight": "Poids",
+      "origin": "Origine"
+    },
+    "shippingReturnsText": "Fabriqué à la main en Palestine, expédié avec une logistique neutre en carbone. Livraison dans les 7 à 14 jours ouvrables. Retours garantis 14 jours."
+  },
+  "checkout": {
+    "header": {
+      "branding": "TURATH COLLECTIVE",
+      "tagline": "Artisanat du Patrimoine",
+      "backButton": "Retour"
+    },
+    "expressCheckout": "Paiement express",
+    "paymentMethods": {
+      "applePay": "Apple Pay",
+      "stripe": "Stripe",
+      "divider": "Ou payez par carte"
+    },
+    "shippingAddress": {
+      "label": "01. Adresse de livraison",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "address": "Adresse",
+      "apartment": "Appartement, suite, etc. (optionnel)",
+      "city": "Ville",
+      "postalCode": "Code postal"
+    },
+    "paymentDetails": {
+      "label": "02. Détails de paiement",
+      "creditCard": "Carte bancaire",
+      "cardNumber": "Numéro de carte",
+      "expiry": "MM / AA",
+      "cvv": "CVV"
+    },
+    "completePurchase": "Terminer l'achat",
+    "orderSummary": {
+      "heading": "Résumé de la commande",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "total": "Total",
+      "securityNotice": "Chiffrement SSL sécurisé"
+    },
+    "agreement": "En complétant votre commande, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
+    "footer": "© 2026 Turath Collective. Tous droits réservés.",
+    "currency": "CAD"
+  }
+}

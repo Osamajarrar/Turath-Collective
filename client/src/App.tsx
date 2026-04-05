@@ -17,6 +17,7 @@ import ComingSoon from "@/pages/coming-soon";
 import About from "./pages/about";
 import ShippingAndReturns from "./pages/ShippingAndReturns";
 import Care from "./pages/care";
+import FAQ from "./pages/faq";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
@@ -52,6 +53,9 @@ function Router() {
         </Route>
         <Route path="/care">
           <Care />
+        </Route>
+        <Route path="/faq">
+          <FAQ />
         </Route>
         {/* <Route path="/wholesale">
           <GenericPage title="Wholesale" />

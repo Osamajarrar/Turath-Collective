@@ -1,0 +1,302 @@
+{
+  "terms": {
+    "title": "Terms of Service",
+    "effectiveDate": "Effective date: April 2025 · Last updated: April 2025",
+    "intro": "These Terms and Conditions govern your use of the Turath Collective website (turathcollective.com) and any purchases made through it. By accessing the site or placing an order, you agree to these terms in full. Turath Collective is operated by Collectif Turath, a sole proprietorship registered in the province of Quebec, Canada, doing business as Turath Collective. Contact: support@turathcollective.com.",
+    "sections": {
+      "section1": {
+        "number": "1",
+        "title": "Use of the Website",
+        "content": [
+          "You agree to use this website for lawful purposes only. You may not use the site in any way that could damage, disable, or impair its operation, or interfere with any other user's access.",
+          "We reserve the right to modify or discontinue any part of the website at any time without notice."
+        ]
+      },
+      "section2": {
+        "number": "2",
+        "title": "Products & Pricing",
+        "content": [
+          "All product descriptions, images, and pricing are provided in good faith and are subject to change without notice. Slight variations in colour, texture, and size are inherent to handmade goods and are not grounds for return unless the item is defective.",
+          "Prices are listed in Canadian dollars (CAD) and are exclusive of applicable taxes, calculated and added at checkout in accordance with applicable Quebec and federal tax law.",
+          "We reserve the right to refuse or cancel any order at our discretion, including in cases of pricing errors or suspected fraudulent activity. If an order is cancelled after payment, a full refund will be issued promptly."
+        ]
+      },
+      "section3": {
+        "number": "3",
+        "title": "Orders & Payment",
+        "content": [
+          "By placing an order, you confirm that you are at least 18 years of age and that the payment information provided is accurate and authorized.",
+          "Orders are subject to product availability. In the event that an item becomes unavailable after your order is placed, we will notify you and offer a full refund or an alternative.",
+          "Payment is processed securely through our payment provider. Turath Collective does not store your payment card information."
+        ]
+      },
+      "section4": {
+        "number": "4",
+        "title": "Shipping",
+        "content": [
+          "Turath Collective ships within Canada only. Shipping terms, rates, and estimated delivery windows are detailed on our Shipping & Returns page. Delivery estimates are not guaranteed and may be affected by factors outside our control, including carrier delays and extreme weather.",
+          "Risk of loss and title for products pass to you upon delivery to the carrier."
+        ]
+      },
+      "section5": {
+        "number": "5",
+        "title": "Returns & Refunds",
+        "content": [
+          "Our return and refund policy is detailed on our Shipping & Returns page and forms part of these Terms. By placing an order, you acknowledge and agree to the terms of that policy."
+        ]
+      },
+      "section6": {
+        "number": "6",
+        "title": "Intellectual Property",
+        "content": [
+          "All content on this website — including text, images, logos, brand assets, and product photography — is the property of Collectif Turath or its content suppliers and is protected under applicable Canadian intellectual property law. You may not reproduce, distribute, or use any content without prior written permission."
+        ]
+      },
+      "section7": {
+        "number": "7",
+        "title": "Disclaimer of Warranties",
+        "content": [
+          "The website and its content are provided \"as is\" without warranties of any kind, express or implied. We do not warrant that the site will be uninterrupted, error-free, or free of viruses or other harmful components."
+        ]
+      },
+      "section8": {
+        "number": "8",
+        "title": "Limitation of Liability",
+        "content": [
+          "To the maximum extent permitted by applicable law, Collectif Turath shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the website or purchase of products, even if advised of the possibility of such damages.",
+          "Our total liability for any claim arising from a purchase shall not exceed the amount paid for the product in question."
+        ]
+      },
+      "section9": {
+        "number": "9",
+        "title": "Governing Law",
+        "content": [
+          "These Terms are governed by and construed in accordance with the laws of the Province of Quebec and the applicable federal laws of Canada. Any disputes shall be subject to the exclusive jurisdiction of the courts of Quebec."
+        ]
+      },
+      "section10": {
+        "number": "10",
+        "title": "Changes to These Terms",
+        "content": [
+          "We reserve the right to update these Terms at any time. Changes will be posted on this page with an updated effective date. Continued use of the site after changes constitutes acceptance of the revised Terms."
+        ]
+      },
+      "section11": {
+        "number": "11",
+        "title": "Contact",
+        "content": [
+          "For questions regarding these Terms: support@turathcollective.com"
+        ]
+      }
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "effectiveDate": "Effective date: April 2025 · Last updated: April 2025",
+    "intro": "This Privacy Policy describes how Collectif Turath, doing business as Turath Collective (turathcollective.com), collects, uses, discloses, and protects your personal information.\n\nIt is written in compliance with Quebec's Act Respecting the Protection of Personal Information in the Private Sector (Law 25 / Bill 64, as amended) and Canada's Personal Information Protection and Electronic Documents Act (PIPEDA).\n\nFor questions or concerns regarding your personal information, contact our Privacy Officer at: support@turathcollective.com",
+    "sections": {
+      "section1": {
+        "number": "1",
+        "title": "Information We Collect",
+        "intro": "We collect personal information only for identified, legitimate purposes.",
+        "subsections": {
+          "direct": {
+            "title": "Information you provide directly:",
+            "items": [
+              "Name, email address, mailing address, and phone number (for order processing and customer service)",
+              "Payment information (processed securely by our payment provider — we do not store card details)",
+              "Communications you send us via email or contact form"
+            ]
+          },
+          "automatic": {
+            "title": "Information collected automatically:",
+            "items": [
+              "Browser type, device type, IP address, and pages visited (via standard web analytics)",
+              "Cookie and session data (see Section 6)"
+            ]
+          },
+          "thirdParty": {
+            "title": "Information from third parties:",
+            "items": [
+              "Order and shipping data shared between us and our shipping carriers"
+            ]
+          }
+        }
+      },
+      "section2": {
+        "number": "2",
+        "title": "Purpose of Collection",
+        "intro": "We collect personal information solely for the following purposes:",
+        "items": [
+          "Processing and fulfilling your orders",
+          "Communicating with you about your order, account, or inquiries",
+          "Sending marketing communications, only with your explicit consent (newsletter)",
+          "Improving our website and customer experience through analytics",
+          "Complying with applicable legal obligations"
+        ],
+        "outro": "We do not collect personal information beyond what is necessary for these purposes."
+      },
+      "section3": {
+        "number": "3",
+        "title": "Legal Basis & Consent",
+        "content": "Under Quebec Law 25, we are required to obtain your consent before collecting, using, or disclosing your personal information, except where the law permits otherwise (e.g. legal obligations).\n\nBy placing an order or subscribing to our newsletter, you consent to the collection and use of your personal information as described in this Policy. You may withdraw consent at any time, subject to legal or contractual restrictions, by contacting us at support@turathcollective.com."
+      },
+      "section4": {
+        "number": "4",
+        "title": "Disclosure to Third Parties",
+        "intro": "We do not sell your personal information. We may share it with the following third parties strictly as necessary to operate our business:",
+        "thirdParties": [
+          {
+            "name": "Payment processor (Shopify Payments)",
+            "purpose": "Secure payment processing"
+          },
+          {
+            "name": "Shipping carriers (Canada Post / couriers)",
+            "purpose": "Order delivery"
+          },
+          {
+            "name": "Email service provider (Resend)",
+            "purpose": "Transactional emails"
+          },
+          {
+            "name": "Marketing platform (Mailchimp)",
+            "purpose": "Newsletter delivery (subscribers only)"
+          },
+          {
+            "name": "Website hosting (Vercel)",
+            "purpose": "Website infrastructure"
+          }
+        ],
+        "outro": "All third parties are required to handle your information in accordance with applicable privacy law. We do not authorize them to use your information for any purpose beyond providing services to us.\n\nSome of these providers may store or process data outside of Canada. Where this occurs, your information receives protection equivalent to that provided under Quebec and Canadian law, to the extent reasonably practicable."
+      },
+      "section5": {
+        "number": "5",
+        "title": "Data Retention",
+        "content": "We retain your personal information only as long as necessary to fulfill the purposes for which it was collected, or as required by law. Order records are generally retained for seven years in accordance with Quebec tax and accounting obligations. You may request deletion of your personal information at any time, subject to these legal retention requirements."
+      },
+      "section6": {
+        "number": "6",
+        "title": "Cookies",
+        "intro": "Our website uses cookies and similar technologies to operate correctly and to understand how visitors interact with our site:",
+        "items": [
+          "Essential cookies — required for the site to function (e.g. cart, session)",
+          "Analytics cookies — used to understand aggregate site usage (no personally identifying data)"
+        ],
+        "outro": "You may disable cookies in your browser settings. Disabling essential cookies may affect site functionality. We do not use cookies for targeted advertising."
+      },
+      "section7": {
+        "number": "7",
+        "title": "Your Rights Under Quebec Law 25",
+        "intro": "As a Quebec resident (and as applicable to all Canadian residents), you have the right to:",
+        "items": [
+          "Access — the personal information we hold about you",
+          "Correct — inaccurate or incomplete information",
+          "Withdraw consent — to the collection or use of your information",
+          "Request deletion — of your personal information, subject to legal retention obligations",
+          "Be informed — of any privacy incident that creates a serious risk of harm to you",
+          "Data portability — receive your information in a structured, commonly used format upon request"
+        ],
+        "outro": "To exercise any of these rights, contact us at support@turathcollective.com. We will respond within 30 days as required by law."
+      },
+      "section8": {
+        "number": "8",
+        "title": "Security",
+        "content": "We implement reasonable technical and organizational measures to protect your personal information against unauthorized access, loss, or disclosure.\n\nIn the event of a privacy incident that presents a serious risk of harm, we will notify the Commission d'accès à l'information du Québec (CAI) and affected individuals as required by Law 25."
+      },
+      "section9": {
+        "number": "9",
+        "title": "Children's Privacy",
+        "content": "Our website is not directed at children under the age of 14. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us and we will delete it promptly."
+      },
+      "section10": {
+        "number": "10",
+        "title": "Changes to This Policy",
+        "content": "We may update this Privacy Policy from time to time. The updated version will be posted on this page with a revised effective date. We encourage you to review this Policy periodically."
+      },
+      "section11": {
+        "number": "11",
+        "title": "Contact & Privacy Officer",
+        "content": "For any questions, requests, or concerns regarding your personal information or this Policy:\n\nPrivacy Officer — Collectif Turath\nsupport@turathcollective.com\nturathcollective.com\n\nYou also have the right to lodge a complaint with the Commission d'accès à l'information du Québec (CAI) if you believe your privacy rights have not been respected."
+      }
+    }
+  },
+  "shipping": {
+    "title": "Shipping & Returns",
+    "lastUpdated": "Last updated: April 2025",
+    "shipping": {
+      "title": "Shipping",
+      "whereWeShip": {
+        "title": "Where We Ship",
+        "content": "Turath Collective currently ships within Canada only, to all provinces and territories including remote areas. We are working toward international shipping and will announce availability when it is ready."
+      },
+      "processingTime": {
+        "title": "Processing Time",
+        "content": "Orders are processed within 2–4 business days of payment confirmation. During high-volume periods or around holidays, processing may take slightly longer — we will communicate any delays promptly. Processing time is separate from shipping time."
+      },
+      "deliveryEstimates": {
+        "title": "Delivery Estimates",
+        "items": [
+          {
+            "service": "Standard Shipping",
+            "estimate": "5–10 business days from shipment"
+          },
+          {
+            "service": "Expedited Shipping",
+            "estimate": "2–4 business days from shipment"
+          }
+        ],
+        "note": "Additional note: Delivery estimates begin from the date of shipment confirmation, not the order date. Remote areas (Nunavut, Northwest Territories, Yukon, and some rural regions) may experience longer delivery windows."
+      },
+      "shippingRates": {
+        "title": "Shipping Rates",
+        "content": "Shipping rates are calculated at checkout based on your location, package weight, and selected service. Where a flat rate applies, it will be clearly displayed at checkout before payment."
+      },
+      "orderTracking": {
+        "title": "Order Tracking",
+        "content": "Once your order ships, you will receive a confirmation email with a tracking number. Please allow up to 24 hours for tracking information to become active."
+      },
+      "delaysExceptions": {
+        "title": "Delays & Exceptions",
+        "content": "Turath Collective is not responsible for delays caused by carriers, severe weather, or circumstances beyond our control. If your order appears significantly delayed, please contact us at support@turathcollective.com and we will investigate on your behalf."
+      }
+    },
+    "returnsRefunds": {
+      "title": "Returns & Refunds",
+      "intro": "We want you to love what you receive. If something is not right, we are here to make it right.",
+      "returnWindow": {
+        "title": "Return Window",
+        "content": "You may request a return within 14 days of the delivery date as confirmed by your tracking information."
+      },
+      "eligibility": {
+        "title": "Eligibility Conditions",
+        "intro": "To be eligible for a return, items must be:",
+        "items": [
+          "Unused and in their original condition",
+          "In original packaging, with all tags and materials included",
+          "Free from damage caused after delivery"
+        ],
+        "outro": "Items that show signs of use, alteration, or damage incurred after delivery are not eligible for return."
+      },
+      "saleItems": {
+        "title": "Sale Items",
+        "content": "All items purchased at a discounted or sale price are final sale and are not eligible for return or exchange, unless the item arrived damaged or defective."
+      },
+      "howToInitiate": {
+        "title": "How to Initiate a Return",
+        "content": "Email us at support@turathcollective.com within your 14-day window with:\n- Your order number\n- The item(s) you wish to return\n- A brief reason for the return\n\nWe will respond within 2 business days with return instructions and a prepaid return shipping label. Return shipping is covered by Turath Collective."
+      },
+      "refundProcessing": {
+        "title": "Refund Processing",
+        "content": "Refunds are issued once the returned item has been received and inspected by our team. Inspection typically takes 2–3 business days upon receipt. If the item passes inspection, your refund will be issued to your original payment method within 5–7 business days. You will receive an email confirmation once processed.\n\nIf the item does not meet return eligibility conditions upon inspection, we will notify you and return the item to you at no additional cost."
+      },
+      "damageDefective": {
+        "title": "Damaged or Defective Items",
+        "content": "If your order arrives damaged — whether from transit or a product defect — please contact us at support@turathcollective.com within 48 hours of delivery with your order number and clear photographs of the damage and packaging. We will arrange a replacement or full refund at no cost to you. Do not discard the packaging before contacting us, as it may be required for a carrier claim."
+      },
+      "exchanges": {
+        "title": "Exchanges",
+        "content": "We do not offer direct exchanges at this time. If you would like a different item, please return your original order and place a new one."
+      }
+    }
+  }
+}

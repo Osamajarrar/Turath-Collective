@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 
 const fadeUp = {
@@ -44,6 +45,7 @@ function Section({
 }
 
 export default function TermsAndConditions() {
+  const { t } = useTranslation("legal");
   return (
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
@@ -54,7 +56,7 @@ export default function TermsAndConditions() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            Terms of Service
+            {t('terms.title')}
           </motion.h1>
 
           <motion.div
@@ -63,7 +65,7 @@ export default function TermsAndConditions() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <p>Effective date: April 2025 · Last updated: April 2025</p>
+            <p>{t('terms.effectiveDate')}</p>
           </motion.div>
 
           <motion.p
