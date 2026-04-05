@@ -299,6 +299,75 @@ import { Button } from "@/components/ui/button";
 </div>
 ```
 
+### Primary CTA Buttons (Hero & Newsletter Pattern)
+
+For **prominent call-to-action buttons** across pages, use the **primary CTA pattern** instead of the generic `<Button>` component:
+
+```tsx
+import { ArrowRight } from "lucide-react";
+
+<button className="group bg-primary text-white px-8 py-3 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold">
+  Subscribe
+  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+</button>
+```
+
+**Features:**
+- **Color**: Primary maroon (`bg-primary`) with white text
+- **Shadow**: Premium shadow effect (`shadow-lg shadow-primary/10`)
+- **Icon**: Right arrow that animates on hover
+- **Hover**: Background lightens to 85% opacity + arrow slides right
+- **RTL Support**: Arrow rotates and translates correctly for RTL languages
+- **Padding**: `px-8 py-3` (standard) or `px-14 py-6` (hero) 
+- **Label**: Uppercase, 10px text, tracking 0.3em (premium feel)
+- **Animation**: `duration-300` standard or `duration-500` for hero
+
+**Size Variations:**
+
+```tsx
+// Hero CTA (larger, more prominent)
+<button className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/85 transition-all duration-500 shadow-xl shadow-primary/10">
+  <span className="uppercase tracking-[0.3em] text-[10px] font-bold">Shop Now</span>
+  <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500" />
+</button>
+
+// Newsletter CTA (standard)
+<button className="group bg-primary text-white px-8 py-3 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold">
+  Subscribe
+  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
+</button>
+
+// Compact CTA (smaller spaces)
+<button className="group bg-primary text-white px-6 py-2.5 rounded-none flex items-center gap-1.5 hover:bg-primary/85 transition-all duration-300 shadow-md shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold">
+  Learn More
+  <ArrowRight className="w-2.5 h-2.5 group-hover:translate-x-1 transition-transform duration-300" />
+</button>
+```
+
+**Styling Rules:**
+
+```tsx
+// ✅ GOOD - Primary CTA with arrow icon
+<button className="group bg-primary text-white px-8 py-3 rounded-none flex items-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10">
+  Action
+  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+</button>
+
+// ❌ BAD - using generic button component for prominent CTAs
+<Button>Action</Button>
+
+// ❌ BAD - no arrow icon or shadow
+<button className="bg-primary text-white px-8 py-3">Action</button>
+
+// ❌ BAD - wrong hover effect (95% opacity not visible enough)
+<button className="bg-primary hover:bg-primary/95">Action</button>
+```
+
+**Used in:**
+- Hero section (Shop Now CTA)
+- Newsletter signup
+- Other prominent page-level actions
+
 ### Arrow Link Component
 
 Use `<ArrowLink>` for text CTAs with arrow indicators.
@@ -881,11 +950,11 @@ Before merging AI-generated code, verify:
 - [ ] **Text Sizes**: No `text-[7px]`, `text-[8px]`, `text-[9px]` — minimum is 10px
 - [ ] **Font Families**: Headings use `font-serif`, body uses `font-sans` (default)
 - [ ] **Forms**: All inputs have `<label htmlFor>` associations
-- [ ] **Buttons**: Use `<Button>` component, not custom `<button>` tags
-- [ ] **Links**: Use `<ArrowLink>` for CTAs, `<Link>` for navigation
+- [ ] **Buttons**: Primary CTAs use custom button pattern with arrow icon; regular actions use `<Button>` component
+- [ ] **Links**: Use `<ArrowLink>` for text CTAs, `<Link>` for navigation
 - [ ] **Spacing**: Use `gap-`, `p-`, `m-` utilities (no arbitrary values)
 - [ ] **Focus States**: Interactive elements have `focus-visible:ring` or equivalent
-- [ ] **Hover States**: Visible feedback (not subtle 95% opacity)
+- [ ] **Hover States**: Visible feedback (shadow + background change for CTAs, not subtle 95% opacity)
 - [ ] **Border Radius**: Use `rounded-lg` max (not `rounded-[2rem]`)
 - [ ] **Contrast**: Text has 4.5:1+ contrast ratio
 - [ ] **Animations**: Duration is 300-800ms (not 1000ms+ unless necessary)
@@ -897,12 +966,12 @@ Before merging AI-generated code, verify:
 | Hardcoded colors | `bg-[#F4F2EE]` | `bg-muted` |
 | Arbitrary text size | `text-[14px]` | `text-base` or `.text-body` |
 | No form labels | `<input placeholder="Email" />` | `<label htmlFor="email">Email</label><input id="email" />` |
-| Weak hover | `hover:opacity-95` | `hover:shadow-md hover:bg-primary/85` |
+| Weak hover on CTA | `hover:opacity-95` | Primary CTA pattern with shadow + ArrowRight icon |
 | Custom spacing | `gap-[25px]` | `gap-6` (24px) |
 | Excessive rounding | `rounded-[2rem]` | `rounded-lg` |
 | Too subtle focus | No focus state | `focus-visible:ring-2 focus-visible:ring-primary` |
 | Long animations | `duration-1000` | `duration-600` |
-| Generic button | `<button className="...">` | `<Button variant="default">` |
+| Wrong button type | Generic button for CTA | Use primary CTA pattern with arrow icon |
 
 ---
 
