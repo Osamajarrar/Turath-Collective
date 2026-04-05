@@ -55,18 +55,18 @@
     "items": [
       {
         "number": "01",
-        "title": "Intégrité artisanale",
-        "description": "Chaque pièce est tournée à la main et peinte à la main par des maîtres artisans de Hébron, préservant des techniques pluricentenaires."
+        "title": "L'Œil du Curateur",
+        "description": "Honorer les mains qui font vivre les traditions ancestrales."
       },
       {
         "number": "02",
-        "title": "Vie lente",
-        "description": "Nous concevons pour le rituel du matin — des objets qui vous encouragent à vous arrêter, à respirer et à savourer le moment."
+        "title": "L'Art de la Pause",
+        "description": "Des objets intentionnels pour vos rituels quotidiens les plus calmes."
       },
       {
         "number": "03",
-        "title": "Provenance organique",
-        "description": "Nos matériaux sont sourcés directement de la terre, en utilisant des pigments naturels et des glaçures sans plomb."
+        "title": "La Terre, le Feu, et rien d'autre",
+        "description": "Matières pures. Glaçures non toxiques. Sourcées avec intégrité."
       }
     ]
   },

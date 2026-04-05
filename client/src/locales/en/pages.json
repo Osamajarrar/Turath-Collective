@@ -55,18 +55,18 @@
     "items": [
       {
         "number": "01",
-        "title": "Artisanal Integrity",
-        "description": "Every piece is hand-thrown and hand-painted by master craftsmen in Hebron, preserving centuries-old techniques."
+        "title": "The Curator’s Eye",
+        "description": "Honoring the hands that keep ancient traditions alive."
       },
       {
         "number": "02",
-        "title": "Slow Living",
-        "description": "We design for the ritual of the morning—objects that encourage you to pause, breathe, and savor the moment."
+        "title": "The Art of the Pause",
+        "description": "Intentional objects for your most quiet, daily rituals."
       },
       {
         "number": "03",
-        "title": "Organic Provenance",
-        "description": "Our materials are sourced directly from the earth, using natural pigments and lead-free glazes."
+        "title": "Earth, Fire, & Nothing Else",
+        "description": "Pure materials. Non-toxic glazes. Sourced with integrity."
       }
     ]
   },
