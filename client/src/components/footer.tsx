@@ -157,19 +157,19 @@ export default function Footer() {
         </div>
 
         <div className="pt-10 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[9px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
+          <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
             {t("footer.copyright")}
           </p>
           <div className="flex gap-8">
             <Link
               href="/privacy"
-              className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold"
+              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold"
             >
               {t("footer.privacy")}
             </Link>
             <Link
               href="/terms"
-              className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold"
+              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors font-bold"
             >
               {t("footer.terms")}
             </Link>

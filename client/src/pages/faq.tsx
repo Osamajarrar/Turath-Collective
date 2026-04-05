@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import PageLayout from "@/components/PageLayout";
+import ArrowLink from "@/components/ArrowLink";
 import { useTranslation } from "react-i18next";
 import {
   Accordion,
@@ -100,12 +101,9 @@ export default function FAQPage() {
             <p className="text-foreground/60 font-light mb-6">
               {t("faq.stillHaveQuestions", "Can't find what you're looking for?")}
             </p>
-            <a
-              href="/contact"
-              className="text-primary hover:text-primary/80 transition-colors font-light underline"
-            >
+            <ArrowLink href="/contact">
               {t("faq.contactUs", "Get in touch with our team")}
-            </a>
+            </ArrowLink>
           </motion.div>
         </div>
       </div>

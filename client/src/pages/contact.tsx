@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { useState } from "react";
-import { Link } from "wouter";
 import PageLayout from "@/components/PageLayout";
+import ArrowLink from "@/components/ArrowLink";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,12 +59,9 @@ export default function ContactPage() {
               <p className="text-foreground/60 font-light mb-4">
                 {t("contact.checkFaq", "Looking for quick answers?")}
               </p>
-              <Link
-                href="/faq"
-                className="text-primary hover:text-primary/80 transition-colors font-light underline"
-              >
+              <ArrowLink href="/faq">
                 {t("contact.viewFaq", "Check our FAQ")}
-              </Link>
+              </ArrowLink>
             </motion.div>
           </header>
 

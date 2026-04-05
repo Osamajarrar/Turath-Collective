@@ -49,7 +49,7 @@ export default function Hero() {
               <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />
               </div>
-              <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-black">{t("hero.watchStory")}</span>
+              <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-black">{t("hero.watchStory")}</span>
             </button> */}
           </div>
         </motion.div>

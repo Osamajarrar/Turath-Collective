@@ -38,6 +38,12 @@
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.5rem;
+  
+  /* Button and badge border colors */
+  --button-outline: hsl(0 0% 85%);
+  --secondary-border: hsl(82 24% 14%);
+  --destructive-border: hsl(0 84.2% 60.2%);
+  --badge-outline: hsl(0 81% 13%);
 }
 
 @layer base {
@@ -53,6 +59,52 @@
 }
 
 @layer utilities {
+  /* Typography System - Base sizes and tracking */
+  /* Body text baseline: 14px for readability */
+  .text-body {
+    @apply text-base font-light leading-relaxed tracking-[0.015em];
+  }
+
+  .text-body-sm {
+    @apply text-sm font-light leading-relaxed tracking-[0.01em];
+  }
+
+  .text-body-lg {
+    @apply text-lg font-light leading-relaxed tracking-[0.02em];
+  }
+
+  /* Label and button text: smaller with premium letter spacing */
+  .text-label {
+    @apply text-xs uppercase tracking-[0.25em] font-bold;
+  }
+
+  .text-label-sm {
+    @apply text-[10px] uppercase tracking-[0.3em] font-bold;
+  }
+
+  /* Premium feel: increase letter spacing slightly on headers */
+  .text-heading {
+    @apply font-serif tracking-[0.02em];
+  }
+
+  /* Interactive elevation effects */
+  .hover-elevate {
+    @apply hover:shadow-lg hover:shadow-black/10 transition-all duration-200;
+  }
+
+  .active-elevate-2 {
+    @apply active:shadow-sm active:shadow-black/5 transition-all duration-150;
+  }
+
+  /* Consistent hover states */
+  .hover-primary {
+    @apply hover:text-primary hover:underline transition-colors duration-300;
+  }
+
+  .hover-primary-border {
+    @apply border-primary/20 hover:border-primary transition-all duration-300;
+  }
+
   /* Cursor indicators for all interactive elements */
   button,
   a,

@@ -246,7 +246,7 @@ export default function ProductPage() {
             >
               <div className="mb-6 flex items-center gap-4">
                 {product.isBestSeller && (
-                  <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
+                  <span className="bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
                     Best Seller
                   </span>
                 )}
