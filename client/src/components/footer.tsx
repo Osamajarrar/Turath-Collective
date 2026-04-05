@@ -68,7 +68,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-[12px] uppercase tracking-[0.3em] font-bold mb-8">
+            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">
               {t("footer.explore")}
             </h4>
             <ul className="space-y-4 text-sm text-foreground/60 font-light">
@@ -88,27 +88,27 @@ export default function Footer() {
                   {t("footer.ourStory")}
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/process"
                   className="hover:text-primary transition-colors"
                 >
                   {t("footer.artisanProcess")}
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link
                   href="/journal"
                   className="hover:text-primary transition-colors"
                 >
                   {t("footer.journal")}
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-[12px] uppercase tracking-[0.3em] font-bold mb-8">
+            <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold mb-8">
               {t("footer.support")}
             </h4>
             <ul className="space-y-4 text-sm text-foreground/60 font-light">
@@ -130,12 +130,20 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/faq"
+                  className="hover:text-primary transition-colors"
+                >
+                  {t("footer.faq")}
+                </Link>
+              </li>
+              {/* <li>
+                <Link
                   href="/wholesale"
                   className="hover:text-primary transition-colors"
                 >
                   {t("footer.wholesale")}
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/contact"

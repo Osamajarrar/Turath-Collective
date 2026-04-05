@@ -1,0 +1,42 @@
+{
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email": "Veuillez entrer une adresse e-mail valide",
+    "minLength": "Ce champ doit contenir au moins {{min}} caractères",
+    "maxLength": "Ce champ ne doit pas dépasser {{max}} caractères",
+    "pattern": "Veuillez entrer une valeur valide"
+  },
+  "auth": {
+    "invalidCredentials": "Courriel ou mot de passe invalide",
+    "accountNotFound": "Compte non trouvé",
+    "accountLocked": "Le compte est verrouillé. Veuillez réessayer plus tard",
+    "sessionExpired": "Votre session a expiré. Veuillez vous connecter à nouveau",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action"
+  },
+  "cart": {
+    "outOfStock": "Cet article est épuisé",
+    "quantityExceeded": "Quantité maximale dépassée",
+    "addFailed": "Échec de l'ajout de l'article au panier",
+    "removeFailed": "Échec de la suppression de l'article du panier",
+    "updateFailed": "Échec de la mise à jour du panier"
+  },
+  "order": {
+    "processingFailed": "Le traitement de la commande a échoué. Veuillez réessayer",
+    "paymentFailed": "Le traitement du paiement a échoué",
+    "invalidPayment": "Informations de paiement invalides",
+    "orderNotFound": "Commande non trouvée",
+    "notAuthorized": "Vous n'êtes pas autorisé à accéder à cette commande"
+  },
+  "shipping": {
+    "invalidAddress": "Adresse d'expédition invalide",
+    "shippingUnavailable": "L'expédition n'est pas disponible pour cette adresse",
+    "calculateFailed": "Échec du calcul du coût d'expédition"
+  },
+  "general": {
+    "serverError": "Une erreur s'est produite. Veuillez réessayer plus tard",
+    "notFound": "Page non trouvée",
+    "badRequest": "Mauvaise requête. Veuillez vérifier votre saisie",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion",
+    "timeout": "Délai d'expiration de la requête. Veuillez réessayer"
+  }
+}

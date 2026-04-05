@@ -2,20 +2,58 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-import en from "../locales/en/translation.json";
-import fr from "../locales/fr/translation.json";
-import ar from "../locales/ar/translation.json";
+// English namespaces
+import enCommon from "../locales/en/common.json";
+import enPages from "../locales/en/pages.json";
+import enCommerce from "../locales/en/commerce.json";
+import enLegal from "../locales/en/legal.json";
+import enErrors from "../locales/en/errors.json";
+
+// French namespaces
+import frCommon from "../locales/fr/common.json";
+import frPages from "../locales/fr/pages.json";
+import frCommerce from "../locales/fr/commerce.json";
+import frLegal from "../locales/fr/legal.json";
+import frErrors from "../locales/fr/errors.json";
+
+// Arabic namespaces
+import arCommon from "../locales/ar/common.json";
+import arPages from "../locales/ar/pages.json";
+import arCommerce from "../locales/ar/commerce.json";
+import arLegal from "../locales/ar/legal.json";
+import arErrors from "../locales/ar/errors.json";
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      en: { translation: en },
-      fr: { translation: fr },
-      ar: { translation: ar },
+      en: {
+        common: enCommon,
+        pages: enPages,
+        commerce: enCommerce,
+        legal: enLegal,
+        errors: enErrors,
+      },
+      fr: {
+        common: frCommon,
+        pages: frPages,
+        commerce: frCommerce,
+        legal: frLegal,
+        errors: frErrors,
+      },
+      ar: {
+        common: arCommon,
+        pages: arPages,
+        commerce: arCommerce,
+        legal: arLegal,
+        errors: arErrors,
+      },
     },
     fallbackLng: "en",
+    fallbackNS: "common",
+    ns: ["common", "pages", "commerce", "legal", "errors"],
+    defaultNS: "common",
     supportedLngs: ["en", "fr", "ar"],
     detection: {
       order: ["localStorage", "navigator"],

@@ -3,6 +3,7 @@ import img2 from "@/assets/social-2.png";
 import img3 from "@/assets/social-3.png";
 import { motion, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const socialPosts = [
   { username: "@layla_designs", image: img1 },
@@ -17,6 +18,7 @@ const ITEM_WIDTH = 320;
 const TOTAL_WIDTH = ITEM_WIDTH * 72;
 
 export default function SocialProof() {
+  const { t } = useTranslation("common");
   const repeatedPosts = Array.from({ length: 12 }, () => socialPosts).flat();
   const x = useMotionValue(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -51,10 +53,10 @@ export default function SocialProof() {
       <div className="container mx-auto px-6 md:px-12 mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
         <div>
           <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">
-            Community
+            {t("socialProof.badge")}
           </span>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground">
-            Join the #TurathCollective
+            {t("socialProof.heading")}
           </h2>
         </div>
         <div className="flex items-center gap-8">
@@ -65,7 +67,7 @@ export default function SocialProof() {
             className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary group-hover:text-foreground"
             aria-label="Instagram"
           >
-            @TurathCollective
+            {t("socialProof.instagram")}
           </a>
         </div>
       </div>

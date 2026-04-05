@@ -1,0 +1,273 @@
+{
+  "about": {
+    "title": "Our Story",
+    "intro": "Some things are too important to forget.",
+    "paragraph1": "Turath Collective was born from a simple conviction: that the hands shaping clay in Hebron and threading needle through fabric in Palestinian villages deserve a place in the world — not as artifacts of the past, but as living expressions of a culture that endures.",
+    "paragraph2": "Turath — تراث — means heritage in Arabic. It is the thread connecting generations, the knowledge passed quietly from artisan to apprentice, the pattern in embroidery that tells a story older than any border.",
+    "paragraph3": "We are a Montreal-based collective dedicated to bringing Palestinian heritage craftsmanship to homes around the world. Every piece we carry is made by hand, by artisans who have inherited centuries of tradition and continue to practice it with extraordinary skill.",
+    "whatWeCarry": {
+      "title": "What We Carry",
+      "intro": "We work with two foundational crafts — chosen because they represent the depth and diversity of Palestinian artistic heritage.",
+      "ceramics": {
+        "title": "Hebron Ceramics",
+        "description": "The city of Hebron (Al-Khalil) has been a centre of ceramic artistry for over five hundred years. The distinctive deep blues, teals, and earthy tones of Hebron pottery emerge from natural mineral glazes and wood-fired kilns. Each piece carries the slight variations that only handwork produces — no two are identical."
+      },
+      "embroidery": {
+        "title": "Tatreez Embroidery",
+        "description": "Palestinian cross-stitch embroidery is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language: a map of village, season, and lineage encoded in thread. Tatreez was inscribed on UNESCO's list of Intangible Cultural Heritage in 2021 — recognition long overdue."
+      }
+    },
+    "commitment": {
+      "title": "Our Commitment",
+      "paragraph1": "We work directly with artisan communities, ensuring that the people whose skill makes this work possible are fairly compensated and properly credited. We do not romanticize poverty. We believe craft should sustain the people who practice it.",
+      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a tradition that the world cannot afford to lose."
+    },
+    "authenticity": {
+      "title": "A Note on Authenticity",
+      "description": "We do not carry mass-produced imitations. Every product is sourced directly and verified for craftsmanship. If it carries the Turath Collective name, it is the real thing."
+    }
+  },
+  "heritage": {
+    "title": "Crafted in the Heart of Hebron",
+    "subtitle": "Heritage",
+    "paragraph1": "There is a rhythm to the wheel that mirrors the rhythm of life. In our small workshop, time slows down. The clay, sourced from local riverbeds, carries the memory of the earth.",
+    "paragraph2": "Each piece is not merely manufactured, but birthed through fire and patience. We honor the imperfections—the slight wobble of a rim, the unpredictable drip of a glaze—as the signature of the human hand.",
+    "cta": "Read Our Story"
+  },
+  "story": {
+    "mainHeading": "A Dialogue Between Earth and Hand",
+    "body": "Every curve tells a story of patience. Our process is a slow meditation, transforming raw Hebron clay into vessels that honor the quiet moments of your day.",
+    "stats": {
+      "stat1": {
+        "value": "100%",
+        "label": "Local Clay"
+      },
+      "stat2": {
+        "value": "48hrs",
+        "label": "Kiln Fired"
+      }
+    },
+    "quote": "The most beautiful objects are those that invite us to be present.",
+    "attribution": "— Studio Philosophy"
+  },
+  "values": {
+    "title": "Our Values",
+    "items": [
+      {
+        "number": "01",
+        "title": "Artisanal Integrity",
+        "description": "Every piece is hand-thrown and hand-painted by master craftsmen in Hebron, preserving centuries-old techniques."
+      },
+      {
+        "number": "02",
+        "title": "Slow Living",
+        "description": "We design for the ritual of the morning—objects that encourage you to pause, breathe, and savor the moment."
+      },
+      {
+        "number": "03",
+        "title": "Organic Provenance",
+        "description": "Our materials are sourced directly from the earth, using natural pigments and lead-free glazes."
+      }
+    ]
+  },
+  "care": {
+    "title": "Artisan Care Guide",
+    "intro": "Handmade objects ask something of us — a little more attention, a little more intention. The guidance below will help your piece remain as beautiful in ten years as it is today.",
+    "ceramics": {
+      "title": "Hebron Ceramics",
+      "intro": "Hebron pottery is fired at high temperatures and finished with natural mineral glazes. It is durable, but it is not indestructible.",
+      "handling": {
+        "label": "Handling",
+        "items": [
+          "Handle with care. Ceramic is susceptible to chipping if knocked against hard surfaces.",
+          "Avoid dropping or stacking pieces without protective padding between them."
+        ]
+      },
+      "cleaning": {
+        "label": "Cleaning",
+        "items": [
+          "Hand wash only with mild dish soap and warm water.",
+          "Do not use abrasive sponges, steel wool, or harsh chemical cleaners — these will damage the glaze over time.",
+          "Dry thoroughly after washing. Prolonged exposure to standing water can affect unglazed areas."
+        ]
+      },
+      "use": {
+        "label": "Use",
+        "items": [
+          "Most Hebron ceramic pieces are decorative. Food-safe pieces are clearly indicated on the product listing.",
+          "Not recommended for microwave or dishwasher use unless explicitly stated on the product listing.",
+          "Avoid sudden temperature changes (e.g. placing a cold piece on a hot surface) as thermal shock can cause cracking."
+        ]
+      },
+      "displayStorage": {
+        "label": "Display & Storage",
+        "items": [
+          "Keep away from direct sunlight for extended periods, as UV exposure can gradually affect glaze colour.",
+          "Store in a cool, dry place when not on display."
+        ]
+      }
+    },
+    "embroidery": {
+      "title": "Tatreez Embroidery",
+      "intro": "Palestinian embroidery is worked in cotton or silk thread on fabric. The colours and patterns are the result of painstaking skill — they deserve equally careful maintenance.",
+      "washing": {
+        "label": "Washing",
+        "items": [
+          "Hand wash only in cold water with a gentle, colour-safe detergent.",
+          "Do not wring or twist the fabric. Gently press out excess water.",
+          "Do not bleach under any circumstances — embroidery threads are sensitive to harsh chemicals and colours will fade or bleed.",
+          "Machine washing is not recommended even on delicate cycles."
+        ]
+      },
+      "drying": {
+        "label": "Drying",
+        "items": [
+          "Lay flat to dry away from direct sunlight or heat sources.",
+          "Do not tumble dry.",
+          "Reshape gently while damp if needed."
+        ]
+      },
+      "ironing": {
+        "label": "Ironing",
+        "items": [
+          "If ironing is necessary, turn the piece inside out and iron on a low setting.",
+          "Do not iron directly over embroidered areas — use a pressing cloth as a barrier."
+        ]
+      },
+      "storage": {
+        "label": "Storage",
+        "items": [
+          "Store folded (not hung) to prevent stretching.",
+          "Keep away from direct sunlight to preserve thread colour.",
+          "For long-term storage, wrap in acid-free tissue paper to prevent yellowing."
+        ]
+      }
+    },
+    "general": {
+      "title": "General Guidance",
+      "paragraph1": "Every piece carried by Turath Collective is made by hand. Minor variations in colour, texture, size, and pattern are not imperfections — they are evidence of the human skill behind each object. These variations are what distinguish genuine craft from mass production.",
+      "paragraph2": "If you are ever unsure how to care for a specific piece, reach out to us at support@turathcollective.com and we will advise you directly."
+    }
+  },
+  "contact": {
+    "title": "Get in Touch"
+  },
+  "faq": {
+    "badge": "FAQ",
+    "heading": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about our ceramics and service.",
+    "stillHaveQuestions": "Can't find what you're looking for?",
+    "contactUs": "Get in touch with our team",
+    "categories": {
+      "aboutCraft": {
+        "title": "About Our Craft",
+        "items": [
+          {
+            "question": "Where are Turath products made?",
+            "answer": "Our ceramics collection is handcrafted in Hebron, Palestine — a city with over 2,000 years of continuous pottery tradition. Each piece travels from the hands of Palestinian artisans directly to your home."
+          },
+          {
+            "question": "Who are the artisans behind the pieces?",
+            "answer": "Our ceramics are made by a family-owned workshop in Hebron that has been practicing this craft for generations. By purchasing from Turath, you are directly supporting their livelihood and helping keep this tradition alive."
+          },
+          {
+            "question": "Why does each piece look slightly different?",
+            "answer": "Because every piece is made by hand, no two are exactly alike. Subtle variations in color, glaze pooling, and form are not imperfections — they are the signature of authentic handcraft. That's what makes your piece truly one of a kind."
+          },
+          {
+            "question": "What materials do you use?",
+            "answer": "Our Hebron ceramics are made from locally sourced clay, hand-painted with natural pigments, and finished with a protective glaze. They are completely Lead-Free and Cadmium-Free, and safe for everyday food and beverage use."
+          }
+        ]
+      },
+      "productCare": {
+        "title": "Product Care",
+        "items": [
+          {
+            "question": "Are your ceramics dishwasher safe?",
+            "answer": "Yes, our ceramics are dishwasher safe. However, we recommend hand washing with a soft sponge and mild soap to preserve the glaze and extend the life of your piece. The mechanical action inside dishwashers can cause gradual chipping over time, especially if pieces knock against each other."
+          },
+          {
+            "question": "Are your ceramics microwave safe?",
+            "answer": "No. Please do not use our ceramics in the microwave."
+          },
+          {
+            "question": "Can I use your ceramics in the oven?",
+            "answer": "Yes, our ceramics are oven safe. We recommend avoiding sudden temperature changes — do not transfer a cold piece directly into a hot oven or vice versa, as thermal shock can cause cracking."
+          },
+          {
+            "question": "Do your products contain lead or heavy metals?",
+            "answer": "No. Our ceramics are Lead-Free and Cadmium-Free, and fully safe for food and beverage use."
+          },
+          {
+            "question": "Will metal utensils scratch the glaze?",
+            "answer": "Our glaze is durable for everyday use. Routine contact with cutlery will not damage it. We do recommend avoiding forceful scraping with sharp metal tools, which could mark the surface over time."
+          },
+          {
+            "question": "How should I store my pieces?",
+            "answer": "Store your ceramics with care — avoid stacking pieces directly on top of one another without protection, as this can cause chipping. A soft cloth or felt pad between stacked pieces works well."
+          }
+        ]
+      },
+      "shippingDelivery": {
+        "title": "Shipping & Delivery",
+        "items": [
+          {
+            "question": "Where do you ship?",
+            "answer": "We currently ship across Canada."
+          },
+          {
+            "question": "How long does delivery take?",
+            "answer": "Standard shipping takes 5–10 business days. Expedited shipping is available at checkout for delivery in 2–4 business days."
+          },
+          {
+            "question": "How will I be notified when my order ships?",
+            "answer": "You will receive an email confirmation with your tracking information once your order has been dispatched. If you don't see it, please check your spam or junk folder. If you entered an incorrect email address at checkout, contact us at support@turathcollective.com and we'll get it sorted."
+          },
+          {
+            "question": "Can I change my shipping address after placing an order?",
+            "answer": "If you need to update your shipping address, please contact us at support@turathcollective.com as soon as possible after placing your order. We will do our best to accommodate changes before your order is dispatched, but we cannot guarantee updates once fulfillment has begun."
+          },
+          {
+            "question": "My item arrived damaged — what should I do?",
+            "answer": "We're sorry to hear that. Please photograph both the packaging and the damaged item, then email the photos to support@turathcollective.com. We will arrange a replacement at no cost to you. See our full policy in the Returns & Exchanges section below."
+          }
+        ]
+      },
+      "returnsExchanges": {
+        "title": "Returns & Exchanges",
+        "items": [
+          {
+            "question": "What is your return policy?",
+            "answer": "We accept returns within 14 days of your delivery date. Items must be unused and in their original condition. To initiate a return, contact us at support@turathcollective.com with your order details."
+          },
+          {
+            "question": "What counts as normal variation versus a defect?",
+            "answer": "Because our pieces are handmade, natural variation is part of what makes them special. This includes subtle differences in color, glaze pooling, surface texture, and minor size variation between pieces — none of these are defects. A defect is defined as structural damage that affects the integrity or usability of the piece: chipping, cracking, or breakage. If your item arrives in this condition, please see the question below."
+          },
+          {
+            "question": "My item arrived damaged or defective — what should I do?",
+            "answer": "Please photograph both the item and its packaging and email the images to support@turathcollective.com within 14 days of receiving your order. We will send you a replacement at no charge. We do not require you to return the damaged piece."
+          }
+        ]
+      },
+      "sustainability": {
+        "title": "Sustainability & Ethics",
+        "items": [
+          {
+            "question": "How does Turath support Palestinian artisans?",
+            "answer": "We work directly with our makers and pay fair prices for their craft — no middlemen, no exploitation. When you buy from Turath, the people who made your piece are paid what their work is worth. It's a simple idea, and it matters."
+          },
+          {
+            "question": "Are your products sustainably made?",
+            "answer": "Hebron ceramics predate modern manufacturing. They are made from natural clay, shaped by hand, and built to last. There are no industrial shortcuts, no mass production, and no disposable materials. Buying one well-made piece that lasts a lifetime is the most sustainable choice you can make."
+          },
+          {
+            "question": "What is Turath's broader mission?",
+            "answer": "Turath exists to revive the living heritage of artisan communities around the world — starting with Palestine. We believe that beautiful, functional objects should tell a story, that the people who make them deserve to be paid fairly, and that homes are richer when they hold something real."
+          }
+        ]
+      }
+    }
+  }
+}
