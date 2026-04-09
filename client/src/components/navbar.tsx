@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-
 import { useTranslation } from "react-i18next";
 import { applyRtl } from "@/lib/i18n";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
+import Logo from "./Logo";
 
 const LANGS = [
   { code: "en", label: "EN", full: "English" },
@@ -105,15 +106,10 @@ export default function Navbar() {
           </div>
 
           {/* Center: logo */}
-          <div className="w-1/3 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <Link href="/">
-              <span className="font-serif text-xl md:text-2xl tracking-[0.15em] cursor-pointer text-foreground">
-                TURATH COLLECTIVE
-              </span>
+              <Logo variant="with-slogan" />
             </Link>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mt-1">
-              {t("nav.tagline")}
-            </span>
           </div>
 
           {/* Right: icons */}
@@ -167,8 +163,8 @@ export default function Navbar() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
-                <span className="font-serif text-xl tracking-[0.1em]">TURATH COLLECTIVE</span>
+              <div className="p-6 flex items-center justify-between border-b border-border">
+                <Logo variant="with-slogan" className="w-48 h-auto" />
                 <button onClick={() => setIsMenuOpen(false)} data-testid="button-menu-close" aria-label={t("nav.closeMenu")}>
                   <X className="w-6 h-6" />
                 </button>
@@ -230,7 +226,7 @@ export default function Navbar() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[110] shadow-2xl flex flex-col rtl:right-auto rtl:left-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
+              <div className="p-6 flex items-center justify-between border-b border-border">
                 <h2 className="font-serif text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
                 <button
                   onClick={() => setIsCartOpen(false)}
