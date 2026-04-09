@@ -296,7 +296,7 @@ export default function ShopPage() {
         </header>
 
         <div
-          className={`grid gap-12 ${visibleProducts.length > 1 ? "md:grid-cols-2 lg:grid-cols-3" : "justify-center"}`}
+          className={`grid gap-12 ${visibleProducts.length > 1 ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-3" : "justify-center"}`}
         >
           {filteredAndSortedProducts.map((product, idx) => (
             <Link href={productHref(product)} key={product.id}>
