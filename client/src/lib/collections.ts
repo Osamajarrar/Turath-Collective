@@ -40,7 +40,7 @@ type VisibilityFlags = {
 
 const categoryVisibility: Record<string, VisibilityFlags> = {
   ceramics: { comingSoon: false, hidden: false },
-  embroidery: { comingSoon: false, hidden: true },
+  embroidery: { comingSoon: true, hidden: true },
 };
 
 const getVisibilityFlags = (handle: string): VisibilityFlags =>

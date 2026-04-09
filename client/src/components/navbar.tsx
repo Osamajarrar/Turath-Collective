@@ -4,17 +4,14 @@ import { ShoppingBag, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { applyRtl } from "@/lib/i18n";
+import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
 import Logo from "./Logo";
 
-const LANGS = [
-  { code: "en", label: "EN", full: "English" },
-  { code: "fr", label: "FR", full: "Français" },
-] as const;
-
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const categories = getVisibleCategories(t);
   const {
     cart,
     mockLines,
@@ -173,8 +170,26 @@ export default function Navbar() {
                 <div className="space-y-4">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.collections")}</p>
                   <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.allProducts")}</Link>
-                  <Link href="/shop?category=ceramics" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ceramics")}</Link>
-                  <Link href="/shop?category=embroidery" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.embroidery")}</Link>
+                  {categories.map((category) => (
+                    category.comingSoon ? (
+                      <div
+                        key={category.handle}
+                        className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
+                      >
+                        {category.title}
+                        <span className="text-[8px] uppercase tracking-widest font-bold bg-muted px-2 py-1 rounded">{t("nav.comingSoon")}</span>
+                      </div>
+                    ) : (
+                      <Link
+                        key={category.handle}
+                        href={`/shop?category=${category.handle}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block text-3xl font-serif"
+                      >
+                        {category.title}
+                      </Link>
+                    )
+                  ))}
                 </div>
                 <div className="space-y-4 pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.brand")}</p>
@@ -185,7 +200,7 @@ export default function Navbar() {
                 <div className="pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30 mb-4">{t("lang.label")}</p>
                   <div className="flex gap-3">
-                    {LANGS.map(({ code, label }) => (
+                    {SUPPORTED_LANGUAGES.map(({ code, label }) => (
                       <button
                         key={code}
                         onClick={() => switchLang(code)}
