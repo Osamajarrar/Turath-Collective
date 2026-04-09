@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
 import { ChevronLeft, CreditCard, Apple, Truck, ShieldCheck, Lock, Instagram } from "lucide-react";
 import { Link } from "wouter";
 import img1 from "@/assets/burgundy-mug.png";
+import Logo from "@/components/Logo";
+
 export default function CheckoutPage() {
   const cartItems = [
     { id: 1, name: "Classic Indigo Mug", price: 38.00, quantity: 1 },
@@ -24,12 +25,7 @@ export default function CheckoutPage() {
             </button>
           </Link>
           <Link href="/">
-            <div className="flex flex-col items-center cursor-pointer">
-              <span className="font-serif text-2xl tracking-[0.15em] text-foreground">
-                TURATH COLLECTIVE
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mt-1">Heritage Craftsmanship</span>
-            </div>
+            <Logo variant="with-slogan" className="w-40 md:w-48 h-auto" />
           </Link>
         </div>
       </header>
