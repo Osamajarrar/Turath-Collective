@@ -347,12 +347,12 @@ export default function ShopPage() {
                     )}
                   </div>
                 </div>
-                <h3 className="mb-2 font-serif text-xl">{product.name}</h3>
-                <p className="mb-4 text-xs uppercase tracking-widest text-muted-foreground">
+                <h3 className="mb-2 font-serif text-lg">{product.name}</h3>
+                {/* <p className="mb-4 text-[xx-small] uppercase tracking-widest text-muted-foreground">
                   {product.category}
-                </p>
-                <p className="font-bold">
-                  {product.currencyCode} ${product.price.toFixed(2)}
+                </p> */}
+                <p className="text-sm">
+                  ${product.price.toFixed(2)}
                 </p>
               </motion.div>
             </Link>
