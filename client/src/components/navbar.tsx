@@ -4,16 +4,14 @@ import { ShoppingBag, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { applyRtl } from "@/lib/i18n";
+import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
-
-const LANGS = [
-  { code: "en", label: "EN", full: "English" },
-  { code: "fr", label: "FR", full: "Français" },
-] as const;
+import Logo from "./Logo";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const categories = getVisibleCategories(t);
   const {
     cart,
     mockLines,
@@ -105,15 +103,10 @@ export default function Navbar() {
           </div>
 
           {/* Center: logo */}
-          <div className="w-1/3 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <Link href="/">
-              <span className="font-serif text-xl md:text-2xl tracking-[0.15em] cursor-pointer text-foreground">
-                TURATH COLLECTIVE
-              </span>
+              <Logo variant="with-slogan" />
             </Link>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mt-1">
-              {t("nav.tagline")}
-            </span>
           </div>
 
           {/* Right: icons */}
@@ -167,8 +160,8 @@ export default function Navbar() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
-                <span className="font-serif text-xl tracking-[0.1em]">TURATH COLLECTIVE</span>
+              <div className="p-6 flex items-center justify-between border-b border-border">
+                <Logo variant="with-slogan" className="w-48 h-auto" />
                 <button onClick={() => setIsMenuOpen(false)} data-testid="button-menu-close" aria-label={t("nav.closeMenu")}>
                   <X className="w-6 h-6" />
                 </button>
@@ -177,8 +170,26 @@ export default function Navbar() {
                 <div className="space-y-4">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.collections")}</p>
                   <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.allProducts")}</Link>
-                  <Link href="/shop?category=ceramics" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ceramics")}</Link>
-                  <Link href="/shop?category=embroidery" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.embroidery")}</Link>
+                  {categories.map((category) => (
+                    category.comingSoon ? (
+                      <div
+                        key={category.handle}
+                        className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
+                      >
+                        {category.title}
+                        <span className="text-[8px] uppercase tracking-widest font-bold bg-muted px-2 py-1 rounded">{t("nav.comingSoon")}</span>
+                      </div>
+                    ) : (
+                      <Link
+                        key={category.handle}
+                        href={`/shop?category=${category.handle}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block text-3xl font-serif"
+                      >
+                        {category.title}
+                      </Link>
+                    )
+                  ))}
                 </div>
                 <div className="space-y-4 pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.brand")}</p>
@@ -189,7 +200,7 @@ export default function Navbar() {
                 <div className="pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30 mb-4">{t("lang.label")}</p>
                   <div className="flex gap-3">
-                    {LANGS.map(({ code, label }) => (
+                    {SUPPORTED_LANGUAGES.map(({ code, label }) => (
                       <button
                         key={code}
                         onClick={() => switchLang(code)}
@@ -230,7 +241,7 @@ export default function Navbar() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[110] shadow-2xl flex flex-col rtl:right-auto rtl:left-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
+              <div className="p-6 flex items-center justify-between border-b border-border">
                 <h2 className="font-serif text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
                 <button
                   onClick={() => setIsCartOpen(false)}

@@ -83,3 +83,11 @@ export function applyRtl(lng: string) {
 // (before React renders) to avoid a flash of wrong-direction text
 // when the user's persisted language is Arabic.
 applyRtl(i18n.language);
+
+export const SUPPORTED_LANGUAGES = [
+  { code: "en", label: "EN", full: "English" },
+  { code: "fr", label: "FR", full: "Français" },
+  // { code: "ar", label: "AR", full: "العربية" },
+] as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]["code"];

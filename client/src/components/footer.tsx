@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
+import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -9,9 +10,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-12">
           <div className="md:col-span-2">
-            <span className="font-serif text-3xl tracking-wide block mb-8">
-              TURATH COLLECTIVE
-            </span>
+            <Logo variant="mark-only" className="w-44 md:w-56 h-auto mb-8" />
             <p className="text-sm text-foreground/60 max-w-sm font-light leading-relaxed mb-8">
               {t("footer.tagline")}
             </p>
