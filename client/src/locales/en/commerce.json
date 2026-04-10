@@ -1,6 +1,7 @@
 {
   "shop": {
     "title": "The Collection",
+    "pricesCurrency": "All prices in Canadian dollars",
     "sortBy": "Sort By",
     "sortOptions": {
       "newest": "Newest",

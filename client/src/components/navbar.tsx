@@ -7,10 +7,12 @@ import { useTranslation } from "react-i18next";
 import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
   const categories = getVisibleCategories(t);
   const {
     cart,
@@ -31,11 +33,10 @@ export default function Navbar() {
     (sum, line) => sum + line.price * line.quantity,
     0
   );
-  const mockCurrency = mockLines[0]?.currencyCode ?? "CAD";
   const subtotalLabel = cart
-    ? `${cart.cost.subtotalAmount.currencyCode} $${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}`
+    ? `$${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}`
     : hasMockCart
-      ? `${mockCurrency} $${mockSubtotal.toFixed(2)}`
+      ? `$${mockSubtotal.toFixed(2)}`
       : "—";
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function Navbar() {
       <motion.nav
         variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
         animate={hidden ? "hidden" : "visible"}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
+        transition={{ duration: prefersReducedMotion ? 0.1 : 0.35, ease: "easeInOut" }}
         className={cn(
           "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
           isScrolled || isCartOpen || isMenuOpen
@@ -157,7 +158,7 @@ export default function Navbar() {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={prefersReducedMotion ? { duration: 0.1 } : { type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
               <div className="p-6 flex items-center justify-between border-b border-border">
@@ -169,12 +170,12 @@ export default function Navbar() {
               <div className="flex-1 p-8 space-y-8 overflow-y-auto">
                 <div className="space-y-4">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.collections")}</p>
-                  <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.allProducts")}</Link>
+                  <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.allProducts")}</Link>
                   {categories.map((category) => (
                     category.comingSoon ? (
                       <div
                         key={category.handle}
-                        className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
+                        className="block text-3xl font-sans font-bold opacity-50 cursor-not-allowed flex items-center gap-2"
                       >
                         {category.title}
                         <span className="text-[8px] uppercase tracking-widest font-bold bg-muted px-2 py-1 rounded">{t("nav.comingSoon")}</span>
@@ -184,7 +185,7 @@ export default function Navbar() {
                         key={category.handle}
                         href={`/shop?category=${category.handle}`}
                         onClick={() => setIsMenuOpen(false)}
-                        className="block text-3xl font-serif"
+                        className="block text-3xl font-sans font-bold"
                       >
                         {category.title}
                       </Link>
@@ -193,8 +194,8 @@ export default function Navbar() {
                 </div>
                 <div className="space-y-4 pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.brand")}</p>
-                  <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ourStory")}</Link>
-                  <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.contact")}</Link>
+                  <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.ourStory")}</Link>
+                  <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.contact")}</Link>
                 </div>
                 {/* Language in mobile menu */}
                 <div className="pt-8 border-t border-border/50">
@@ -238,11 +239,11 @@ export default function Navbar() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={prefersReducedMotion ? { duration: 0.1 } : { type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[110] shadow-2xl flex flex-col rtl:right-auto rtl:left-0"
             >
               <div className="p-6 flex items-center justify-between border-b border-border">
-                <h2 className="font-serif text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
+                <h2 className="font-sans font-bold text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
                 <button
                   onClick={() => setIsCartOpen(false)}
                   className="p-2 hover:bg-muted rounded-full transition-colors"
@@ -281,7 +282,7 @@ export default function Navbar() {
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
                           <div>
-                            <h4 className="font-serif text-lg leading-tight">
+                            <h4 className="text-product-name leading-tight">
                               {line.merchandise.product.title}
                             </h4>
                             {line.merchandise.title && line.merchandise.title !== "Default Title" && (
@@ -326,7 +327,7 @@ export default function Navbar() {
                               <Trash2 className="h-4 w-4" />
                             </button>
                             <span className="ml-auto text-sm font-bold">
-                              {line.merchandise.price.currencyCode} ${lineTotal.toFixed(2)}
+                              ${lineTotal.toFixed(2)}
                             </span>
                           </div>
                         </div>
@@ -354,7 +355,7 @@ export default function Navbar() {
                       </div>
                       <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
                         <div>
-                          <h4 className="font-serif text-lg leading-tight">{line.productTitle}</h4>
+                          <h4 className="text-product-name leading-tight">{line.productTitle}</h4>
                           <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40">
                             {line.variantTitle}
                           </p>
@@ -395,7 +396,7 @@ export default function Navbar() {
                             <Trash2 className="h-4 w-4" />
                           </button>
                           <span className="ml-auto text-sm font-bold">
-                            {line.currencyCode} ${(line.price * line.quantity).toFixed(2)}
+                            ${(line.price * line.quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>

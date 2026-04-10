@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { getVisibleCategories, Category } from "@/lib/collections";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 function SingleCard({
   category,
@@ -12,6 +13,7 @@ function SingleCard({
   idx: number;
   t: (key: string) => string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
   // Use the first collection for CTA if present, else fallback
   const mainCollection = category.collections?.[0];
   const href = `/shop?category=${category.handle}`;
@@ -20,7 +22,7 @@ function SingleCard({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, delay: idx * 0.2 }}
+      transition={{ duration: prefersReducedMotion ? 0.1 : 0.8, delay: prefersReducedMotion ? 0 : idx * 0.2 }}
       className={`group ${category.comingSoon ? "pointer-events-none" : ""}`}
     >
       {category.comingSoon ? (
@@ -49,9 +51,9 @@ function SingleCard({
           <img
             src={category.image}
             alt=""
-            className="h-full w-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+            className={`h-full w-full object-cover transition-transform ${prefersReducedMotion ? "duration-100" : "duration-[1.5s]"} group-hover:scale-110`}
           />
-          <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/20" />
+          <div className={`absolute inset-0 bg-black/5 transition-colors ${prefersReducedMotion ? "duration-100" : "duration-500"} group-hover:bg-black/20`} />
           <span className="sr-only">
             {category.title} — {mainCollection?.cta || "Shop Now"}
           </span>
@@ -60,7 +62,7 @@ function SingleCard({
 
       <div className="px-4">
         <h3
-          className={`font-serif text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
+          className={`font-sans font-bold text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
         >
           {category.title}
         </h3>

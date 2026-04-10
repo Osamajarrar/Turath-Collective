@@ -73,7 +73,7 @@ export default function ContactPage() {
               className="space-y-12"
             >
               <div>
-                <h3 className="font-serif text-2xl mb-8">{t("contact.visitStudio")}</h3>
+                <h3 className="heading-subsection mb-8">{t("contact.visitStudio")}</h3>
                 <div className="space-y-6">
 
                   <div className="flex gap-4 items-start rtl:flex-row-reverse">
@@ -116,7 +116,7 @@ export default function ContactPage() {
               </div>
 
               <div className="pt-12 border-t border-border/50">
-                <h3 className="font-serif text-2xl mb-6">{t("contact.wholesale")}</h3>
+                <h3 className="heading-subsection mb-6">{t("contact.wholesale")}</h3>
                 <p className="text-muted-foreground font-light leading-relaxed mb-6">
                   {t("contact.wholesaleDesc")}
                 </p>

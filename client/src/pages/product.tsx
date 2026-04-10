@@ -8,6 +8,8 @@ import PageLayout from "@/components/PageLayout";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
+import { getAvailableCategories } from "@/lib/collections";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // Mock assets
 import burgundyBowl from "@/assets/burgundy-bowl.png";
@@ -97,7 +99,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 
 // ── Sub-components ────────────────────────────────────────────────────────
 
-const Accordion = ({ title, children }: { title: string; children: React.ReactNode }) => {
+const Accordion = ({ title, children, duration = 0.3 }: { title: string; children: React.ReactNode; duration?: number }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border-b border-border">
@@ -117,6 +119,7 @@ const Accordion = ({ title, children }: { title: string; children: React.ReactNo
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration }}
             className="overflow-hidden"
           >
             <div className="pb-8 text-sm text-foreground/60 font-light leading-relaxed">
@@ -134,10 +137,17 @@ const Accordion = ({ title, children }: { title: string; children: React.ReactNo
 export default function ProductPage() {
   const [, params] = useRoute("/product/:id");
   const { addItem, isBusy } = useCart();
+  const prefersReducedMotion = useReducedMotion();
   const [quantity, setQuantity] = useState(1);
   const [selectedVariationIdx, setSelectedVariationIdx] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [liveProduct, setLiveProduct] = useState<DisplayProduct | null>(null);
+  const [suggestedProducts, setSuggestedProducts] = useState<DisplayProduct[]>([]);
+
+  // Animation durations based on motion preference
+  const imageDuration = prefersReducedMotion ? 0.1 : 1;
+  const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
+  const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
 
   useEffect(() => {
     const handle = params?.id;
@@ -147,6 +157,36 @@ export default function ProductPage() {
       if (cancelled || !result) return;
       setLiveProduct(normaliseShopify(result));
     });
+
+    // Fetch suggested products with fallback to mock data
+    shopifyService.getProducts().then((products) => {
+      if (cancelled) return;
+      
+      // Use fetched products or fallback to mock
+      const productsToUse = products && products.length > 0 ? products : MOCK_PRODUCTS;
+      
+      const normalized = productsToUse
+        .filter((p) => (p as any).handle !== handle)
+        .map((p) => {
+          // Check if it's a ShopifyProduct (has variants.edges) or already normalized
+          if ("variants" in p && "edges" in (p as any).variants) {
+            return normaliseShopify(p as ShopifyProduct);
+          }
+          return p as DisplayProduct;
+        })
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4);
+      setSuggestedProducts(normalized);
+    }).catch(() => {
+      // On error, use mock products
+      if (cancelled) return;
+      const normalized = MOCK_PRODUCTS
+        .filter((p) => p.handle !== handle)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4);
+      setSuggestedProducts(normalized);
+    });
+
     return () => { cancelled = true; };
   }, [params?.id]);
 
@@ -208,13 +248,14 @@ export default function ProductPage() {
               key={`${selectedVariationIdx}-${selectedImage}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              transition={{ duration: imageDuration }}
               className="aspect-[4/5] overflow-hidden bg-[#f4f2ee]"
             >
               {images[selectedImage] && (
                 <img
                   src={images[selectedImage]}
                   alt={product.name}
-                  className="h-full w-full object-contain p-12 transition-transform duration-1000 hover:scale-105"
+                  className={`h-full w-full object-contain p-12 transition-transform ${prefersReducedMotion ? "duration-100" : "duration-1000"} hover:scale-105`}
                 />
               )}
             </motion.div>
@@ -242,7 +283,7 @@ export default function ProductPage() {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: sectionDuration }}
             >
               <div className="mb-6 flex items-center gap-4">
                 {product.isBestSeller && (
@@ -256,7 +297,7 @@ export default function ProductPage() {
                 {product.name}
               </h1>
               <p className="mb-8 font-sans text-2xl font-medium text-foreground/80" data-testid="text-price">
-                {product.currencyCode} ${currentVariation?.price.toFixed(2)}
+                ${currentVariation?.price.toFixed(2)}
               </p>
 
               {/* Variations */}
@@ -331,11 +372,11 @@ export default function ProductPage() {
 
               {/* Accordions */}
               <div className="border-t border-border">
-                <Accordion title="Description">
+                <Accordion title="Description" duration={accordionDuration}>
                   <p>{product.description}</p>
                 </Accordion>
                 {Object.keys(product.specs).length > 0 && (
-                  <Accordion title="Specifications">
+                  <Accordion title="Specifications" duration={accordionDuration}>
                     <ul className="space-y-2">
                       {Object.entries(product.specs).map(([key, val]) => (
                         <li key={key} className="flex justify-between">
@@ -346,7 +387,7 @@ export default function ProductPage() {
                     </ul>
                   </Accordion>
                 )}
-                <Accordion title="Shipping & Returns">
+                <Accordion title="Shipping & Returns" duration={accordionDuration}>
                   <p>
                     Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within
                     7–14 business days. 14-day heritage guarantee returns.
@@ -356,6 +397,45 @@ export default function ProductPage() {
             </motion.div>
           </div>
         </div>
+
+        {/* Suggested Products */}
+        {suggestedProducts.length > 0 && (
+          <div className="mt-24 border-t border-border pt-12">
+            <h2 className="mb-12 font-serif text-4xl">More Treasures</h2>
+            <div className="grid gap-12 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+              {suggestedProducts.map((suggestedProduct, idx) => (
+                <Link href={`/product/${suggestedProduct.handle}`} key={suggestedProduct.id}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: sectionDuration }}
+                    className="group cursor-pointer"
+                    data-testid={`card-suggested-${suggestedProduct.id}`}
+                  >
+                    <div className="relative mb-6 aspect-[4/5] overflow-hidden bg-muted">
+                      <img
+                        src={suggestedProduct.variations[0]?.images[0] || ""}
+                        alt={suggestedProduct.name}
+                        className={`h-full w-full object-cover transition-transform ${prefersReducedMotion ? "duration-100" : "duration-700"} group-hover:scale-105`}
+                      />
+                      {suggestedProduct.isBestSeller && (
+                        <div className="pointer-events-none absolute left-4 top-4">
+                          <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
+                            Best Seller
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="text-product-name mb-2">{suggestedProduct.name}</h3>
+                    <p className="text-sm text-foreground/60">
+                      ${suggestedProduct.price.toFixed(2)}
+                    </p>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   );

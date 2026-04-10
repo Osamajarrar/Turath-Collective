@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import workshopImage from "@/assets/workshop.png";
 
 export default function Heritage() {
   const { t } = useTranslation("pages");
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section className="py-12 bg-background border-t border-border/40">
       <div className="container mx-auto px-6 md:px-12">
@@ -12,7 +14,7 @@ export default function Heritage() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: prefersReducedMotion ? 0.1 : 0.8 }}
             className="relative aspect-[3/4] lg:aspect-square overflow-hidden"
           >
             <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10" />
@@ -27,7 +29,7 @@ export default function Heritage() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: prefersReducedMotion ? 0.1 : 0.8, delay: prefersReducedMotion ? 0 : 0.2 }}
             className="flex flex-col justify-center lg:pl-12"
           >
             <span className="text-sm uppercase tracking-[0.2em] text-primary mb-6 font-medium">

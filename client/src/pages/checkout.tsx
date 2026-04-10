@@ -125,14 +125,14 @@ export default function CheckoutPage() {
           {/* Order Summary Side */}
           <div className="lg:col-span-5">
             <div className="bg-muted p-8 lg:sticky lg:top-32">
-              <h2 className="font-serif text-2xl mb-8">Order Summary</h2>
+              <h2 className="font-sans font-bold text-2xl mb-8">Order Summary</h2>
               <div className="space-y-6 mb-8">
                 {cartItems.map(item => (
                   <div key={item.id} className="flex justify-between items-start gap-4">
                     <div className="flex gap-4">
                       <div className="w-16 h-20 bg-muted rounded-none"><img src={img1} alt="Product" className="w-full h-full object-cover" /></div>
                       <div>
-                        <p className="font-serif text-lg leading-none mb-1">{item.name}</p>
+                        <p className="text-product-name leading-none mb-1">{item.name}</p>
                         <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                       </div>
                     </div>
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
                   <span className="text-muted-foreground font-light">Shipping</span>
                   <span className="font-medium">${shipping.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-lg font-serif border-t border-border pt-4 mt-4">
+                <div className="flex justify-between text-lg font-medium border-t border-border pt-4 mt-4">
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>

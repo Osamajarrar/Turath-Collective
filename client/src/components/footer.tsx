@@ -172,9 +172,14 @@ export default function Footer() {
         </div>
 
         <div className="pt-10 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
-            {t("footer.copyright")}
-          </p>
+          <div className="flex flex-col gap-2 items-center md:items-start">
+            <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase font-bold">
+              {t("footer.copyright")}
+            </p>
+            <p className="text-[9px] text-muted-foreground/70 tracking-[0.15em] italic">
+              {t("footer.pricesCurrency")}
+            </p>
+          </div>
           <div className="flex gap-8">
             <Link
               href="/privacy"

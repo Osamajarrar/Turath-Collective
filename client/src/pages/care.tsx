@@ -27,7 +27,7 @@ function CareSection({
       initial="hidden"
       animate="visible"
     >
-      <h2 className="font-serif text-2xl text-foreground mb-6">{title}</h2>
+      <h2 className="heading-subsection text-foreground mb-6">{title}</h2>
       {children}
     </motion.div>
   );

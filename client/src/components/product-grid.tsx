@@ -37,13 +37,13 @@ export default function ProductGrid() {
             <div className="flex gap-8">
               <button 
                 onClick={() => setActiveTab("ceramics")}
-                className={cn("font-serif text-3xl md:text-4xl transition-all", activeTab === "ceramics" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+                className={cn("font-sans font-bold text-3xl md:text-4xl transition-all", activeTab === "ceramics" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
               >
                 Ceramics
               </button>
               <button 
                 onClick={() => setActiveTab("embroidery")}
-                className={cn("font-serif text-3xl md:text-4xl transition-all", activeTab === "embroidery" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+                className={cn("font-sans font-bold text-3xl md:text-4xl transition-all", activeTab === "embroidery" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
               >
                 Embroidery
               </button>
@@ -87,7 +87,7 @@ function ProductCard({ product }: any) {
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-baseline">
-            <h3 className="font-serif text-xl md:text-2xl text-foreground group-hover:text-primary transition-colors">{product.name}</h3>
+            <h3 className="text-product-name text-foreground group-hover:text-primary transition-colors">{product.name}</h3>
             <span className="font-sans text-xs font-bold text-foreground/50 tracking-wider">{product.price}</span>
           </div>
           <div className="w-0 group-hover:w-full h-px bg-primary transition-all duration-500 opacity-30" />
