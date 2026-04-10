@@ -1,6 +1,7 @@
 {
   "shop": {
     "title": "La Collection",
+    "pricesCurrency": "Prix affichés en dollars canadiens",
     "sortBy": "Trier par",
     "sortOptions": {
       "newest": "Les plus récents",

@@ -79,45 +79,78 @@ All color combinations meet **AAA compliance** (19.2:1+):
 
 ## Typography
 
+### Font Strategy: PlayfairDisplay + Comfortaa
+
+A consistent two-font system that balances premium brand presence with friendly readability:
+
+- **PlayfairDisplay** (serif): Used **exclusively** for page titles (h1) and major section headings (h2) to establish premium brand identity
+- **Comfortaa** (sans-serif): Used for everything else—product names, subsection headings, body text, navigation, and UI elements
+
+This approach prevents visual noise while maintaining a strong brand voice.
+
 ### Font Families
 
-| Font | Usage | Applied To |
+| Font | Primary Usage | Applied To |
 |------|-------|-----------|
-| `'Playfair Display'`, serif | Premium headings | h1, h2, h3, h4, h5, h6 |
-| `'Montserrat'`, sans-serif | Body text, labels, UI | p, span, labels, buttons |
+| `'Playfair Display'`, serif | Page & section headings | `.heading-page`, `.heading-section`, h1, h2 with `font-serif` |
+| `'Comfortaa'`, sans-serif | All other text | Product names, subsections, body, UI, navigation |
 
-### Type Scale
+### Type Scale & Semantic Classes
 
-**Minimum text size is 10px. Body text minimum is 14px.**
+**Minimum text sizes: 10px (labels) / 14px (body)**
 
-#### Headings (Use `.text-heading` utility)
+#### Brand Hierarchy Classes
 
 ```tsx
-<h1 className="font-serif text-5xl md:text-6xl lg:text-7xl">Main Title</h1>
-<h2 className="font-serif text-4xl md:text-5xl">Section Title</h2>
-<h3 className="font-serif text-2xl md:text-3xl">Subsection</h3>
-<h4 className="font-serif text-xl md:text-2xl">Minor Title</h4>
+// Page titles (h1 equivalents) - PlayfairDisplay only
+<h1 className="heading-page">Main Brand Title</h1>
+
+// Section headings (h2 equivalents) - PlayfairDisplay for premium sections
+<h2 className="heading-section">Heritage, Story, Testimonials</h2>
+
+// Subsection headings (h3 equivalents) - Comfortaa bold for hierarchy
+<h3 className="heading-subsection">Value Titles, Category Names</h3>
+
+// Product names - Comfortaa bold to distinguish from headers
+<h3 className="text-product-name">Product Title</h3>
+
+// Featured statistics - Comfortaa bold
+<span className="text-featured-stat">1,500+</span>
+
+// Testimonials & quotes - Comfortaa italic
+<p className="text-quote">"Direct quote with premium feel..."</p>
+
+// Standard body text - Comfortaa
+<p className="text-body">Standard paragraph text with relaxed leading.</p>
+<p className="text-body-sm">Smaller secondary text.</p>
+<p className="text-body-lg">Larger featured content.</p>
+
+// Labels & UI - Comfortaa bold
+<span className="text-label">FORM LABEL</span>
+<span className="text-label-sm">BADGE TEXT</span>
 ```
 
-**Heading Sizes:**
-- h1: 48px (text-5xl) to 112px (text-7xl)
-- h2: 36px (text-4xl) to 60px (text-5xl)
-- h3: 24px (text-2xl) to 30px (text-3xl)
-- h4: 20px (text-xl) to 24px (text-2xl)
-- h5: 18px (text-lg)
-- h6: 16px (text-base)
+#### Detailed Type Scale
 
-#### Body Text (Use `.text-body` utilities)
+**Headings:**
+- `.heading-page`: 5rem-10rem | PlayfairDisplay | h1 (hero, main page titles)
+- `.heading-section`: 3rem-5rem | PlayfairDisplay | h2 (section intros: heritage, reviews, story)
+- `.heading-subsection`: 1.25rem-2rem | Comfortaa bold | h3 (subsection titles, value headings)
 
-```tsx
-// Standard body text - 16px with premium tracking
-<p className="text-body">Standard paragraph text with relaxed leading.</p>
+**Product & Featured:**
+- `.text-product-name`: 1rem-1.5rem | Comfortaa bold | Product card names, shopping
+- `.text-collection-name`: 1.25rem-2rem | Comfortaa bold | Collection/category names
+- `.text-featured-stat`: 1.25rem-2rem | Comfortaa bold | Prominent numbers, stats
 
-// Small body text - 14px
-<p className="text-body-sm">Smaller body text for secondary content.</p>
+**Body & Quotes:**
+- `.text-body`: 16px (1rem) | Comfortaa light | Standard paragraphs
+- `.text-body-sm`: 14px (0.875rem) | Comfortaa light | Secondary content
+- `.text-body-lg`: 18px (1.125rem) | Comfortaa light | Featured paragraphs
+- `.text-quote`: 16px-18px | Comfortaa italic | Testimonials, author quotes
 
-// Large body text - 18px
-<p className="text-body-lg">Larger body text for emphasis or featured content.</p>
+**Labels & Small:**
+- `.text-label`: 12px (0.75rem) | Comfortaa bold | Form labels, uppercase
+- `.text-label-sm`: 10px (0.625rem) | Comfortaa bold | Badges, small UI text
 ```
 
 | Utility | Size | Letter-Spacing | Line-Height | Usage |

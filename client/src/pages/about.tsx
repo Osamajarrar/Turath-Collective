@@ -72,7 +72,7 @@ export default function About() {
               initial="hidden"
               animate="visible"
             >
-              <h2 className="font-serif text-2xl text-foreground mt-12 mb-4">
+              <h2 className="heading-subsection text-foreground mt-12 mb-4">
                 {t('about.whatWeCarry.title')}
               </h2>
               <p className="mb-6">
@@ -98,7 +98,7 @@ export default function About() {
               initial="hidden"
               animate="visible"
             >
-              <h2 className="font-serif text-2xl text-foreground mt-12 mb-4">
+              <h2 className="heading-subsection text-foreground mt-12 mb-4">
                 {t('about.commitment.title')}
               </h2>
               <p>
@@ -115,7 +115,7 @@ export default function About() {
               initial="hidden"
               animate="visible"
             >
-              <h2 className="font-serif text-2xl text-foreground mt-12 mb-4">
+              <h2 className="heading-subsection text-foreground mt-12 mb-4">
                 {t('about.authenticity.title')}
               </h2>
               <p>

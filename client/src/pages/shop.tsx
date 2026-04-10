@@ -5,6 +5,7 @@ import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
 import img3 from "@/assets/burgundy-bowl.png";
@@ -141,9 +142,10 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function ShopPage() {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("commerce");
   const [, navigate] = useLocation();
   const search = useSearch();
+  const prefersReducedMotion = useReducedMotion();
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
 
@@ -251,9 +253,12 @@ export default function ShopPage() {
             <div>
               <h1 className="mb-6 font-serif text-5xl capitalize md:text-6xl">
                 {selectedCategory === "all"
-                  ? "The Collection"
+                  ? t("shop.title")
                   : categoryLabel(selectedCategory)}
               </h1>
+              <p className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase mb-8 font-medium">
+                {t("shop.pricesCurrency")}
+              </p>
               {showFilters && (
                 <div className="flex flex-wrap gap-4">
                   {shopCategories.map((cat) => (
@@ -278,7 +283,7 @@ export default function ShopPage() {
 
             <div className="flex items-center gap-4">
               <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
-                Sort By
+                {t("shop.sortBy")}
               </span>
               <select
                 data-testid="select-sort"
@@ -286,10 +291,10 @@ export default function ShopPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="cursor-pointer border-b border-border bg-transparent py-2 text-[10px] font-bold uppercase tracking-widest focus:border-primary focus:outline-none"
               >
-                <option value="newest">Newest</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="best-seller">Best Seller</option>
+                <option value="newest">{t("shop.sortOptions.newest")}</option>
+                <option value="price-low">{t("shop.sortOptions.priceLow")}</option>
+                <option value="price-high">{t("shop.sortOptions.priceHigh")}</option>
+                <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
               </select>
             </div>
           </div>
@@ -303,7 +308,7 @@ export default function ShopPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
                 className="group cursor-pointer"
                 data-testid={`card-product-${product.id}`}
               >
@@ -313,12 +318,12 @@ export default function ShopPage() {
                       <img
                         src={product.image}
                         alt=""
-                        className="absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity duration-700 ease-in-out group-hover:opacity-0"
+                        className={`absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity ${prefersReducedMotion ? "duration-100" : "duration-700"} ease-in-out group-hover:opacity-0`}
                       />
                       <img
                         src={product.imageSecondary}
                         alt=""
-                        className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
+                        className={`absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity ${prefersReducedMotion ? "duration-100" : "duration-700"} ease-in-out group-hover:opacity-100`}
                       />
                     </div>
                   ) : (
@@ -332,28 +337,29 @@ export default function ShopPage() {
                   <div className="pointer-events-none absolute left-4 top-4 flex flex-col gap-2">
                     {product.isBestSeller && (
                       <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
-                        Best Seller
+                        {t("shop.badges.bestSeller")}
                       </span>
                     )}
                     {product.isNew && (
                       <span className="bg-black px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
-                        New
+                        {t("shop.badges.new")}
                       </span>
                     )}
                     {product.isLimited && (
                       <span className="bg-secondary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-secondary-foreground">
-                        Limited Stock
+                        {t("shop.badges.limitedStock")}
                       </span>
                     )}
                   </div>
                 </div>
-                <h3 className="mb-2 font-serif text-lg">{product.name}</h3>
-                {/* <p className="mb-4 text-[xx-small] uppercase tracking-widest text-muted-foreground">
-                  {product.category}
-                </p> */}
-                <p className="text-sm">
-                  ${product.price.toFixed(2)}
-                </p>
+                {/* <div className="mb-2 flex items-baseline justify-between gap-4">
+                  <h3 className="text-product-name mb-0">{product.name}</h3>
+                  <p className="text-sm">${product.price.toFixed(2)}</p>
+                </div> */}
+                  <div className="mb-2 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-4">
+                    <h3 className="text-product-name mb-0 w-full md:w-auto">{product.name}</h3>
+                    <p className="text-sm md:whitespace-nowrap">${product.price.toFixed(2)}</p>
+                  </div>
               </motion.div>
             </Link>
           ))}

@@ -59,7 +59,7 @@ export default function ReviewCarousel() {
                   className="absolute inset-0 flex flex-col justify-center"
                 >
                   <Quote className="w-12 h-12 text-primary/10 mb-8" />
-                  <p className="font-serif text-2xl md:text-3xl text-foreground/90 leading-relaxed mb-10">
+                  <p className="text-quote text-foreground/90 md:text-xl mb-10">
                     "{reviews[active].text}"
                   </p>
                   <div className="flex items-center gap-4">

@@ -56,7 +56,7 @@ export default function FAQPage() {
             <Accordion type="multiple" className="space-y-2">
               {faqCategories.map((category) => (
                 <AccordionItem key={category.key} value={category.key}>
-                  <AccordionTrigger className="text-left font-serif text-2xl md:text-3xl font-light text-foreground hover:text-primary transition-colors py-4">
+                  <AccordionTrigger className="text-left font-sans text-2xl md:text-3xl font-light text-foreground hover:text-primary transition-colors py-4">
                     {category.title}
                   </AccordionTrigger>
                   <AccordionContent className="pt-4 pb-6">

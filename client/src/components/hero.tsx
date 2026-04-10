@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import brandVideo from "@/assets/brand-video.mp4";
 
 export default function Hero() {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -27,7 +29,7 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: prefersReducedMotion ? 0.1 : 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
           <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-black" data-testid="text-hero-heading">
