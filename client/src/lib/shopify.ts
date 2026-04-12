@@ -229,6 +229,55 @@ export const shopifyService = {
     return data ? data.collections.edges.map(e => e.node) : null;
   },
 
+  /** Fetch images from a specific collection by handle. Returns array of images or null when unconfigured. */
+  async getCarouselImages(collectionHandle: string, first = 10): Promise<ShopifyImage[] | null> {
+    const data = await shopifyQuery<{
+      collectionByHandle: {
+        products: {
+          edges: Array<{ node: { images: { edges: Array<{ node: ShopifyImage }> } } }>;
+        };
+      } | null;
+    }>(
+      `query GetCollectionImages($handle: String!, $first: Int!) {
+        collectionByHandle(handle: $handle) {
+          products(first: $first) {
+            edges {
+              node {
+                images(first: 5) {
+                  edges {
+                    node {
+                      url altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { handle: collectionHandle, first }
+    );
+
+    if (!data?.collectionByHandle) return null;
+
+    // Extract all images from all products (flattened) - supports multiple images per product
+    const images = data.collectionByHandle.products.edges
+      .flatMap(edge => edge.node.images.edges.map(img => img.node))
+      .filter((img): img is ShopifyImage => img !== undefined && img !== null);
+
+    return images.length > 0 ? images : null;
+  },
+
+  /** Fetch images from story carousel collection. */
+  async getStoryCarouselImages(first = 10): Promise<ShopifyImage[] | null> {
+    return this.getCarouselImages("story-carousel", first);
+  },
+
+  /** Fetch images from heritage carousel collection. */
+  async getHeritageCarouselImages(first = 10): Promise<ShopifyImage[] | null> {
+    return this.getCarouselImages("heritage-carousel", first);
+  },
+
   /** Create a new cart. Returns null when unconfigured. */
   async createCart(lines: Array<{ merchandiseId: string; quantity: number }> = []): Promise<ShopifyCart | null> {
     const data = await shopifyQuery<{ cartCreate: { cart: ShopifyCart; userErrors: Array<{ message: string }> } }>(

@@ -287,7 +287,7 @@ export default function ProductPage() {
             >
               <div className="mb-6 flex items-center gap-4">
                 {product.isBestSeller && (
-                  <span className="bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                  <span className="bg-background text-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-[5px]">
                     Best Seller
                   </span>
                 )}
@@ -420,7 +420,7 @@ export default function ProductPage() {
                       />
                       {suggestedProduct.isBestSeller && (
                         <div className="pointer-events-none absolute left-4 top-4">
-                          <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
+                          <span className="bg-background text-foreground px-3 py-1 text-[8px] font-bold uppercase tracking-widest rounded-[5px]">
                             Best Seller
                           </span>
                         </div>

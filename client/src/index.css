@@ -106,7 +106,7 @@
 
   /* Product names - Comfortaa bold to distinguish from headers */
   .text-product-name {
-    @apply font-sans text-lg md:text-xl font-bold leading-tight tracking-wide;
+    @apply font-sans text-lg md:text-lg font-bold leading-tight tracking-wide;
   }
 
   /* Collection/Category names - Comfortaa bold for consistency */
@@ -116,7 +116,7 @@
 
   /* Featured statistics and numbers - Comfortaa bold for prominence */
   .text-featured-stat {
-    @apply font-sans text-xl md:text-2xl font-bold leading-tight tracking-wide;
+    @apply font-serif text-xl md:text-2xl  leading-tight tracking-wide;
   }
 
   /* Testimonials and quotes - Comfortaa italic */
@@ -131,6 +131,18 @@
 
   .active-elevate-2 {
     @apply active:shadow-sm active:shadow-black/5 transition-all duration-150;
+  }
+
+  /* Badge and button styling with rounded corners */
+  button,
+  [role="button"],
+  .badge {
+    @apply rounded-[5px];
+  }
+
+  /* Default badge background: cream with dark text */
+  .badge {
+    @apply bg-background text-foreground/60;
   }
 
   /* Consistent hover states */
