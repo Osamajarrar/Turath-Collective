@@ -25,7 +25,7 @@ export default function Hero() {
         />
       </div>
 
-      <div className="relative z-20 container mx-auto px-6 md:px-12 h-full flex flex-col justify-center items-center text-center">
+      <div className="relative z-20 container mx-auto px-6 md:px-12 max-w-[1820px] h-full flex flex-col justify-center items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export default function Hero() {
             <Link href="/shop">
               <button
                 data-testid="button-hero-cta"
-                className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10"
+                className="group bg-primary text-white px-14 py-6 flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10"
               >
                 <span className="uppercase tracking-[0.3em] text-[10px] font-bold">{t("hero.cta")}</span>
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />

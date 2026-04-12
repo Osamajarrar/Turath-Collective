@@ -7,7 +7,7 @@ export default function Footer() {
 
   return (
     <footer className="py-12 bg-background border-t border-border/40">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-12">
           <div className="md:col-span-2">
             <Logo variant="mark-only" className="w-44 md:w-56 h-auto mb-8" />

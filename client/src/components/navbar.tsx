@@ -76,7 +76,7 @@ export default function Navbar() {
             : "border-transparent bg-transparent py-6"
         )}
       >
-        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="container mx-auto px-6 md:px-12 max-w-[1820px] flex items-center justify-between">
 
           {/* Mobile: hamburger */}
           <div className="md:hidden w-1/3">
@@ -405,9 +405,12 @@ export default function Navbar() {
               </div>
 
               <div className="space-y-4 border-t border-border bg-muted/20 p-8">
-                <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse">
-                  <span>{t("cart.subtotal")}</span>
-                  <span>{subtotalLabel}</span>
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse mb-1">
+                    <span>{t("cart.subtotal")}</span>
+                    <span>{subtotalLabel}</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">{t("cart.shippingTaxesNote")}</p>
                 </div>
                 {cart?.checkoutUrl ? (
                   <button

@@ -19,6 +19,8 @@
   --color-secondary: hsl(82 24% 14%);  /* #262C1B - Forest Green */
   --color-secondary-foreground: hsl(40 17% 97%);
   
+  --color-badge-bg: hsl(36, 18%, 85%); /* Darker cream for badges */
+  
   --color-muted: hsl(40 10% 90%);
   --color-muted-foreground: hsl(0 0% 40%);
   
@@ -106,7 +108,7 @@
 
   /* Product names - Comfortaa bold to distinguish from headers */
   .text-product-name {
-    @apply font-sans text-lg md:text-lg font-bold leading-tight tracking-wide;
+    @apply font-sans text-lg md:text-lg font-normal leading-tight tracking-wide;
   }
 
   /* Collection/Category names - Comfortaa bold for consistency */
@@ -143,6 +145,13 @@
   /* Default badge background: cream with dark text */
   .badge {
     @apply bg-background text-foreground/60;
+  }
+
+  /* Product badge styling: darker cream background with maroon text */
+  .badge-product {
+    @apply inline-flex w-fit text-[10px] capitalize px-4 py-1.5 rounded-md border-none font-bold shadow-sm;
+    background-color: var(--color-badge-bg);
+    color: var(--color-primary);
   }
 
   /* Consistent hover states */

@@ -42,7 +42,7 @@ export default function StorySection() {
 
   return (
     <section className="py-12 bg-muted">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

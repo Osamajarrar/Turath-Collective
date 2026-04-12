@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Badge } from "@/components/ui/badge";
 
 // Ceramics
 import burgundyBowl from "@/assets/burgundy-bowl.png";
@@ -14,15 +13,15 @@ import embroideryDetail from "@/assets/embroidery.jpg";
 import embroideryLifestyle from "@/assets/embroidery.jpg";
 
 const ceramics = [
-  { id: 1, name: "Indigo Heritage Mug", price: "$38.00", image1: classicSet, image2: classicSet },
-  { id: 2, name: "Burgundy Hand-Painted Bowl", price: "$52.00", image1: burgundyBowl, image2: burgundyMezze },
-  { id: 5, name: "Indigo Heritage Bowl", price: "$52.00", image1: classicBowl, image2: classicSet },
+  { id: 1, name: "Indigo Heritage Mug", price: "$38", image1: classicSet, image2: classicSet },
+  { id: 2, name: "Burgundy Hand-Painted Bowl", price: "$52", image1: burgundyBowl, image2: burgundyMezze },
+  { id: 5, name: "Indigo Heritage Bowl", price: "$52", image1: classicBowl, image2: classicSet },
 ];
 
 const embroidery = [
-  { id: 7, name: "Heritage Cross-Stitch Cushion", price: "$145.00", image1: embroideryDetail, image2: embroideryLifestyle, badge: "Artisan Piece" },
-  { id: 8, name: "Traditional Red Table Runner", price: "$180.00", image1: embroideryDetail, image2: embroideryLifestyle },
-  { id: 9, name: "Modern Tatreez Linen Set", price: "$95.00", image1: embroideryDetail, image2: embroideryLifestyle, badge: "New Arrival" },
+  { id: 7, name: "Heritage Cross-Stitch Cushion", price: "$145", image1: embroideryDetail, image2: embroideryLifestyle, badge: "Artisan Piece" },
+  { id: 8, name: "Traditional Red Table Runner", price: "$180", image1: embroideryDetail, image2: embroideryLifestyle },
+  { id: 9, name: "Modern Tatreez Linen Set", price: "$95", image1: embroideryDetail, image2: embroideryLifestyle, badge: "New Arrival" },
 ];
 
 export default function ProductGrid() {
@@ -30,7 +29,7 @@ export default function ProductGrid() {
 
   return (
     <section className="py-12 bg-background">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>
             <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">Explore the Collections</span>
@@ -59,7 +58,7 @@ export default function ProductGrid() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20"
+          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-6"
         >
           {(activeTab === "ceramics" ? ceramics : embroidery).map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -76,11 +75,11 @@ function ProductCard({ product }: any) {
   return (
     <Link href={`/product/${product.id}`}>
       <motion.div className="group cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-        <div className="relative aspect-[4/5] overflow-hidden bg-[#F4F2EE] mb-8">
+        <div className="relative aspect-square overflow-hidden bg-[#F4F2EE] mb-8">
           {product.badge && (
-            <Badge className="absolute top-6 left-6 z-20 bg-background text-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-[5px] border-none font-bold shadow-sm">
+            <div className="badge-product !hidden md:!block absolute top-6 left-6 z-20">
               {product.badge}
-            </Badge>
+            </div>
           )}
           <img src={product.image1} alt={product.name} className={cn("absolute inset-0 w-full h-full object-contain p-12 transition-all duration-1000", isHovered ? "opacity-0 scale-105" : "opacity-100 scale-100")} />
           <img src={product.image2} alt={product.name} className={cn("absolute inset-0 w-full h-full object-cover transition-all duration-1000", isHovered ? "opacity-100 scale-100" : "opacity-0 scale-110")} />

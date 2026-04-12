@@ -50,7 +50,7 @@ export default function SocialProof() {
 
   return (
     <section className="py-12 bg-background border-t border-border">
-      <div className="container mx-auto px-6 md:px-12 mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px] mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
         <div>
           <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">
             {t("socialProof.badge")}

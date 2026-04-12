@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
@@ -13,6 +13,14 @@ import img4 from "@/assets/burgundy-mezze.png";
 import classicBowl from "@/assets/classic-bowl.png";
 import classicMezze from "@/assets/classic-mezze-plate.png";
 import { getAvailableCategories } from "@/lib/collections";
+
+// ── Variant interface ──────────────────────────────────────────────────────
+
+interface ProductVariant {
+  color: string;
+  colorHex: string;
+  image: string;
+}
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
 
@@ -30,6 +38,10 @@ export const MOCK_PRODUCTS = [
     isNew: false,
     isLimited: false,
     dateAdded: "2024-01-15",
+    variants: [
+      { color: "Burgundy", colorHex: "#8B0000", image: img1 },
+      { color: "Navy", colorHex: "#000080", image: classicBowl },
+    ],
   },
   {
     id: "2",
@@ -44,6 +56,10 @@ export const MOCK_PRODUCTS = [
     isNew: true,
     isLimited: true,
     dateAdded: "2024-02-10",
+    variants: [
+      { color: "Burgundy", colorHex: "#8B0000", image: img2 },
+      { color: "Green", colorHex: "#2D5016", image: classicBowl },
+    ],
   },
   {
     id: "3",
@@ -58,6 +74,11 @@ export const MOCK_PRODUCTS = [
     isNew: false,
     isLimited: true,
     dateAdded: "2023-12-20",
+    variants: [
+      { color: "Burgundy", colorHex: "#8B0000", image: img3 },
+      { color: "Cream", colorHex: "#F5F3F0", image: img4 },
+      { color: "Sage", colorHex: "#9A8B7A", image: classicMezze },
+    ],
   },
   {
     id: "4",
@@ -72,6 +93,10 @@ export const MOCK_PRODUCTS = [
     isNew: false,
     isLimited: false,
     dateAdded: "2024-01-01",
+    variants: [
+      { color: "Red", colorHex: "#DC143C", image: img4 },
+      { color: "Blue", colorHex: "#4169E1", image: img1 },
+    ],
   },
 ];
 
@@ -92,6 +117,7 @@ interface DisplayProduct {
   isNew: boolean;
   isLimited: boolean;
   dateAdded: string;
+  variants?: ProductVariant[];
 }
 
 function normaliseShopify(p: ShopifyProduct): DisplayProduct {
@@ -126,7 +152,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     name: p.title,
     handle: p.handle,
     category: inferCategoryHandle(normalizedCategory),
-    price: parseFloat(p.priceRange.minVariantPrice.amount),
+    price: parseInt(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
     imageSecondary: p.images.edges[1]?.node.url ?? null,
@@ -137,6 +163,85 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
       ? p.createdAt.split("T")[0]
       : new Date().toISOString().split("T")[0],
   };
+}
+
+// ── ProductCard Component with Variant Swatches ────────────────────────────
+
+interface ProductCardProps {
+  product: DisplayProduct;
+  idx: number;
+  prefersReducedMotion: boolean;
+  t: any;
+}
+
+function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
+  const [, navigate] = useLocation();
+
+  return (
+    <Link href={`/product/${product.id}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
+        className="group cursor-pointer"
+        data-testid={`card-product-${product.id}`}
+      >
+        <div className="relative mb-6 aspect-square overflow-hidden bg-muted">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-full w-full object-cover"
+          />
+
+          <div className="pointer-events-none absolute left-4 top-4 flex flex-row gap-2">
+            {product.isBestSeller && (
+              <div className="badge-product !hidden md:!block">
+                {t("shop.badges.bestSeller")}
+              </div>
+            )}
+            {product.isNew && (
+              <div className="badge-product !hidden md:!block">
+                {t("shop.badges.new")}
+              </div>
+            )}
+            {product.isLimited && (
+              <div className="badge-product !hidden md:!block">
+                {t("shop.badges.limitedStock")}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-2 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-4">
+          <h3 className="font-sans font-normal text-base md:text-lg lg:text-xl leading-tight tracking-wide mb-0 w-full md:w-auto">{product.name}</h3>
+          <p className="text-xs md:text-sm lg:text-base md:whitespace-nowrap">${Math.floor(product.price)}</p>
+        </div>
+
+        {/* Variant Swatches */}
+        {product.variants && product.variants.length > 0 && (
+          <div 
+            className="flex gap-2 mt-3 pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {product.variants.map((variant, variantIdx) => (
+              <button
+                key={variantIdx}
+                onClick={(e) => {
+                  e.preventDefault?.();
+                  e.stopPropagation();
+                  navigate(`/product/${product.id}?variant=${variantIdx}`);
+                }}
+                className="w-8 h-8 rounded-full border-2 border-border hover:border-foreground transition-all"
+                style={{ backgroundColor: variant.colorHex }}
+                title={variant.color}
+                aria-label={`Select ${variant.color} variant`}
+              />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </Link>
+  );
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -247,7 +352,7 @@ export default function ShopPage() {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-6 py-12 md:px-12">
+      <div>
         <header className="mb-16">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
@@ -301,67 +406,10 @@ export default function ShopPage() {
         </header>
 
         <div
-          className={`grid gap-12 ${visibleProducts.length > 1 ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-3" : "justify-center"}`}
+          className={`grid gap-5 md:gap-6 ${visibleProducts.length > 1 ? "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "justify-center"}`}
         >
           {filteredAndSortedProducts.map((product, idx) => (
-            <Link href={productHref(product)} key={product.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
-                className="group cursor-pointer"
-                data-testid={`card-product-${product.id}`}
-              >
-                <div className="relative mb-6 aspect-[4/5] overflow-hidden bg-muted">
-                  {product.imageSecondary ? (
-                    <div className="absolute inset-0">
-                      <img
-                        src={product.image}
-                        alt=""
-                        className={`absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity ${prefersReducedMotion ? "duration-100" : "duration-700"} ease-in-out group-hover:opacity-0`}
-                      />
-                      <img
-                        src={product.imageSecondary}
-                        alt=""
-                        className={`absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity ${prefersReducedMotion ? "duration-100" : "duration-700"} ease-in-out group-hover:opacity-100`}
-                      />
-                    </div>
-                  ) : (
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-full w-full object-cover"
-                    />
-                  )}
-
-                  <div className="pointer-events-none absolute left-4 top-4 flex flex-col gap-2">
-                    {product.isBestSeller && (
-                      <span className="bg-primary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
-                        {t("shop.badges.bestSeller")}
-                      </span>
-                    )}
-                    {product.isNew && (
-                      <span className="bg-black px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-white">
-                        {t("shop.badges.new")}
-                      </span>
-                    )}
-                    {product.isLimited && (
-                      <span className="bg-secondary px-3 py-1 text-[8px] font-bold uppercase tracking-widest text-secondary-foreground">
-                        {t("shop.badges.limitedStock")}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {/* <div className="mb-2 flex items-baseline justify-between gap-4">
-                  <h3 className="text-product-name mb-0">{product.name}</h3>
-                  <p className="text-sm">${product.price.toFixed(2)}</p>
-                </div> */}
-                  <div className="mb-2 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-4">
-                    <h3 className="text-product-name mb-0 w-full md:w-auto">{product.name}</h3>
-                    <p className="text-sm md:whitespace-nowrap">${product.price.toFixed(2)}</p>
-                  </div>
-              </motion.div>
-            </Link>
+            <ProductCard key={product.id} product={product} idx={idx} prefersReducedMotion={prefersReducedMotion} t={t} />
           ))}
         </div>
       </div>

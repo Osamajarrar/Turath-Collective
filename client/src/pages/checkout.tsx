@@ -142,9 +142,12 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-4 border-t border-border/50 pt-6">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground font-light">Subtotal</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-muted-foreground font-light">Subtotal</span>
+                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Shipping and taxes will be calculated at checkout</p>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-light">Shipping</span>
