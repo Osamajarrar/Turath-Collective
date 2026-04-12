@@ -15,6 +15,10 @@
       "embroidery": {
         "title": "Embroidery",
         "description": "Centuries-old Tatreez patterns, hand-stitched on the finest local linens."
+      },
+      "glass": {
+        "title": "Glass",
+        "description": "In the works — stay tuned for updates on this new collection coming soon."
       }
     },
     "collections": {
@@ -25,6 +29,10 @@
       "tatreez": {
         "title": "Tatreez Embroidery",
         "description": "Palestinian cross-stitch is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language. It is a map of village, season, and lineage encoded in thread. Recognized by UNESCO in 2021, Tatreez is a testament to the endurance of the human hand."
+      },
+      "glass": {
+        "title": "Glass Collection",
+        "description": "We are currently curating a collection of hand-blown glassware from artisans in Palestine."
       }
     },
     "commitment": {

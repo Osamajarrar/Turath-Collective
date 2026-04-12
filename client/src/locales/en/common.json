@@ -29,6 +29,7 @@
     "heading": "Your Bag",
     "qty": "Qty",
     "subtotal": "Subtotal",
+    "shippingTaxesNote": "Shipping and taxes will be calculated at checkout",
     "checkout": "Checkout",
     "empty": "Your bag is empty.",
     "remove": "Remove",
@@ -125,6 +126,11 @@
       "title": "Embroidery",
       "description": "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
       "cta": "SHOP EMBROIDERY"
+    },
+    "glass": {
+      "title": "Glass",
+      "description": "Mouth-blown glassware from artisans in Palestine.",
+      "cta": "SHOP GLASS"
     }
   },
   "collectionCards": {

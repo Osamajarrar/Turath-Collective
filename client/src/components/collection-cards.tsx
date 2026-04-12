@@ -97,7 +97,7 @@ export default function CollectionCards() {
 
   return (
     <section className="py-12 bg-background">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         {/* Header row */}
         <div
           className={`flex items-center ${isSingle ? "justify-center mb-4" : "justify-between mb-6"}`}

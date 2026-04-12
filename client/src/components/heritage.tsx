@@ -40,7 +40,7 @@ export default function Heritage() {
   }, [carouselImages.length]);
   return (
     <section className="py-12 bg-background border-t border-border/40">
-      <div className="container mx-auto px-6 md:px-12">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-stretch">
           <motion.div
             initial={{ opacity: 0, x: -20 }}

@@ -29,6 +29,7 @@
     "heading": "Votre panier",
     "qty": "Qté",
     "subtotal": "Sous-total",
+    "shippingTaxesNote": "Les frais d'expédition et les taxes seront calculés à la caisse",
     "checkout": "Commander",
     "empty": "Votre panier est vide.",
     "remove": "Retirer",

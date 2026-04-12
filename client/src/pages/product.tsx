@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useRoute, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ChevronLeft, Minus, Plus, ShoppingBag, ChevronDown, ChevronUp,
+  ChevronLeft, Minus, Plus, ShoppingBag, ChevronDown, ChevronUp, Brush, Droplets,
 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { cn } from "@/lib/utils";
@@ -285,11 +285,11 @@ export default function ProductPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: sectionDuration }}
             >
-              <div className="mb-6 flex items-center gap-4">
+              <div className="mb-6 flex flex-row items-center gap-4">
                 {product.isBestSeller && (
-                  <span className="bg-background text-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-[5px]">
+                  <div className="badge-product">
                     Best Seller
-                  </span>
+                  </div>
                 )}
               </div>
 
@@ -370,13 +370,37 @@ export default function ProductPage() {
                 )}
               </div>
 
+              {/* Product Features */}
+              <div className="my-12 rounded-lg p-8 bg-gradient-to-br from-background to-muted/20 border border-border">
+                <div className="grid grid-cols-2 gap-12">
+                  <div className="flex flex-row items-center gap-6">
+                    <div className="shrink-0">
+                      <Droplets className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-foreground">Dishwasher Safe</p>
+                      <p className="text-xs text-foreground/60 mt-2">Everyday convenience without compromise</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center gap-6">
+                    <div className="shrink-0">
+                      <Brush className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-foreground">Hand Painted</p>
+                      <p className="text-xs text-foreground/60 mt-2">Traditional artistry in every brushstroke</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Accordions */}
               <div className="border-t border-border">
                 <Accordion title="Description" duration={accordionDuration}>
                   <p>{product.description}</p>
                 </Accordion>
                 {Object.keys(product.specs).length > 0 && (
-                  <Accordion title="Specifications" duration={accordionDuration}>
+                  <Accordion title="Details" duration={accordionDuration}>
                     <ul className="space-y-2">
                       {Object.entries(product.specs).map(([key, val]) => (
                         <li key={key} className="flex justify-between">
@@ -387,10 +411,9 @@ export default function ProductPage() {
                     </ul>
                   </Accordion>
                 )}
-                <Accordion title="Shipping & Returns" duration={accordionDuration}>
+                <Accordion title="Care" duration={accordionDuration}>
                   <p>
-                    Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within
-                    7–14 business days. 14-day heritage guarantee returns.
+                    Hand-crafted in Palestine. Dishwasher safe for easy cleaning. Hand painted with natural dyes. Handle with care to preserve the artistry of each piece.
                   </p>
                 </Accordion>
               </div>
@@ -420,9 +443,9 @@ export default function ProductPage() {
                       />
                       {suggestedProduct.isBestSeller && (
                         <div className="pointer-events-none absolute left-4 top-4">
-                          <span className="bg-background text-foreground px-3 py-1 text-[8px] font-bold uppercase tracking-widest rounded-[5px]">
+                          <div className="badge-product">
                             Best Seller
-                          </span>
+                          </div>
                         </div>
                       )}
                     </div>

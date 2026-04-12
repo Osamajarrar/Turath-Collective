@@ -1,6 +1,6 @@
 import ceramicCard from "@/assets/burgundy-olive-set.png";
 import embroideryCard from "@/assets/embroidery.jpg";
-
+import glassCard from "@/assets/product-vase-1.png";
 
 export type Collection = {
   title: string;
@@ -41,6 +41,7 @@ type VisibilityFlags = {
 const categoryVisibility: Record<string, VisibilityFlags> = {
   ceramics: { comingSoon: false, hidden: false },
   embroidery: { comingSoon: false, hidden: false },
+  glass: { comingSoon: true, hidden: false },
 };
 
 const getVisibilityFlags = (handle: string): VisibilityFlags =>
@@ -79,6 +80,23 @@ const allCategories = (t: (key: string) => any): Category[] => [
         cta: t("collections.embroidery.cta"),
         image: embroideryCard,
         handle: "embroidery",
+      },
+    ],
+  },
+  {
+    ...getVisibilityFlags("glass"),
+    title: t("collections.glass.title"),
+    description: t("collections.glass.description"),
+    image: glassCard,
+    handle: "glass",
+    collections: [
+      {
+        ...getVisibilityFlags("glass"),
+        title: t("collections.glass.title"),
+        description: t("collections.glass.description"),
+        cta: t("collections.glass.cta"),
+        image: glassCard,
+        handle: "glass",
       },
     ],
   },
