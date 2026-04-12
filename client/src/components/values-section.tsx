@@ -24,7 +24,7 @@ export default function ValuesSection() {
               className="text-center md:text-left"
             >
               <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mb-4 block">{value.number}</span>
-              <h3 className="heading-subsection mb-4">{value.title}</h3>
+              <h3 className="font-serif text-2xl mb-4">{value.title}</h3>
               <p className="text-sm text-foreground/60 leading-relaxed font-light">
                 {value.description}
               </p>

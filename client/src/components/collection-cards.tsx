@@ -62,7 +62,7 @@ function SingleCard({
 
       <div className="px-4">
         <h3
-          className={`font-sans font-bold text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
+          className={`font-serif text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
         >
           {category.title}
         </h3>
@@ -109,7 +109,7 @@ export default function CollectionCards() {
           </span>
           {!isSingle && (
             <Link href="/shop">
-              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary mb-6">
+              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
                 {t("collectionCards.shopAll")} →
               </button>
             </Link>

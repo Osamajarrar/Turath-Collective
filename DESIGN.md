@@ -1,7 +1,7 @@
 # Turath Collective Design System
 
-**Version:** 1.0  
-**Last Updated:** April 5, 2026  
+**Version:** 1.1  
+**Last Updated:** April 12, 2026  
 **Framework:** Tailwind CSS v4 + Radix UI + Framer Motion
 
 ---
@@ -83,8 +83,8 @@ All color combinations meet **AAA compliance** (19.2:1+):
 
 A consistent two-font system that balances premium brand presence with friendly readability:
 
-- **PlayfairDisplay** (serif): Used **exclusively** for page titles (h1) and major section headings (h2) to establish premium brand identity
-- **Comfortaa** (sans-serif): Used for everything else—product names, subsection headings, body text, navigation, and UI elements
+- **PlayfairDisplay** (serif): Used for page titles (h1), major section headings (h2), subsection headings (h3), and featured statistics to establish premium brand identity and visual hierarchy
+- **Comfortaa** (sans-serif): Used for product names, body text, navigation links, labels, and standard UI elements
 
 This approach prevents visual noise while maintaining a strong brand voice.
 
@@ -108,13 +108,13 @@ This approach prevents visual noise while maintaining a strong brand voice.
 // Section headings (h2 equivalents) - PlayfairDisplay for premium sections
 <h2 className="heading-section">Heritage, Story, Testimonials</h2>
 
-// Subsection headings (h3 equivalents) - Comfortaa bold for hierarchy
+// Subsection headings (h3 equivalents) - PlayfairDisplay for visual emphasis
 <h3 className="heading-subsection">Value Titles, Category Names</h3>
 
 // Product names - Comfortaa bold to distinguish from headers
 <h3 className="text-product-name">Product Title</h3>
 
-// Featured statistics - Comfortaa bold
+// Featured statistics - PlayfairDisplay for premium feel
 <span className="text-featured-stat">1,500+</span>
 
 // Testimonials & quotes - Comfortaa italic
@@ -135,12 +135,12 @@ This approach prevents visual noise while maintaining a strong brand voice.
 **Headings:**
 - `.heading-page`: 5rem-10rem | PlayfairDisplay | h1 (hero, main page titles)
 - `.heading-section`: 3rem-5rem | PlayfairDisplay | h2 (section intros: heritage, reviews, story)
-- `.heading-subsection`: 1.25rem-2rem | Comfortaa bold | h3 (subsection titles, value headings)
+- `.heading-subsection`: 1.25rem-2rem | PlayfairDisplay | h3 (subsection titles, value headings)
 
 **Product & Featured:**
-- `.text-product-name`: 1rem-1.5rem | Comfortaa bold | Product card names, shopping
-- `.text-collection-name`: 1.25rem-2rem | Comfortaa bold | Collection/category names
-- `.text-featured-stat`: 1.25rem-2rem | Comfortaa bold | Prominent numbers, stats
+- `.text-product-name`: 1rem-1rem | Comfortaa bold | Product card names, shopping
+- `.text-collection-name`: 1.25rem-2rem | PlayfairDisplay | Collection/category names, premium headings
+- `.text-featured-stat`: 1.25rem-2rem | PlayfairDisplay | Prominent numbers, stats
 
 **Body & Quotes:**
 - `.text-body`: 16px (1rem) | Comfortaa light | Standard paragraphs
@@ -400,6 +400,32 @@ import { ArrowRight } from "lucide-react";
 - Hero section (Shop Now CTA)
 - Newsletter signup
 - Other prominent page-level actions
+
+### Badge Component
+
+Badges use a unified style across the site.
+
+```tsx
+import { Badge } from "@/components/ui/badge";
+
+// Default badge styling
+<Badge className="bg-background text-foreground px-4 py-1.5 rounded-[5px] text-[10px] uppercase tracking-widest font-bold">
+  Best Seller
+</Badge>
+
+// Product card badge
+<Badge className="absolute top-6 left-6 z-20 bg-background text-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-[5px]">
+  {product.badge}
+</Badge>
+```
+
+**Style Guidelines:**
+- **Background**: `bg-background` (cream) for standard badges
+- **Text Color**: `text-foreground` or `text-foreground/60` for muted
+- **Border Radius**: `rounded-[5px]` (subtle rounding)
+- **Padding**: `px-4 py-1.5` standard, adjust for size needs
+- **Typography**: `text-[10px] uppercase tracking-widest font-bold`
+- **Position**: Absolute positioning for product overlays (top-6 left-6)
 
 ### Arrow Link Component
 
@@ -759,18 +785,79 @@ import { motion } from "framer-motion";
 | 800ms | Page transitions |
 | 1000-1200ms | Complex/multi-step animations |
 
-### Reduce Motion Support
+### Carousel Patterns
 
-**TODO: Phase 2** - Implement `prefers-reduced-motion` for accessibility.
+Carousel components (story, heritage, reviews) use consistent auto-advance and navigation.
 
 ```tsx
-// Future implementation
-const prefersReducedMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)"
-).matches;
+// Auto-advance carousel every 6 seconds with navigation dots
+const [active, setActive] = useState(0);
+const [carouselImages, setCarouselImages] = useState<ShopifyImage[]>(FALLBACK_IMAGES);
 
-const duration = prefersReducedMotion ? 0.1 : 0.6;
+// Auto-advance effect
+useEffect(() => {
+  const timer = setInterval(() => {
+    setActive((prev) => (prev + 1) % carouselImages.length);
+  }, 6000);
+  return () => clearInterval(timer);
+}, [carouselImages.length]);
+
+// Image transition with AnimatePresence
+<AnimatePresence mode="wait">
+  <motion.img
+    key={active}
+    src={carouselImages[active].url}
+    initial={{ opacity: 0, scale: 1.1 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.9 }}
+    transition={{ duration: prefersReducedMotion ? 0.1 : 0.8 }}
+    className="w-full h-full object-cover"
+  />
+</AnimatePresence>
+
+// Navigation dots (only show if > 1 image)
+{carouselImages.length > 1 && (
+  <div className="flex gap-3 mt-6 md:mt-8">
+    {carouselImages.map((_, idx) => (
+      <button
+        key={idx}
+        onClick={() => setActive(idx)}
+        className={`h-1 transition-all duration-500 ${
+          active === idx ? "w-12 bg-primary" : "w-6 bg-primary/10"
+        }`}
+        aria-label={`Go to slide ${idx + 1}`}
+      />
+    ))}
+  </div>
+)}
 ```
+
+**Pattern Features:**
+- **Auto-advance**: 6000ms interval (6 seconds)
+- **Image Load**: Fetches from Shopify collections (`story-carousel`, `heritage-carousel`), falls back to local assets
+- **Smooth Transitions**: Scale 1.1 → 1.0 on enter, 1.0 → 0.9 on exit
+- **Navigation**: Clickable dots showing active state (wider when active)
+- **Reduced Motion**: Respects `prefers-reduced-motion` with 0.1s transitions
+- **Rounded Container**: Images use `rounded-lg` or `rounded-2xl`
+
+### Reduce Motion Support
+
+All animations respect `prefers-reduced-motion` preference.
+
+```tsx
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+
+const prefersReducedMotion = useReducedMotion();
+const duration = prefersReducedMotion ? 0.1 : 0.6;
+
+<motion.div
+  transition={{ duration }}
+>
+  Content
+</motion.div>
+```
+
+**Applied to:** All Framer Motion animations, carousel transitions, and interactive elements.
 
 ---
 
@@ -985,10 +1072,11 @@ Before merging AI-generated code, verify:
 - [ ] **Forms**: All inputs have `<label htmlFor>` associations
 - [ ] **Buttons**: Primary CTAs use custom button pattern with arrow icon; regular actions use `<Button>` component
 - [ ] **Links**: Use `<ArrowLink>` for text CTAs, `<Link>` for navigation
+- [ ] **Badges**: Use `bg-background text-foreground` with `rounded-[5px]`, not secondary colors
 - [ ] **Spacing**: Use `gap-`, `p-`, `m-` utilities (no arbitrary values)
 - [ ] **Focus States**: Interactive elements have `focus-visible:ring` or equivalent
 - [ ] **Hover States**: Visible feedback (shadow + background change for CTAs, not subtle 95% opacity)
-- [ ] **Border Radius**: Use `rounded-lg` max (not `rounded-[2rem]`)
+- [ ] **Border Radius**: Use `rounded-lg` max for images/cards; `rounded-[5px]` for badges
 - [ ] **Contrast**: Text has 4.5:1+ contrast ratio
 - [ ] **Animations**: Duration is 300-800ms (not 1000ms+ unless necessary)
 
@@ -1010,7 +1098,7 @@ Before merging AI-generated code, verify:
 
 ## Future Enhancements (Phase 2)
 
-- [ ] Implement `prefers-reduced-motion` for animations
+- [x] Implement `prefers-reduced-motion` for animations ✓ (completed)
 - [ ] Increase touch targets to 44×44px minimum
 - [ ] Create Storybook for component documentation
 - [ ] Add dark mode support
@@ -1040,10 +1128,11 @@ Before merging AI-generated code, verify:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | Apr 12, 2026 | Updated font strategy for subsections and stats; added badge styling documentation; documented carousel pattern; marked prefers-reduced-motion as implemented |
 | 1.0 | Apr 5, 2026 | Initial design system documentation |
 
 ---
 
-**Last Updated:** April 5, 2026  
+**Last Updated:** April 12, 2026  
 **Maintained By:** Turath Collective Design Team  
 **Questions?** Refer to existing components in `client/src/components/ui/` for implementation examples.

@@ -37,13 +37,13 @@ export default function ProductGrid() {
             <div className="flex gap-8">
               <button 
                 onClick={() => setActiveTab("ceramics")}
-                className={cn("font-sans font-bold text-3xl md:text-4xl transition-all", activeTab === "ceramics" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+                className={cn("font-serif font-bold text-3xl md:text-4xl transition-all", activeTab === "ceramics" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
               >
                 Ceramics
               </button>
               <button 
                 onClick={() => setActiveTab("embroidery")}
-                className={cn("font-sans font-bold text-3xl md:text-4xl transition-all", activeTab === "embroidery" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
+                className={cn("font-serif font-bold text-3xl md:text-4xl transition-all", activeTab === "embroidery" ? "text-foreground opacity-100" : "text-foreground/30 hover:opacity-100")}
               >
                 Embroidery
               </button>
@@ -78,7 +78,7 @@ function ProductCard({ product }: any) {
       <motion.div className="group cursor-pointer" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         <div className="relative aspect-[4/5] overflow-hidden bg-[#F4F2EE] mb-8">
           {product.badge && (
-            <Badge className="absolute top-6 left-6 z-20 bg-secondary text-secondary-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-none border-none font-bold shadow-sm">
+            <Badge className="absolute top-6 left-6 z-20 bg-background text-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-[5px] border-none font-bold shadow-sm">
               {product.badge}
             </Badge>
           )}
@@ -87,7 +87,7 @@ function ProductCard({ product }: any) {
         </div>
         <div className="space-y-2">
           <div className="flex justify-between items-baseline">
-            <h3 className="text-product-name text-foreground group-hover:text-primary transition-colors">{product.name}</h3>
+            <h3 className="font-sans text-base md:text-lg font-bold leading-tight text-foreground group-hover:text-primary transition-colors">{product.name}</h3>
             <span className="font-sans text-xs font-bold text-foreground/50 tracking-wider">{product.price}</span>
           </div>
           <div className="w-0 group-hover:w-full h-px bg-primary transition-all duration-500 opacity-30" />

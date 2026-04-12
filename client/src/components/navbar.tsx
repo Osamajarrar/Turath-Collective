@@ -61,7 +61,7 @@ export default function Navbar() {
   return (
     <>
       {/* Announcement Banner — fixed, always visible above the nav */}
-      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
+      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
         {t("announcement")}
       </div>
 
@@ -169,23 +169,23 @@ export default function Navbar() {
               </div>
               <div className="flex-1 p-8 space-y-8 overflow-y-auto">
                 <div className="space-y-4">
-                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.collections")}</p>
-                  <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.allProducts")}</Link>
+                  <p className="text-[10px] uppercase tracking-widest opacity-30">{t("nav.collections")}</p>
+                  <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.allProducts")}</Link>
                   {categories.map((category) => (
                     category.comingSoon ? (
                       <div
                         key={category.handle}
-                        className="block text-3xl font-sans font-bold opacity-50 cursor-not-allowed flex items-center gap-2"
+                        className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
                       >
                         {category.title}
-                        <span className="text-[8px] uppercase tracking-widest font-bold bg-muted px-2 py-1 rounded">{t("nav.comingSoon")}</span>
+                        <span className="text-[8px] uppercase tracking-widest bg-background text-foreground px-2 py-1 rounded-[5px]">{t("nav.comingSoon")}</span>
                       </div>
                     ) : (
                       <Link
                         key={category.handle}
                         href={`/shop?category=${category.handle}`}
                         onClick={() => setIsMenuOpen(false)}
-                        className="block text-3xl font-sans font-bold"
+                        className="block text-3xl font-serif"
                       >
                         {category.title}
                       </Link>
@@ -193,9 +193,9 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="space-y-4 pt-8 border-t border-border/50">
-                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.brand")}</p>
-                  <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.ourStory")}</Link>
-                  <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-sans font-bold">{t("nav.contact")}</Link>
+                  <p className="text-[10px] uppercase tracking-widest opacity-30">{t("nav.brand")}</p>
+                  <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ourStory")}</Link>
+                  <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.contact")}</Link>
                 </div>
                 {/* Language in mobile menu */}
                 <div className="pt-8 border-t border-border/50">
