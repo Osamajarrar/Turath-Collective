@@ -1,16 +1,13 @@
 import { Switch, Route } from "wouter";
 import { lazy, Suspense } from "react";
+// GA4 is injected server-side via custom Vite plugin (transformIndexHtml).
+// Do not add @vercel/analytics or @vercel/speed-insights — they are not installed.
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "@/context/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ScrollToTop from "@/components/scroll-to-top";
-
-// Analytics are deferred until after initial render
-// Using lazy + Suspense with no fallback = loads in background
-const Analytics = lazy(() => import("@vercel/analytics/react").then(m => ({ default: m.Analytics })));
-const SpeedInsights = lazy(() => import("@vercel/speed-insights/react").then(m => ({ default: m.SpeedInsights })));
 
 // Critical pages loaded eagerly for fast initial load
 import Home from "@/pages/home";
@@ -63,13 +60,10 @@ function App() {
       <CartProvider>
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <Suspense fallback={null}>
+            <Router />
+          </Suspense>
         </TooltipProvider>
-        {/* Analytics deferred: Load after critical rendering complete */}
-        <Suspense fallback={null}>
-          <Analytics />
-          <SpeedInsights />
-        </Suspense>
       </CartProvider>
     </QueryClientProvider>
   );

@@ -120,8 +120,8 @@ export default defineConfig({
           // Shopify integration
           shopify: ["@shopify/storefront-api-client"],
           
-          // Analytics (low priority, can load async)
-          analytics: ["@vercel/analytics", "@vercel/speed-insights"],
+          // Analytics are injected by Vite ga4Plugin via transformIndexHtml.
+          // Do NOT add @vercel/analytics or @vercel/speed-insights here.
         },
       },
     },

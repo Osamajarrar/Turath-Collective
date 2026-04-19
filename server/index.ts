@@ -20,6 +20,10 @@ import { setupAuth } from "./auth";
 const app = express();
 const httpServer = createServer(app);
 
+// Trust the first proxy hop (Replit's reverse proxy / X-Forwarded-For)
+// Required for express-rate-limit to identify clients correctly
+app.set("trust proxy", 1);
+
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
