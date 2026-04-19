@@ -24,6 +24,42 @@ uri = "file://attached_assets/product_designs/concept_4_floating.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "LBZyF9B3Thtqj5nSX_AFx"
+uri = "file://attached_assets/product_designs/v2_concept_A_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xq41FeW6Xy9CI5BI0QqK5"
+uri = "file://attached_assets/product_designs/v2_concept_A_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iQQ73PHZoXB9hGTSbqJSN"
+uri = "file://attached_assets/product_designs/v2_concept_B_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xdOwM4gv3y1qF0gZlCSb1"
+uri = "file://attached_assets/product_designs/v2_concept_B_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w-3wraghQ-lwhrrzUjaze"
+uri = "file://attached_assets/product_designs/v2_concept_C_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LZzTuLRxmGJgyj9sCFwuS"
+uri = "file://attached_assets/product_designs/v2_concept_C_mobile.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "5uSK277wQ5JyVgiAgk7fo"
 uri = "file://attached_assets/product_designs/concept_1_editorial.png"
@@ -47,3 +83,39 @@ id = "zDSS8g3SISGqfg45dveOB"
 uri = "file://attached_assets/product_designs/concept_4_floating.png"
 type = "image"
 title = "Concept 4 — Floating Detail Card"
+
+[[outputs]]
+id = "mTrLP6nTLEtG8f2rAhVZC"
+uri = "file://attached_assets/product_designs/v2_concept_A_desktop.png"
+type = "image"
+title = "Concept A — Fable-classic (Desktop)"
+
+[[outputs]]
+id = "HoZLMAseXVbAVmcaEIGvG"
+uri = "file://attached_assets/product_designs/v2_concept_A_mobile.png"
+type = "image"
+title = "Concept A — Fable-classic (Mobile)"
+
+[[outputs]]
+id = "V7Ztw6T7aeRg7Hr_qDPcm"
+uri = "file://attached_assets/product_designs/v2_concept_B_desktop.png"
+type = "image"
+title = "Concept B — Story-Woven (Desktop)"
+
+[[outputs]]
+id = "mxPEeV43eTdAztAa-wxR6"
+uri = "file://attached_assets/product_designs/v2_concept_B_mobile.png"
+type = "image"
+title = "Concept B — Story-Woven (Mobile)"
+
+[[outputs]]
+id = "yQoCTuO_a_w1OuQCRE2K6"
+uri = "file://attached_assets/product_designs/v2_concept_C_desktop.png"
+type = "image"
+title = "Concept C — Refined Floating Card (Desktop)"
+
+[[outputs]]
+id = "EtaiGa62ewKMf0W_CAi6y"
+uri = "file://attached_assets/product_designs/v2_concept_C_mobile.png"
+type = "image"
+title = "Concept C — Refined Floating Card (Mobile)"
