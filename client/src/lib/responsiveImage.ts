@@ -45,53 +45,19 @@ export function generateSrcset(baseUrl: string): string | undefined {
 }
 
 /**
- * Generates sizes attribute for responsive images
+/**
+ * Image size mapping for different layout contexts
  * Tells browser which image size to load based on viewport
- * 
- * @param containerWidth - CSS width of the image container (e.g., "100vw", "col-span-3")
- * @returns CSS sizes attribute value
- * 
- * @example
- * // Full-width image on mobile, constrained on desktop
- * generateSizes("full-width-hero")
- * → "(min-width: 1200px) 800px, (min-width: 768px) 100vw, calc(100vw - 32px)"
- * 
- * // Product grid (3/5 width on desktop)
- * generateSizes("product-hero")
- * → "(min-width: 1200px) 533px, (min-width: 768px) calc((100vw - 48px) / 2), calc((100vw - 32px) / 2)"
  */
-export function generateSizes(layout: "full-width-hero" | "product-hero" | "product-grid" | "thumbnail"): string {
-  switch (layout) {
-    case "full-width-hero":
-      // Full-width hero: constrained to max-width at desktop
-      // Accounts for container padding and responsive breakpoints
-      return "(min-width: 1200px) 1000px, (min-width: 768px) 100vw, calc(100vw - 48px)";
+const SIZES_MAP = {
+  "full-width-hero": "(min-width: 1200px) 1000px, (min-width: 768px) 100vw, calc(100vw - 48px)",
+  "product-hero": "(min-width: 1200px) 1066px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)",
+  "product-grid": "(min-width: 1024px) calc((100vw - 96px) / 3), (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)",
+  "thumbnail": "(min-width: 1024px) 264px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)",
+} as const;
 
-    case "product-hero":
-      // Product main image: 3/5 width on desktop (1820px max container)
-      // Desktop: ~1066px (matching Fable pattern for optimal Shopify delivery)
-      // Tablet: ~50% width with padding allowance
-      // Mobile: full width minus padding
-      // Includes container max-width, section padding, and grid gaps
-      return "(min-width: 1200px) 1066px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)";
-
-    case "product-grid":
-      // Product grid thumbnail: responsive 3-4 column layout
-      // Desktop (1024px+): ~33% of viewport minus padding
-      // Tablet (768px+): ~50% of viewport minus padding
-      // Mobile: full width minus padding
-      return "(min-width: 1024px) calc((100vw - 96px) / 3), (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)";
-
-    case "thumbnail":
-      // Small thumbnail: constrained size for gallery
-      // Desktop: 264px (fixed for consistency)
-      // Tablet: 50% minus padding
-      // Mobile: full width minus padding
-      return "(min-width: 1024px) 264px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 48px)";
-
-    default:
-      return "100vw";
-  }
+export function generateSizes(layout: keyof typeof SIZES_MAP): string {
+  return SIZES_MAP[layout] ?? "100vw";
 }
 
 /**

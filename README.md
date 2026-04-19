@@ -4,23 +4,35 @@ Premium Palestinian heritage craftsmanship brand based in Montreal. Sells hand-p
 
 ---
 
+## 📚 Documentation
+
+For detailed guides, see:
+
+| Document | Purpose |
+|---|---|
+| [.github/API.md](./.github/API.md) | API endpoint reference & GraphQL examples |
+| [.github/DEPLOYMENT.md](./.github/DEPLOYMENT.md) | Vercel deployment setup & configuration |
+| [.github/TROUBLESHOOTING.md](./.github/TROUBLESHOOTING.md) | Common issues & solutions |
+| [SHOPIFY_SETUP.md](./SHOPIFY_SETUP.md) | Shopify Storefront API setup guide |
+
+---
+
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 18 + TypeScript + Vite 7 |
-| Styling | Tailwind CSS v4 + Radix UI primitives |
-| Routing | Wouter |
-| Server state | TanStack Query v5 |
-| Backend | Express + TypeScript (tsx, CommonJS build) |
-| Database | PostgreSQL via Drizzle ORM |
-| Auth | Passport.js (Local strategy) + bcryptjs |
-| Sessions | express-session + connect-pg-simple (stored in PostgreSQL) |
-| Email | Resend API |
-| E-commerce | Shopify Storefront API v2024-01 (headless, GraphQL) |
-| i18n | i18next + react-i18next + LanguageDetector |
-| Analytics | Google Analytics 4 (injected via Vite `transformIndexHtml`) |
-| Forms | React Hook Form + Zod |
+| Layer | Technology | Notes |
+|---|---|---|
+| Frontend | React 18 + TypeScript + Vite 7 | Fast dev/build, ESM-first |
+| Styling | Tailwind CSS v4 + Radix UI primitives | Responsive, accessible components |
+| Routing | Wouter | Lightweight client-side routing |
+| Server state | TanStack Query v5 | Async data fetching & caching |
+| Backend | Vercel Functions (serverless) | `/api/shopify` proxy for Shopify API |
+| Database | PostgreSQL (optional for v2+) | Deferred for future auth/contact features |
+| Email | Resend API | Transactional emails (optional) |
+| E-commerce | Shopify Storefront API v2024-01 | GraphQL headless commerce |
+| i18n | i18next + react-i18next | 3 languages: EN, FR, AR (with RTL) |
+| Analytics | Google Analytics 4 | Injected via Vite at build time |
+| Forms | React Hook Form + Zod | Type-safe form validation |
+| Deployment | Vercel | Frontend CDN + serverless functions |
 
 ---
 
@@ -29,7 +41,7 @@ Premium Palestinian heritage craftsmanship brand based in Montreal. Sells hand-p
 ```
 turath-collective/
 ├── client/                        # Vite React frontend
-│   ├── index.html                 # HTML shell (GA4 injected here by build)
+│   ├── index.html                 # HTML shell (GA4 injected at build time)
 │   └── src/
 │       ├── App.tsx                # Root router (Wouter)
 │       ├── main.tsx               # Entry point — imports i18n before render
@@ -37,62 +49,76 @@ turath-collective/
 │       ├── pages/
 │       │   ├── home.tsx           # Landing page (hero + story + collections)
 │       │   ├── shop.tsx           # Product listing with collection filters
-│       │   ├── product.tsx        # Single product detail + variant selector
-│       │   ├── checkout.tsx       # Cart + Shopify checkout redirect
-│       │   ├── contact.tsx        # Contact form (wired to /api/contact)
-│       │   ├── login.tsx          # Sign in (wired to /api/auth/login)
-│       │   ├── signup.tsx         # Register (wired to /api/auth/register)
-│       │   ├── forgot-password.tsx# Forgot password UI (backend flow pending)
-│       │   ├── generic.tsx        # Dynamic content page (About, Privacy, etc.)
+│       │   ├── product.tsx        # Single product detail + variant selector + cart
+│       │   ├── contact.tsx        # Contact form (for future backend feature)
+│       │   ├── login.tsx          # Sign in page (for future auth feature)
+│       │   ├── signup.tsx         # Register page (for future auth feature)
+│       │   ├── about.tsx          # About page (brand story)
+│       │   ├── care.tsx           # Product care guide
+│       │   ├── faq.tsx            # FAQ (accordion)
+│       │   ├── forgot-password.tsx# Password reset (for future feature)
 │       │   └── not-found.tsx      # 404 page
 │       ├── components/
-│       │   ├── navbar.tsx         # Top navigation + language switcher + mobile drawer
+│       │   ├── PageLayout.tsx     # Wrapper: navbar + content + footer
+│       │   ├── navbar.tsx         # Top navigation + language switcher
+│       │   ├── footer.tsx         # Footer with links + newsletter
 │       │   ├── hero.tsx           # Full-bleed landing hero section
 │       │   ├── heritage.tsx       # Brand story section
-│       │   ├── story-section.tsx  # Artisan narrative section
+│       │   ├── story-section.tsx  # Artisan narrative
 │       │   ├── values-section.tsx # Brand values grid
 │       │   ├── collection-cards.tsx # Featured collections grid
-│       │   ├── product-grid.tsx   # Product card grid (Shopify or mock)
+│       │   ├── product-gallery.tsx # Product image carousel
+│       │   ├── suggested-product-card.tsx # Single product card
 │       │   ├── review-carousel.tsx# Customer testimonials carousel
 │       │   ├── social-proof.tsx   # Press logos / trust signals
 │       │   ├── newsletter.tsx     # Email subscription form
 │       │   ├── scroll-to-top.tsx  # Floating scroll-to-top button
+│       │   ├── ArrowLink.tsx      # Custom link component with arrow icon
 │       │   └── ui/                # Radix UI component library (shadcn pattern)
+│       ├── context/
+│       │   └── cart-context.tsx   # Shopping cart state (Shopify + mock)
+│       ├── hooks/
+│       │   ├── use-auth.ts        # Check if user is authenticated
+│       │   ├── use-mobile.tsx     # Detect mobile breakpoint
+│       │   ├── use-reduced-motion.ts # Respect prefers-reduced-motion
+│       │   └── use-toast.ts       # Toast notification
 │       ├── lib/
 │       │   ├── shopify.ts         # Shopify Storefront API service layer
-│       │   ├── i18n.ts            # i18next config + RTL initialisation
-│       │   ├── analytics.ts       # GA4 trackEvent() helper
-│       │   ├── queryClient.ts     # TanStack Query global client
+│       │   ├── i18n.ts            # i18next config + RTL init
+│       │   ├── analytics.ts       # GA4 tracking helper
+│       │   ├── queryClient.ts     # TanStack Query global config
+│       │   ├── collections.ts     # Collection data (Shopify + fallback)
+│       │   ├── responsiveImage.ts # Shopify CDN image optimization
 │       │   └── utils.ts           # Tailwind cn() utility
 │       └── locales/
-│           ├── en/translation.json
-│           ├── fr/translation.json
-│           └── ar/translation.json
-├── server/
-│   ├── index.ts                   # Express app entry point
-│   ├── routes.ts                  # All API route handlers
-│   ├── auth.ts                    # Passport.js setup + session config
-│   ├── storage.ts                 # Database access layer (IStorage interface)
-│   ├── db.ts                      # Drizzle ORM + PostgreSQL pool
-│   ├── email.ts                   # Resend email service (3 email types)
-│   ├── vite.ts                    # Vite dev server middleware (development only)
-│   └── static.ts                  # Static file serving (production only)
-├── shared/
-│   └── schema.ts                  # Drizzle schema + Zod types (shared FE/BE)
-├── vite.config.ts                 # Vite config (includes custom GA4 plugin)
+│           ├── en/common.json     # English translations
+│           ├── fr/common.json     # French translations
+│           └── ar/common.json     # Arabic translations
+├── api/                           # Vercel Functions (serverless backend)
+│   └── shopify.ts                 # Proxy Shopify Storefront GraphQL requests
+├── vite.config.ts                 # Vite configuration
 ├── vite-plugin-meta-images.ts     # Custom plugin: updates OG image URLs
-├── .env.example                   # All required environment variables
-├── SHOPIFY_SETUP.md               # Shopify integration setup guide
-└── drizzle.config.ts              # Drizzle Kit config
+├── package.json                   # Dependencies + scripts
+├── tsconfig.json                  # TypeScript configuration
+├── tailwind.config.ts             # Tailwind CSS configuration
+├── postcss.config.js              # PostCSS plugins
+├── vercel.json                    # Vercel deployment config
+├── .env.example                   # Environment variables template
+├── SHOPIFY_SETUP.md               # Shopify integration guide
+├── DESIGN.md                      # Design system & component patterns
+└── .github/
+    ├── API.md                     # API reference (Shopify proxy)
+    ├── DEPLOYMENT.md              # Vercel deployment guide
+    ├── TROUBLESHOOTING.md         # Common issues & solutions
+    └── instructions/              # Architecture & coding guidelines
 ```
-
 ---
 
-## Database Schema
+## Database Schema (v2+ Only)
 
-Managed with Drizzle ORM. All IDs are UUIDs generated by PostgreSQL (`gen_random_uuid()`).
+> **Note:** Database features (auth, contact) are deferred for v2+. v1 uses Shopify-only architecture.
 
-### `users`
+When implemented, Drizzle ORM will manage PostgreSQL schema:
 | Column | Type | Notes |
 |---|---|---|
 | `id` | varchar (UUID) | Primary key |
@@ -132,89 +158,60 @@ npm run db:push
 
 ## API Routes
 
-All routes are defined in `server/routes.ts`.
+**Full API reference:** See [.github/API.md](./.github/API.md)
 
-### Authentication
+All API requests go through **Vercel Functions** — a single serverless endpoint that proxies to Shopify:
 
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/auth/register` | Create account. Body: `{ email, password, firstName?, lastName? }`. Logs user in immediately. Returns user object. |
-| `POST` | `/api/auth/login` | Sign in. Body: `{ email, password }`. Returns user object on success. |
-| `POST` | `/api/auth/logout` | Destroys session. |
-| `GET` | `/api/me` | Returns current user if authenticated, 401 otherwise. |
+### `/api/shopify` (POST) — Shopify GraphQL Proxy
 
-**How it works:**
-- Passport.js LocalStrategy verifies `email`+`password` against `users` table
-- `bcryptjs` with 12 rounds hashes passwords at register, compares at login
-- Sessions are stored in the `session` PostgreSQL table via `connect-pg-simple`
-- Session cookie: `httpOnly`, `secure` in production, 30-day maxAge
-- `SESSION_SECRET` is **required** in production (server throws on startup without it)
+Proxies any Shopify Storefront API v2024-01 query.
 
-### Contact Form
+**Features:**
+- Keeps Storefront token server-side (secure)
+- Graceful fallback to mock data in development (`VITE_SHOPIFY_MODE=mock`)
+- Fails loudly in production (`VITE_SHOPIFY_MODE=live`) if misconfigured
+- Returns 503 when Shopify credentials are missing
 
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/contact` | Saves message to DB. Sends two emails: admin notification + user confirmation. Body: `{ name, email, subject, message }` |
+**Example:**
+```tsx
+const res = await fetch("/api/shopify", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: "query { products(first: 12) { ... } }",
+    variables: {}
+  })
+});
+```
 
-### Newsletter
-
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/newsletter` | Subscribes email. Deduplicates (200 if already subscribed). Sends welcome email. Body: `{ email }` |
-
-### Shopify Proxy
-
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/shopify` | Proxies any Shopify Storefront GraphQL query. Keeps credentials server-side. Returns `{ shopifyDisabled: true }` + 503 if not configured. |
-
-### Health Check
-
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/api/health` | Returns `{ status, email, shopify }` — useful for deployment verification. |
+**Client Library:** `client/src/lib/shopify.ts` exports `shopifyService` with methods:
+- `getProducts(first?, after?)`
+- `getProductByHandle(handle)`
+- `searchProducts(query, first?)`
+- `getCollectionByHandle(handle, first?, after?)`
+- `createCart()`
+- `getCart(cartId)`
+- `addToCart(cartId, lines)`
+- `removeFromCart(cartId, lineIds)`
+- `updateLineQuantity(cartId, lines)`
 
 ---
 
-## Email System
+## Authentication & Contacts (v2+ Features)
 
-Implemented in `server/email.ts` using the **Resend** SDK.
+The following are identified for v2:
 
-**Three email types:**
+### `/api/auth/register` — Sign Up
+Create user account. Body: `{ email, password, firstName?, lastName? }`
 
-| Function | Trigger | Recipient |
-|---|---|---|
-| `sendContactEmail` | Contact form submit | Admin (`collectiveturath@gmail.com`) |
-| `sendContactConfirmation` | Contact form submit | The person who filled the form |
-| `sendNewsletterWelcome` | Newsletter subscribe | Subscriber |
+### `/api/auth/login` — Sign In  
+Authenticate user. Body: `{ email, password }`
 
-**Graceful degradation:** When `RESEND_API_KEY` is not set, all three functions log to console instead of sending — no crashes, no errors surfaced to users.
+### `/api/auth/logout` — Sign Out
+Destroy session.
 
-Sender address: `noreply@turathcollective.com` (must be verified in Resend dashboard).
-
----
-
-## Shopify Headless Integration
-
-Implemented in `client/src/lib/shopify.ts`. All requests go through the backend proxy at `/api/shopify`.
-
-**GraphQL operations:**
-
-| Function | What it does |
-|---|---|
-| `getProducts(count, sortKey)` | Fetch product listing (supports sort by `CREATED_AT`, `PRICE`, `TITLE`) |
-| `getProduct(handle)` | Fetch single product by handle (slug) |
-| `getCollections()` | Fetch all collections (used for filter tabs in shop) |
-| `createCart(variantId, quantity)` | Create a new Shopify cart |
-| `addToCart(cartId, variantId, quantity)` | Add item to existing cart |
-| `buyNow(variantId)` | Create cart + return Shopify checkout URL |
-
-**Feature flag / mock fallback:**
-- When the server returns `{ shopifyDisabled: true }` (503), every method returns `null` or `[]`
-- Shop and product pages detect this and silently render local mock data
-- No console errors, no broken UI — the site works without Shopify credentials
-
-**Setup:** See `SHOPIFY_SETUP.md` for step-by-step Shopify app creation and token generation.
+### `/api/contact` — Contact Form
+Submit message. Body: `{ name, email, subject, message }`
 
 ---
 
@@ -251,51 +248,117 @@ Cover: navbar, hero, contact form, newsletter, footer, announcement bar, languag
 
 All variables documented in `.env.example`.
 
-| Variable | Required in prod | Description |
+### Production Required
+| Variable | Purpose | Example |
 |---|---|---|
-| `DATABASE_URL` | Yes (auto-set by Replit) | PostgreSQL connection string |
-| `SESSION_SECRET` | **Yes — server crashes without it** | Long random string for session signing |
-| `RESEND_API_KEY` | No (falls back to console logging) | Resend API key for transactional emails |
-| `SHOPIFY_STORE_DOMAIN` | No (falls back to mock data) | e.g. `turath-collective.myshopify.com` |
-| `SHOPIFY_STOREFRONT_TOKEN` | No (falls back to mock data) | Shopify Storefront API access token |
-| `VITE_GA_MEASUREMENT_ID` | No (analytics disabled) | GA4 Measurement ID, format `G-XXXXXXXXXX` |
+| `SHOPIFY_STORE_DOMAIN` | Shopify store URL | `mystore.myshopify.com` |
+| `SHOPIFY_STOREFRONT_TOKEN` | Storefront API access token | `shpat_...` |
+
+### Optional
+| Variable | Purpose | Default |
+|---|---|---|
+| `VITE_SHOPIFY_MODE` | Fallback mode: `"live"` (fail on error) or `"mock"` (fallback to mock data) | `"mock"` |
+| `VITE_GA_MEASUREMENT_ID` | Google Analytics 4 ID | — |
+| `DATABASE_URL` | PostgreSQL connection (v2+ feature) | — |
+| `RESEND_API_KEY` | Transactional email service (v2+ feature) | — |
+
+**For detailed setup instructions,** see [.github/DEPLOYMENT.md](./.github/DEPLOYMENT.md)
 
 ---
 
-## Development
+## Quick Start
+
+### Local Development
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 npm install
 
-# Push database schema
-npm run db:push
+# 2. Configure environment (copy .env.example to .env.local)
+cp .env.example .env.local
 
-# Start dev server (Express + Vite HMR on port 5000)
+# Edit .env.local with your Shopify credentials (optional for dev)
+# SHOPIFY_STORE_DOMAIN=...
+# SHOPIFY_STOREFRONT_TOKEN=...
+
+# 3. Start dev server (Vite + Vercel Functions proxy)
 npm run dev
 ```
 
-The dev server runs both the Express API and the Vite frontend on `http://localhost:5000`. Vite is mounted as Express middleware — there is no separate frontend port.
+Visit `http://localhost:5173` to start developing.
 
----
+**Dev setup includes:**
+- Vite hot module reloading (HMR)
+- Vercel Functions emulator for `/api/shopify`
+- Mock data fallback when Shopify is unconfigured
 
-## Production Build
+### Build for Production
 
 ```bash
-npm run build   # Compiles server to dist/index.cjs, bundles client to dist/public/
-npm start       # Runs the compiled production server
+npm run build
 ```
 
-In production, Express serves the built frontend as static files. Vite is not loaded.
+Outputs:
+- `dist/public/` — React app (optimized, minified)
+- `.vercel/` — Vercel Functions deployment metadata
+
+### Local Build Preview
+
+```bash
+npm run build
+vercel build && vercel start
+```
+
+Runs production build locally on `http://localhost:3000`.
 
 ---
 
-## What Is Not Yet Implemented
+## Deployment
 
-These items are identified as needed for full production readiness:
+**Platform:** Vercel (recommended)  
+**Frontend:** Vercel CDN  
+**Backend:** Vercel Functions  
+**Database:** None (v1) — optional PostgreSQL for v2+
 
-- **Password reset flow** — `/forgot-password` page exists but there is no backend token generation, email sending, or `/api/auth/reset-password` endpoint
-- **Cookie consent / GDPR-PIPEDA banner** — required before firing GA4 for Canadian and EU visitors
-- **SEO files** — no `sitemap.xml`, no `robots.txt`
-- **Security hardening** — no rate limiting on auth/contact routes, no HTTP security headers (Helmet.js)
-- **Account dashboard** — no order history (requires Shopify Customer API)
+**Setup:** See [.github/DEPLOYMENT.md](./.github/DEPLOYMENT.md) for step-by-step Vercel configuration.
+
+---
+
+## Shopify Setup
+
+**Required for production:**
+1. Create Shopify Storefront API app
+2. Generate access token
+3. Set `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_STOREFRONT_TOKEN` in Vercel environment
+
+**Detailed guide:** See [SHOPIFY_SETUP.md](./SHOPIFY_SETUP.md)
+
+---
+
+## v1 Scope (Current Release)
+
+✅ **Included:**
+- Shopify headless ecommerce integration (products, variants, search)
+- Shopping cart (client-side with Shopify checkout)
+- Responsive design (mobile, tablet, desktop)
+- Internationalization (EN, FR, AR with RTL)
+- Product gallery & image optimization
+- Google Analytics 4
+- Mock fallback (development-safe)
+- Vercel deployment ready
+
+---
+
+## v2+ Roadmap (Future Features)
+
+These features are deferred for future releases:
+
+- **User Authentication** — `/api/auth/register`, `/api/auth/login` (requires PostgreSQL + Passport.js)
+- **Contact Form Backend** — `/api/contact` (save to database, send emails)
+- **Newsletter Backend** — `/api/newsletter` (subscription management)
+- **Order History** — Shopify Customer API integration
+- **Password Reset** — Token generation & email verification
+- **Cookie Consent** — GDPR-PIPEDA compliant banner + GA4 gating
+- **SEO Files** — `sitemap.xml`, `robots.txt`
+- **Security Hardening** — Rate limiting, HTTP security headers (Helmet.js)
+- **Admin Dashboard** — Order history & account settings

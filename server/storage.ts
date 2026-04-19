@@ -1,10 +1,11 @@
 import { eq } from "drizzle-orm";
 import { db } from "./db";
-import {
-  users, contactMessages,
-  type User, type InsertUser,
-  type ContactMessage, type InsertContact,
-} from "@shared/schema";
+// Deferred v1: auth & contact features use Shopify instead
+// import {
+//   users, contactMessages,
+//   type User, type InsertUser,
+//   type ContactMessage, type InsertContact,
+// } from "@shared/schema";
 
 export interface IStorage {
   // User auth (backend kept; UI deferred to future launch)

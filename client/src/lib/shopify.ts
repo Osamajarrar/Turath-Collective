@@ -14,11 +14,26 @@ export interface ShopifyCategory {
  * All requests are proxied through /api/shopify to:
  *   1. Keep the Storefront token server-side
  *   2. Avoid CORS issues
+ *   3. Control fallback behavior via VITE_SHOPIFY_MODE
  *
- * Feature flag: when SHOPIFY_STOREFRONT_TOKEN is not set on the server,
- * the proxy returns { shopifyDisabled: true } and every method returns
- * null / empty array so callers fall back to local mock data silently.
+ * Mode behavior:
+ *   - "live" (production): Fail if Shopify unavailable, no mock fallback
+ *   - "mock" (development): Fallback to local mock data silently (default)
+ *
+ * When Shopify is unavailable and mode is "live", methods throw errors.
+ * When mode is "mock", methods return null/empty so callers fallback gracefully.
  */
+
+// ── Shopify Mode Configuration ────────────────────────────────────────────────
+
+/**
+ * Get current Shopify mode from environment variable
+ * @returns "live" (production) or "mock" (development, default)
+ */
+function getShopifyMode(): "live" | "mock" {
+  const mode = import.meta.env.VITE_SHOPIFY_MODE || "mock";
+  return mode === "live" ? "live" : "mock";
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -148,6 +163,8 @@ const CART_SELECTION = `
 // ── Core proxy caller ─────────────────────────────────────────────────────────
 
 async function shopifyQuery<T>(query: string, variables: Record<string, unknown> = {}): Promise<T | null> {
+  const mode = getShopifyMode();
+
   try {
     const res = await fetch("/api/shopify", {
       method: "POST",
@@ -155,21 +172,31 @@ async function shopifyQuery<T>(query: string, variables: Record<string, unknown>
       body: JSON.stringify({ query, variables }),
     });
 
-    if (res.status === 503) return null; // Shopify not configured — caller falls back to mock
+    if (res.status === 503) {
+      // Shopify not configured
+      if (mode === "live") {
+        throw new Error("Shopify API unavailable (not configured). Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_TOKEN.");
+      }
+      // In mock mode, silently fallback to mock data
+      return null;
+    }
 
     if (!res.ok) {
       console.warn("[Shopify] Proxy error", res.status);
+      if (mode === "live") throw new Error(`Shopify API error: ${res.status}`);
       return null;
     }
 
     const json = await res.json();
     if (json.errors) {
       console.warn("[Shopify] GraphQL errors", json.errors);
+      if (mode === "live") throw new Error(`Shopify GraphQL error: ${json.errors[0]?.message || "Unknown"}`);
       return null;
     }
     return json.data as T;
   } catch (err) {
     console.warn("[Shopify] Network error", err);
+    if (mode === "live") throw err;
     return null;
   }
 }

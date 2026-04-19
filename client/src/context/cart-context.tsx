@@ -16,6 +16,15 @@ import {
 const CART_ID_KEY = "turath_cart_id";
 const MOCK_CART_KEY = "turath_mock_cart";
 
+/**
+ * Get current Shopify mode from environment variable
+ * @returns "live" (production) or "mock" (development, default)
+ */
+function getShopifyMode(): "live" | "mock" {
+  const mode = import.meta.env.VITE_SHOPIFY_MODE || "mock";
+  return mode === "live" ? "live" : "mock";
+}
+
 export type MockCartLine = {
   lineId: string;
   variantId: string;
@@ -82,16 +91,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [mockLines, setMockLines] = useState<MockCartLine[]>(readInitialMockLines);
   const [isBusy, setIsBusy] = useState(false);
 
-  const persistCartId = useCallback((id: string) => {
+  // Persist cart ID to localStorage
+  const persistCartId = (id: string) => {
     localStorage.setItem(CART_ID_KEY, id);
-  }, []);
+  };
 
-  const clearCartId = useCallback(() => {
+  // Clear cart ID and state
+  const clearCartId = () => {
     localStorage.removeItem(CART_ID_KEY);
     setCart(null);
-  }, []);
+  };
 
-  const refreshCart = useCallback(async () => {
+  // Refresh cart from Shopify (or clear if not found)
+  const refreshCart = async () => {
     const id = localStorage.getItem(CART_ID_KEY);
     if (!id) {
       setCart(null);
@@ -104,7 +116,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
     setCart(next);
-  }, []);
+  };
 
   useEffect(() => {
     if (cart && cart.totalQuantity > 0) {
@@ -131,21 +143,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const addItem = useCallback(
-    async (
-      variantId: string,
-      quantity: number,
-      meta?: {
-        productTitle: string;
-        variantTitle: string;
-        price: number;
-        currencyCode: string;
-        imageUrl?: string;
-      }
-    ) => {
-      console.log("[Cart Context] addItem called:", { variantId, quantity, isMock: isMockVariantId(variantId) });
+  // Add item to cart (Shopify or mock)
+  const addItem = async (
+    variantId: string,
+    quantity: number,
+    meta?: {
+      productTitle: string;
+      variantTitle: string;
+      price: number;
+      currencyCode: string;
+      imageUrl?: string;
+    }
+  ) => {
+      const mode = getShopifyMode();
+      console.log("[Cart Context] addItem called:", { variantId, quantity, isMock: isMockVariantId(variantId), mode });
       
       if (isMockVariantId(variantId)) {
+        // In live mode, mock cart is not allowed
+        if (mode === "live") {
+          throw new Error("Mock products cannot be used in live mode. Ensure all products come from Shopify.");
+        }
+        
         console.log("[Cart Context] Using mock cart");
         if (!meta) return;
         setMockLines((prev) => {
@@ -205,12 +223,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       } finally {
         setIsBusy(false);
       }
-    },
-    [persistCartId]
-  );
+  };
 
-  const updateLineQuantity = useCallback(
-    async (lineId: string, quantity: number) => {
+  // Update quantity of item in cart (Shopify or mock)
+  const updateLineQuantity = async (lineId: string, quantity: number) => {
       if (lineId.startsWith("mock-line-") || mockLines.some((l) => l.lineId === lineId)) {
         setMockLines((prev) => {
           const next =
@@ -245,12 +261,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       } finally {
         setIsBusy(false);
       }
-    },
-    [mockLines]
-  );
+  };
 
-  const removeLine = useCallback(
-    async (lineId: string) => {
+  // Remove item from cart (Shopify or mock)
+  const removeLine = async (lineId: string) => {
       if (lineId.startsWith("mock-line-") || mockLines.some((l) => l.lineId === lineId)) {
         setMockLines((prev) => {
           const next = prev.filter((l) => l.lineId !== lineId);
@@ -275,9 +289,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       } finally {
         setIsBusy(false);
       }
-    },
-    [mockLines]
-  );
+  };
 
   const totalQuantity = useMemo(() => {
     if (cart) return cart.totalQuantity;
@@ -297,17 +309,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       refreshCart,
       clearCartId,
     }),
-    [
-      cart,
-      mockLines,
-      isBusy,
-      totalQuantity,
-      addItem,
-      updateLineQuantity,
-      removeLine,
-      refreshCart,
-      clearCartId,
-    ]
+    [cart, mockLines, isBusy, totalQuantity]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

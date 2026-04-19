@@ -35,7 +35,7 @@ Do **not** include `https://`.
 
 ## Step 3 — Set Environment Variables
 
-Add these two secrets in the Replit Secrets panel (or your deployment environment):
+Add these secrets to your deployment environment (e.g., Vercel, environment file, or hosting dashboard):
 
 | Secret Key                  | Value Example                             |
 |-----------------------------|-------------------------------------------|

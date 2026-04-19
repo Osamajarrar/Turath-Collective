@@ -120,16 +120,19 @@ export const getAvailableCollections = (t: (key: string) => any): Collection[] =
     .filter(col => !col.hidden && !col.comingSoon);
 
 // Fallback categories for when translations aren't available yet
+// DEPRECATED: Use allCategories(t) instead. This is kept for backward compatibility only.
 export const allCategoriesData: Category[] = [
   {
-    ...getVisibilityFlags("ceramics"),
+    comingSoon: false,
+    hidden: false,
     title: "Ceramics",
     description: "Hand-thrown Hebron clay vessels, painted with the rhythm of the wheel.",
     image: ceramicCard,
     handle: "ceramics",
     collections: [
       {
-        ...getVisibilityFlags("ceramics"),
+        comingSoon: false,
+        hidden: false,
         title: "Ceramics",
         description: "Hand-thrown Hebron clay vessels, painted with the rhythm of the wheel.",
         cta: "SHOP CERAMICS",
@@ -139,14 +142,16 @@ export const allCategoriesData: Category[] = [
     ],
   },
   {
-    ...getVisibilityFlags("embroidery"),
+    comingSoon: false,
+    hidden: false,
     title: "Embroidery",
     description: "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
     image: embroideryCard,
     handle: "embroidery",
     collections: [
       {
-        ...getVisibilityFlags("embroidery"),
+        comingSoon: false,
+        hidden: false,
         title: "Embroidery",
         description: "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
         cta: "SHOP EMBROIDERY",
