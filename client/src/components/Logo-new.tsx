@@ -66,7 +66,7 @@ export default function Logo({
       className={className}
       // Logos are high-priority, load eagerly
       loading="eager"
-      fetchpriority="high"
+      {...({ fetchpriority: "high" } as any)}
     />
   );
 }

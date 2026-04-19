@@ -19,7 +19,7 @@ interface AssetConfig {
   fallbackUrl: string;
   localePath?: boolean; // If true, locale code inserted in filename (logo-en.svg)
   priority?: 'high' | 'low'; // For fetchpriority attribute
-  sizesStrategy?: 'full-width' | 'product-hero' | 'product-grid' | 'thumbnail';
+  sizesStrategy?: 'full-width-hero' | 'product-hero' | 'product-grid' | 'thumbnail';
 }
 
 /**
@@ -184,8 +184,8 @@ export async function getAssetUrl(
 ): Promise<string> {
   const config = ASSET_REGISTRY[assetKey];
   if (!config) {
-    console.warn(`Asset key "${assetKey}" not found in registry. Using fallback.`);
-    return getLocalizedUrl(config?.fallbackUrl || '', locale);
+    console.warn(`Asset key "${assetKey}" not found in registry.`);
+    return '';
   }
 
   // Check cache first
@@ -198,12 +198,8 @@ export async function getAssetUrl(
   if (useShopify && config.shopifyUrl) {
     try {
       const shopifyUrl = getLocalizedUrl(config.shopifyUrl, locale);
-      // Verify URL is accessible (optional: can be removed for performance)
-      // const response = await fetch(shopifyUrl, { method: 'HEAD' });
-      // if (response.ok) {
       saveToCache(assetKey, locale, shopifyUrl, 'shopify');
       return shopifyUrl;
-      // }
     } catch (error) {
       console.warn(`Failed to load asset from Shopify CDN (${assetKey}):`, error);
       // Fall through to fallback
@@ -227,8 +223,8 @@ export async function getAssetUrl(
 export function getAssetUrlSync(assetKey: string, locale?: string): string {
   const config = ASSET_REGISTRY[assetKey];
   if (!config) {
-    console.warn(`Asset key "${assetKey}" not found in registry. Using fallback.`);
-    return getLocalizedUrl(config?.fallbackUrl || '', locale);
+    console.warn(`Asset key "${assetKey}" not found in registry.`);
+    return '';
   }
 
   // Check cache

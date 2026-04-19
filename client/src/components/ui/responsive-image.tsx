@@ -1,6 +1,7 @@
 import { generateResponsiveImageAttrs } from "@/lib/responsiveImage";
+import { ImgHTMLAttributes } from "react";
 
-interface ResponsiveImageProps {
+interface ResponsiveImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> {
   src: string;
   alt: string;
   layout?: "full-width-hero" | "product-hero" | "product-grid" | "thumbnail";
@@ -56,7 +57,6 @@ export default function ResponsiveImage({
       width={width}
       height={height}
       loading={priority ? "eager" : "lazy"}
-      fetchpriority={fetchpriority}
       decoding="async"
       className={`w-full h-full object-cover ${className}`}
       style={{
@@ -64,6 +64,7 @@ export default function ResponsiveImage({
         height: 'auto',
         aspectRatio: width && height ? `${width} / ${height}` : undefined,
       }}
+      {...(fetchpriority && { fetchpriority: fetchpriority as any })}
     />
   );
 }
