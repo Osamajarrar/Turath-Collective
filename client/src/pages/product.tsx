@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRoute } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ShoppingBag, Plus, Minus } from "lucide-react";
+import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import SuggestedProductCard from "@/components/suggested-product-card";
 import ResponsiveImage from "@/components/ui/responsive-image";
@@ -21,6 +21,10 @@ import classicMezze from "@/assets/classic-mezze-plate.png";
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
 
+// Build 8-image arrays by cycling through available mock assets so we can
+// preview the hero + 2x2 grid + overflow row in the unified product layout.
+const eightImages = (a: string, b: string) => [a, b, a, b, a, b, a, b];
+
 const MOCK_PRODUCTS = [
   {
     id: "1",
@@ -31,8 +35,8 @@ const MOCK_PRODUCTS = [
     isBestSeller: true,
     availableForSale: true,
     variations: [
-      { color: "Indigo", variantId: "mock-variant-1-indigo", images: [classicBowl, classicMezze], price: 45.0 },
-      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: [burgundyBowl, burgundyMezze], price: 48.0 },
+      { color: "Indigo", variantId: "mock-variant-1-indigo", images: eightImages(classicBowl, classicMezze), price: 45.0 },
+      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: eightImages(burgundyBowl, burgundyMezze), price: 48.0 },
     ],
     description:
       "A hand-painted indigo bowl inspired by traditional Palestinian motifs. Each stroke is a tribute to the craftsmen of Hebron.",
@@ -45,6 +49,78 @@ const MOCK_PRODUCTS = [
     quantityStyle: "counter" as const,
     maxSets: 3,
   },
+  {
+    id: "2",
+    handle: "burgundy-mezze-plate",
+    name: "Burgundy Mezze Plate",
+    price: 38.0,
+    currencyCode: "CAD",
+    isBestSeller: false,
+    availableForSale: true,
+    variations: [
+      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [burgundyMezze, burgundyBowl], price: 38.0 },
+    ],
+    description: "Hand-painted mezze plate in deep burgundy, perfect for sharing.",
+    specs: { material: "Hebron Clay", size: "22cm Diameter", origin: "Hebron, Palestine" },
+    quantityStyle: "counter" as const,
+    maxSets: 3,
+  },
+  {
+    id: "3",
+    handle: "classic-mezze-plate",
+    name: "Classic Mezze Plate",
+    price: 38.0,
+    currencyCode: "CAD",
+    isBestSeller: true,
+    availableForSale: true,
+    variations: [
+      { color: "Indigo", variantId: "mock-variant-3-indigo", images: [classicMezze, classicBowl], price: 38.0 },
+    ],
+    description: "Classic indigo mezze plate, hand-painted with traditional motifs.",
+    specs: { material: "Hebron Clay", size: "22cm Diameter", origin: "Hebron, Palestine" },
+    quantityStyle: "counter" as const,
+    maxSets: 3,
+  },
+  {
+    id: "4",
+    handle: "burgundy-bowl",
+    name: "Burgundy Bowl",
+    price: 45.0,
+    currencyCode: "CAD",
+    isBestSeller: false,
+    availableForSale: true,
+    variations: [
+      { color: "Burgundy", variantId: "mock-variant-4-burgundy", images: [burgundyBowl, burgundyMezze], price: 45.0 },
+    ],
+    description: "Rich burgundy hand-painted bowl, an heirloom in the making.",
+    specs: { material: "Hebron Clay", size: "18cm Diameter", origin: "Hebron, Palestine" },
+    quantityStyle: "counter" as const,
+    maxSets: 3,
+  },
+  {
+    id: "5",
+    handle: "classic-bowl",
+    name: "Classic Indigo Bowl",
+    price: 45.0,
+    currencyCode: "CAD",
+    isBestSeller: false,
+    availableForSale: true,
+    variations: [
+      { color: "Indigo", variantId: "mock-variant-5-indigo", images: [classicBowl, classicMezze], price: 45.0 },
+    ],
+    description: "A timeless indigo bowl in our signature mosaic pattern.",
+    specs: { material: "Hebron Clay", size: "18cm Diameter", origin: "Hebron, Palestine" },
+    quantityStyle: "counter" as const,
+    maxSets: 3,
+  },
+];
+
+// Compact product features displayed above the accordion (icon + tiny label).
+const PRODUCT_FEATURES = [
+  { icon: Brush, label: "Hand Painted" },
+  { icon: Droplets, label: "Dishwasher Safe" },
+  { icon: Package, label: "Gift Ready" },
+  { icon: Heart, label: "Crafted in Hebron" },
 ];
 
 // ── Normalise a Shopify product for this page ─────────────────────────────
@@ -172,7 +248,6 @@ export default function ProductPage() {
   const [, params] = useRoute("/product/:id");
   const { addItem, isBusy } = useCart();
   const prefersReducedMotion = useReducedMotion();
-  const carouselRef = useRef<HTMLDivElement>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariationIdx, setSelectedVariationIdx] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -435,9 +510,25 @@ export default function ProductPage() {
               )}
             </div>
 
+            {/* Product Features — compact icon row above the accordion */}
+            <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5">
+              {PRODUCT_FEATURES.map(({ icon: Icon, label }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-3"
+                  data-testid={`feature-${label.toLowerCase().replace(/\s+/g, "-")}`}
+                >
+                  <Icon className="h-4 w-4 text-primary shrink-0" strokeWidth={1.5} />
+                  <span className="text-xs uppercase tracking-[0.15em] text-foreground/70">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             {/* Refined Accordion: Description / Details & Materials / Care & Shipping */}
-            <div className="mt-10">
-              <Accordion title="Description" defaultOpen duration={accordionDuration}>
+            <div className="mt-8 border-t border-border/60">
+              <Accordion title="Description" duration={accordionDuration}>
                 <p>{product.description}</p>
               </Accordion>
               <Accordion title="Details & Materials" duration={accordionDuration}>
@@ -488,48 +579,29 @@ export default function ProductPage() {
         </div>
       )}
 
-      {/* SUGGESTED PRODUCTS */}
+      {/* SUGGESTED PRODUCTS — refined editorial grid */}
       {suggestedProducts.length > 0 && (
-        <div className="mt-20 md:mt-24 border-t border-border pt-16 md:pt-20">
-          <div className="mb-12 md:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div>
-              <h2 className="mb-2 font-serif text-3xl md:text-4xl leading-tight">More Treasures</h2>
-              <p className="text-sm text-foreground/60 max-w-2xl">Explore more handcrafted pieces from our curated collection.</p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => carouselRef.current?.scrollBy({ left: -300, behavior: "smooth" })}
-                className="p-3 rounded-full border border-border hover:bg-muted transition-colors"
-                aria-label="Scroll left"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => carouselRef.current?.scrollBy({ left: 300, behavior: "smooth" })}
-                className="p-3 rounded-full border border-border hover:bg-muted transition-colors"
-                aria-label="Scroll right"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+        <section className="mt-24 md:mt-32 pt-16 md:pt-20 border-t border-border/60">
+          {/* Centered header */}
+          <div className="mb-12 md:mb-16 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/70 mb-3">
+              The Collection
+            </p>
+            <h2 className="font-serif text-3xl md:text-4xl leading-tight text-foreground">
+              You May Also Love
+            </h2>
+            <p className="mt-3 text-sm text-foreground/60 italic max-w-md mx-auto">
+              Discover more handcrafted pieces, each carrying the heritage of Hebron.
+            </p>
           </div>
 
-          <div
-            ref={carouselRef}
-            className="flex overflow-x-auto scrollbar-hide gap-4 md:gap-6 pb-4"
-            style={{ scrollBehavior: "smooth", scrollSnapType: "x mandatory" }}
-          >
-            {suggestedProducts.map((suggestedProduct) => (
-              <div
-                key={suggestedProduct.id}
-                className="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4"
-                style={{ scrollSnapAlign: "start" }}
-              >
-                <SuggestedProductCard product={suggestedProduct} />
-              </div>
+          {/* Responsive grid: 2 cols mobile, 4 cols desktop, max 4 shown */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 md:gap-x-8 gap-y-12">
+            {suggestedProducts.slice(0, 4).map((suggestedProduct) => (
+              <SuggestedProductCard key={suggestedProduct.id} product={suggestedProduct} />
             ))}
           </div>
-        </div>
+        </section>
       )}
     </PageLayout>
   );

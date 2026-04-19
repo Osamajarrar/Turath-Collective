@@ -60,7 +60,6 @@ export default function ResponsiveImage({
       decoding="async"
       className={`w-full h-full object-cover ${className}`}
       style={{
-        maxWidth: '50%',
         height: 'auto',
         aspectRatio: width && height ? `${width} / ${height}` : undefined,
       }}

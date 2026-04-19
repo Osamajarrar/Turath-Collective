@@ -31,32 +31,32 @@ export default function SuggestedProductCard({
         data-testid={`card-suggested-${product.id}`}
       >
         {/* Image Container */}
-        <div className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#f4f2ee]">
+        <div className="relative mb-5 aspect-[4/5] overflow-hidden bg-muted/40 rounded-md">
           <img
             src={primaryImage}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            width={300}
-            height={375}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            width={400}
+            height={500}
             loading="lazy"
             decoding="async"
           />
 
           {/* Badge */}
           {product.isBestSeller && (
-            <div className="absolute left-4 top-4 pointer-events-none z-10">
+            <div className="absolute left-3 top-3 pointer-events-none z-10">
               <div className="badge-product">Best Seller</div>
             </div>
           )}
         </div>
 
         {/* Card Content */}
-        <div className="space-y-1">
-          <h3 className="font-sans text-sm font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+        <div className="space-y-1.5 px-0.5">
+          <h3 className="font-serif text-base leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {product.name}
           </h3>
-          <p className="text-xs text-foreground/60">
-            ${product.price.toFixed(2)}
+          <p className="font-sans text-sm text-foreground/60">
+            ${product.price.toFixed(2)} {product.currencyCode}
           </p>
         </div>
       </div>
