@@ -76,7 +76,7 @@ export default function Navbar() {
             : "border-transparent bg-transparent py-6"
         )}
       >
-        <div className="container mx-auto px-6 md:px-12 max-w-[1820px] flex items-center justify-between">
+        <div className="mx-auto px-6 md:px-12 flex items-center justify-between">
 
           {/* Mobile: hamburger */}
           <div className="md:hidden w-1/3">

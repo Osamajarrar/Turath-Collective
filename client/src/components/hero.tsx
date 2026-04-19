@@ -20,8 +20,11 @@ export default function Hero() {
           loop
           muted
           playsInline
+          preload="metadata"
           className="w-full h-full object-cover opacity-90"
           src={brandVideo}
+          width={1920}
+          height={1080}
         />
       </div>
 

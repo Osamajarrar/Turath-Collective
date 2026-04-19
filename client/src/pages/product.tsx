@@ -311,7 +311,7 @@ export default function ProductPage() {
   };
 
   return (
-    <PageLayout paddingClass="pt-36 pb-24">
+    <PageLayout>
       {/* Mobile Product Image Carousel (visible on mobile only) */}
       <ProductImageCarousel
         images={images}
@@ -321,7 +321,7 @@ export default function ProductPage() {
       />
 
       {/* SECTION 1: Main Product Image + Details */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-8 items-start px-8 bg-background">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-8 items-start bg-background">
         {/* Left Column: Main Image - Square (3/5 width) - Desktop only */}
         <motion.div
           key={`${selectedVariationIdx}-${selectedImage}`}

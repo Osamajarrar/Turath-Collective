@@ -11,7 +11,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   return (
-    <PageLayout noPadding>
+    <PageLayout noStyling>
       <Hero />
       <div className="space-y-0">
         <CollectionCards />

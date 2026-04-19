@@ -52,8 +52,8 @@ Located at `client/src/components/PageLayout.tsx`. Wraps all pages with:
 - Automatic padding: `pt-36 pb-24` (144px top, 96px bottom)
 
 **How it works**:
-- Pages with `noPadding={false}` (default) → PageLayout adds the max-width container wrapper
-- Pages with `noPadding={true}` (e.g., home) → Each internal section must have its own max-width container
+- Pages with `noStyling={false}` (default) → PageLayout adds the max-width container wrapper
+- Pages with `noStyling={true}` (e.g., home) → Each internal section must have its own max-width container
 
 ## Product Grid System
 

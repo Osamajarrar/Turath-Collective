@@ -8,6 +8,7 @@ interface ResponsiveImageProps {
   width?: number;
   height?: number;
   priority?: boolean;
+  fetchpriority?: "high" | "low" | "auto";
 }
 
 /**
@@ -45,6 +46,7 @@ export default function ResponsiveImage({
   width,
   height,
   priority = false,
+  fetchpriority = "auto",
 }: ResponsiveImageProps) {
   const attrs = generateResponsiveImageAttrs(src, alt, layout);
 
@@ -54,6 +56,7 @@ export default function ResponsiveImage({
       width={width}
       height={height}
       loading={priority ? "eager" : "lazy"}
+      fetchpriority={fetchpriority}
       decoding="async"
       className={`w-full h-full object-cover ${className}`}
       style={{

@@ -191,6 +191,10 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
             src={product.image}
             alt={product.name}
             className="h-full w-full object-cover"
+            width={500}
+            height={500}
+            loading="lazy"
+            decoding="async"
           />
 
           <div className="pointer-events-none absolute left-4 top-4 flex flex-row gap-2">

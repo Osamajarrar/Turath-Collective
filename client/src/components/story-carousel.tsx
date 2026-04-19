@@ -39,6 +39,9 @@ export default function ReviewCarousel() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 1 }}
                 className="w-full h-full object-cover"
+                width={600}
+                height={500}
+                loading="lazy"
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-black/10" />

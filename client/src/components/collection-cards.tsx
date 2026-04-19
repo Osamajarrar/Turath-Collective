@@ -31,6 +31,10 @@ function SingleCard({
             src={category.image}
             alt=""
             className="h-full w-full object-cover"
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
@@ -52,6 +56,10 @@ function SingleCard({
             src={category.image}
             alt=""
             className={`h-full w-full object-cover transition-transform ${prefersReducedMotion ? "duration-100" : "duration-[1.5s]"} group-hover:scale-110`}
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
           />
           <div className={`absolute inset-0 bg-black/5 transition-colors ${prefersReducedMotion ? "duration-100" : "duration-500"} group-hover:bg-black/20`} />
           <span className="sr-only">

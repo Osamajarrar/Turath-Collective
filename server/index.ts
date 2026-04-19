@@ -31,12 +31,12 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "https:", "data:"],
       connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com"],
       frameSrc: ["'none'"],
-      fontSrc: ["'self'", "https:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
     },
   },
   hsts: {
