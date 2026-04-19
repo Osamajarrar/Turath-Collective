@@ -4,6 +4,7 @@ import { z } from "zod";
 import passport from "passport";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
+import { shopifyLimiter } from "./index.js";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -68,7 +69,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   // ── Shopify Storefront proxy ──────────────────────────────────────────────
 
-  app.post("/api/shopify", async (req: Request, res: Response) => {
+  app.post("/api/shopify", shopifyLimiter, async (req: Request, res: Response) => {
     const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
     const domain = process.env.SHOPIFY_STORE_DOMAIN;
 

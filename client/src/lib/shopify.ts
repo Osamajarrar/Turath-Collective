@@ -58,6 +58,9 @@ export interface ShopifyProduct {
   };
   images: { edges: Array<{ node: ShopifyImage }> };
   variants: { edges: Array<{ node: ShopifyProductVariant }> };
+  quantityStyle?: "counter" | "sets";
+  maxSets?: number;
+  metafields?: Array<{ key: string; value: string }>;
 }
 
 export interface ShopifyCollection {
@@ -108,6 +111,13 @@ const PRODUCT_FRAGMENT = `
         selectedOptions { name value }
       }
     }
+  }
+  metafields(identifiers: [
+    { namespace: "custom", key: "quantity_style" }
+    { namespace: "custom", key: "max_sets" }
+  ]) {
+    key
+    value
   }
 `;
 

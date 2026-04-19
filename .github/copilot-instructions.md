@@ -11,9 +11,26 @@ description: "Workspace-level instructions for the Turath Collective ecommerce w
 
 - **Frontend**: React + TypeScript, Vite, Tailwind CSS v4
 - **Backend**: Node.js with Express, Drizzle ORM (SQLite/PostgreSQL)
-- **Ecommerce**: Shopify integration for products & payments
+- **Ecommerce**: Shopify Headless (Storefront API) for products & payments
 - **Localization**: i18n (en, fr, ar) with dynamic locale switching
 - **Deployment**: Vercel (frontend), custom Node.js server (backend)
+
+## 🎯 Core Principle: Shopify Headless First
+
+**Everything eventually flows from Shopify Admin.**
+
+All components, data structures, and content must be designed to seamlessly accept **Shopify GraphQL Storefront API responses**. Build with the assumption that static assets and mock data are **temporary**—they will be replaced with live Shopify data.
+
+### What This Means
+- ✅ Components accept **pre-normalized data** from Shopify
+- ✅ Images use **responsive URLs** compatible with Shopify CDN (`cdn.shopify.com`)
+- ✅ Product fields **match Shopify schema** (variants, metafields, collections)
+- ✅ No hardcoded product data in components
+- ✅ Fallback gracefully when Shopify API is unavailable
+- ❌ Never make API calls inside components (API layer only)
+- ❌ Never hardcode product names, descriptions, or prices
+
+See [shopify-integration.instructions.md](.github/instructions/shopify-integration.instructions.md) for detailed patterns and examples.
 
 ## Tech Stack
 

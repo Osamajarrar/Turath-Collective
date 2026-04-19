@@ -1,5 +1,17 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env.local first (dev override), then .env (defaults)
+dotenv.config({ path: path.join(__dirname, "..", ".env.local") });
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
@@ -14,15 +26,46 @@ declare module "http" {
   }
 }
 
+// ── Security Headers ─────────────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "https:", "data:"],
+      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com"],
+      frameSrc: ["'none'"],
+      fontSrc: ["'self'", "https:"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
+}));
+
+// ── Request Parsing ──────────────────────────────────────────────────────
 app.use(
   express.json({
+    limit: '10kb',
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
   }),
 );
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+
+// ── Rate Limiting ────────────────────────────────────────────────────────
+export const shopifyLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  message: "Too many Shopify API requests, please try again later",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Setup sessions + passport (must come before routes)
 setupAuth(app);
@@ -38,6 +81,7 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+// ── Logging Middleware ──────────────────────────────────────────────────
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

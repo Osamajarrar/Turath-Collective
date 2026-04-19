@@ -143,7 +143,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         imageUrl?: string;
       }
     ) => {
+      console.log("[Cart Context] addItem called:", { variantId, quantity, isMock: isMockVariantId(variantId) });
+      
       if (isMockVariantId(variantId)) {
+        console.log("[Cart Context] Using mock cart");
         if (!meta) return;
         setMockLines((prev) => {
           const existing = prev.find((l) => l.variantId === variantId);
@@ -177,18 +180,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       setIsBusy(true);
       try {
+        console.log("[Cart Context] Creating Shopify cart");
         const existingId = localStorage.getItem(CART_ID_KEY);
         let next: ShopifyCart | null;
         if (existingId) {
+          console.log("[Cart Context] Adding to existing Shopify cart:", existingId);
           next = await shopifyService.addToCart(existingId, [
             { merchandiseId: variantId, quantity },
           ]);
         } else {
+          console.log("[Cart Context] Creating new Shopify cart");
           next = await shopifyService.createCart([
             { merchandiseId: variantId, quantity },
           ]);
         }
+        console.log("[Cart Context] Shopify cart response:", next);
         if (next) {
+          console.log("[Cart Context] Cart created/updated with checkoutUrl:", next.checkoutUrl ? "✓" : "✗");
           persistCartId(next.id);
           setCart(next);
           setMockLines([]);

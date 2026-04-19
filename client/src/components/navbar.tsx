@@ -412,30 +412,19 @@ export default function Navbar() {
                   </div>
                   <p className="text-[10px] text-muted-foreground">{t("cart.shippingTaxesNote")}</p>
                 </div>
-                {cart?.checkoutUrl ? (
-                  <button
-                    type="button"
-                    disabled={isBusy || totalQuantity === 0}
-                    onClick={() => {
+                <button
+                  type="button"
+                  disabled={isBusy || !cart?.checkoutUrl || totalQuantity === 0}
+                  onClick={() => {
+                    if (cart?.checkoutUrl) {
                       window.location.href = cart.checkoutUrl;
-                    }}
-                    className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
-                    data-testid="button-cart-checkout"
-                  >
-                    {t("cart.checkout")}
-                  </button>
-                ) : (
-                  <Link href="/checkout" className="block">
-                    <button
-                      type="button"
-                      disabled={isBusy || !hasMockCart || totalQuantity === 0}
-                      className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
-                      data-testid="button-cart-checkout"
-                    >
-                      {t("cart.checkout")}
-                    </button>
-                  </Link>
-                )}
+                    }
+                  }}
+                  className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
+                  data-testid="button-cart-checkout"
+                >
+                  {t("cart.checkout")}
+                </button>
               </div>
             </motion.div>
           </>

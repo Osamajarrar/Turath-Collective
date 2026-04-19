@@ -307,6 +307,82 @@ export { Input } from "./input";
 </button>
 ```
 
+## Shopify Data Compatibility
+
+### Rule: Components Accept Pre-Normalized Data Only
+
+**All feature components must accept data that's already been normalized from Shopify responses.** Never perform API calls, data fetching, or Shopify-specific logic inside components.
+
+**Bad** ❌:
+```tsx
+export function ProductCard({ productHandle }: { productHandle: string }) {
+  const [product, setProduct] = useState(null);
+  
+  useEffect(() => {
+    shopifyService.getProduct(productHandle).then(setProduct); // ❌ API logic in component
+  }, [productHandle]);
+  
+  return <div>{product?.name}</div>;
+}
+```
+
+**Good** ✅:
+```tsx
+interface ProductCardProps {
+  product: DisplayProduct;  // Pre-normalized
+}
+
+export function ProductCard({ product }: ProductCardProps) {
+  return <div>{product.name}</div>;  // Only receives + displays data
+}
+```
+
+### Image URL Compatibility
+
+**All image props must support both static assets and Shopify CDN URLs without modification:**
+
+```tsx
+interface ProductImageProps {
+  src: string;  // Works with:
+                // "/assets/bowl.png" (static)
+                // "https://cdn.shopify.com/.../bowl.jpg?v=123" (Shopify)
+  alt: string;
+}
+
+export function ProductImage({ src, alt }: ProductImageProps) {
+  return (
+    <ResponsiveImage
+      src={src}  // Automatically detects URL type
+      alt={alt}
+      layout="product-hero"
+    />
+  );
+}
+```
+
+**Use `ResponsiveImage` component** for all product images. It handles:
+- srcset generation (Shopify CDN only)
+- sizes attribute for responsive sizing
+- Both static and Shopify URLs seamlessly
+- Bandwidth optimization on mobile
+
+### Variant & Option Handling
+
+**Components must handle product variants from Shopify schema:**
+
+```typescript
+interface Variation {
+  variantId: string;       // "gid://shopify/ProductVariant/123"
+  selectedOptions: Array<{ name: string; value: string }>;  // [{ name: "Color", value: "Indigo" }]
+  price: number;
+  images: string[];
+}
+```
+
+Use `selectedOptions` directly from Shopify—don't create custom color/size structures that won't map to real Shopify data.
+
+---
+
 ## When to Update This File
 
 When you establish a new component pattern or refactor component architecture:

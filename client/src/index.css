@@ -5,6 +5,7 @@
 
 @theme inline {
   --color-background: hsl(36, 20%, 95%); /* #f5f3f0 - Cream/Sand */
+  --color-background-secondary: hsl(36, 20%, 90%); /* Slightly darker cream for depth */
   --color-foreground: hsl(0 0% 10%);   /* #1A1A1A - Deep Charcoal */
   
   --color-card: hsl(40 17% 97%);

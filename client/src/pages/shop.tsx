@@ -61,43 +61,43 @@ export const MOCK_PRODUCTS = [
       { color: "Green", colorHex: "#2D5016", image: classicBowl },
     ],
   },
-  {
-    id: "3",
-    name: "Hebron Glass Vase",
-    handle: "hebron-glass-vase",
-    category: "ceramics",
-    price: 65,
-    currencyCode: "CAD",
-    image: img3,
-    imageSecondary: img4,
-    isBestSeller: false,
-    isNew: false,
-    isLimited: true,
-    dateAdded: "2023-12-20",
-    variants: [
-      { color: "Burgundy", colorHex: "#8B0000", image: img3 },
-      { color: "Cream", colorHex: "#F5F3F0", image: img4 },
-      { color: "Sage", colorHex: "#9A8B7A", image: classicMezze },
-    ],
-  },
-  {
-    id: "4",
-    name: "Tatreez Pattern Cushion",
-    handle: "tatreez-pattern-cushion",
-    category: "embroidery",
-    price: 85,
-    currencyCode: "CAD",
-    image: img4,
-    imageSecondary: img1,
-    isBestSeller: true,
-    isNew: false,
-    isLimited: false,
-    dateAdded: "2024-01-01",
-    variants: [
-      { color: "Red", colorHex: "#DC143C", image: img4 },
-      { color: "Blue", colorHex: "#4169E1", image: img1 },
-    ],
-  },
+  // {
+  //   id: "3",
+  //   name: "Hebron Glass Vase",
+  //   handle: "hebron-glass-vase",
+  //   category: "ceramics",
+  //   price: 65,
+  //   currencyCode: "CAD",
+  //   image: img3,
+  //   imageSecondary: img4,
+  //   isBestSeller: false,
+  //   isNew: false,
+  //   isLimited: true,
+  //   dateAdded: "2023-12-20",
+  //   variants: [
+  //     { color: "Burgundy", colorHex: "#8B0000", image: img3 },
+  //     { color: "Cream", colorHex: "#F5F3F0", image: img4 },
+  //     { color: "Sage", colorHex: "#9A8B7A", image: classicMezze },
+  //   ],
+  // },
+  // {
+  //   id: "4",
+  //   name: "Tatreez Pattern Cushion",
+  //   handle: "tatreez-pattern-cushion",
+  //   category: "embroidery",
+  //   price: 85,
+  //   currencyCode: "CAD",
+  //   image: img4,
+  //   imageSecondary: img1,
+  //   isBestSeller: true,
+  //   isNew: false,
+  //   isLimited: false,
+  //   dateAdded: "2024-01-01",
+  //   variants: [
+  //     { color: "Red", colorHex: "#DC143C", image: img4 },
+  //     { color: "Blue", colorHex: "#4169E1", image: img1 },
+  //   ],
+  // },
 ];
 
 export const ALL_PRODUCTS = MOCK_PRODUCTS;
@@ -178,7 +178,7 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
   const [, navigate] = useLocation();
 
   return (
-    <Link href={`/product/${product.id}`}>
+    <Link href={`/product/${product.handle}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -219,7 +219,7 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
 
         {/* Variant Swatches */}
         {product.variants && product.variants.length > 0 && (
-          <div 
+          <div
             className="flex gap-2 mt-3 pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
@@ -229,7 +229,7 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
                 onClick={(e) => {
                   e.preventDefault?.();
                   e.stopPropagation();
-                  navigate(`/product/${product.id}?variant=${variantIdx}`);
+                  navigate(`/product/${product.handle}?variant=${variantIdx}`);
                 }}
                 className="w-8 h-8 rounded-full border-2 border-border hover:border-foreground transition-all"
                 style={{ backgroundColor: variant.colorHex }}
@@ -294,8 +294,13 @@ export default function ShopPage() {
     }
   }, [search, navigate]);
 
-  // Fetch live Shopify data
+  // Fetch live Shopify data (or use mock if VITE_USE_MOCK_PRODUCTS=true)
   useEffect(() => {
+    // Skip API call if using mock products
+    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+      return;
+    }
+
     let cancelled = false;
     shopifyService.getProducts().then((result) => {
       if (cancelled || !result?.length) return;
@@ -406,8 +411,7 @@ export default function ShopPage() {
         </header>
 
         <div
-          className={`grid gap-5 md:gap-6 ${visibleProducts.length > 1 ? "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "justify-center"}`}
-        >
+          className="grid gap-5 md:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {filteredAndSortedProducts.map((product, idx) => (
             <ProductCard key={product.id} product={product} idx={idx} prefersReducedMotion={prefersReducedMotion} t={t} />
           ))}

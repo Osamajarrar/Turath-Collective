@@ -9,7 +9,6 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ProductPage from "@/pages/product";
-import CheckoutPage from "@/pages/checkout";
 import ShopPage from "@/pages/shop";
 import ContactPage from "@/pages/contact";
 import ScrollToTop from "@/components/scroll-to-top";
@@ -37,7 +36,6 @@ function Router() {
         <Route path="/shop" component={ShopPage} />
         <Route path="/contact" component={ContactPage} />
         <Route path="/product/:id" component={ProductPage} />
-        <Route path="/checkout" component={CheckoutPage} />
         {/* Footer pages */}
         <Route path="/about">
           <About />

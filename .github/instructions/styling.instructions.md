@@ -12,7 +12,7 @@ applyTo: "client/src/components/**/*.tsx"
 **ALL** content containers throughout the site must use this centered, responsive max-width pattern:
 
 ```tsx
-<div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
+<div className="container mx-auto  max-w-[1820px]">
   {/* Content constrained to 1820px at desktop, scales proportionally on larger screens */}
 </div>
 ```
@@ -33,13 +33,12 @@ applyTo: "client/src/components/**/*.tsx"
 **Examples of correct usage**:
 ```tsx
 // In navbar.tsx
-<div className="container mx-auto px-6 md:px-12 max-w-[1820px] flex items-center justify-between">
-
+<div className="w-full container mx-auto  max-w-[1820px] flex items-center justify-between">
 // In footer.tsx
-<div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
+<div className="container mx-auto  max-w-[1820px]">
 
 // In any component
-<div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
+<div className="container mx-auto  max-w-[1820px]">
   <h2>Section Title</h2>
   {/* content */}
 </div>
@@ -131,7 +130,7 @@ Full product card pattern:
 
 ### Horizontal Spacing (Padding Within Containers)
 ```tsx
-<div className="px-6 md:px-12">
+<div className="">
   {/* 24px padding / 48px padding */}
 </div>
 ```
@@ -277,9 +276,75 @@ Use Tailwind color utilities:
 
 4. **Don't override container**: Never change page padding from the standard
    - ❌ `<div className="px-12">`  (if already in container)
-   - ✅ `<div className="px-6 md:px-12">` (only at page level)
+   - ✅ `<div className="">` (only at page level)
 
 5. **Don't skip accessibility**: Always add `alt` text, focus states, and ARIA labels
+
+## Responsive Images & Shopify CDN
+
+### ResponsiveImage Component
+
+Use the `ResponsiveImage` component for all product images. It automatically:
+- Detects Shopify CDN URLs vs static assets
+- Generates `srcset` with width parameters (Shopify only)
+- Applies correct `sizes` attribute for responsive sizing
+- Optimizes bandwidth (mobile downloads ~330px, desktop ~1440px)
+
+**Usage**:
+```tsx
+import ResponsiveImage from "@/components/ui/responsive-image";
+
+export function ProductCard({ product }: { product: DisplayProduct }) {
+  return (
+    <ResponsiveImage
+      src={product.variations[0]?.images[0]}  // Works with static OR Shopify URLs
+      alt={product.name}
+      layout="product-hero"  // Preset: (min-width: 1200px) 1066px, (min-width: 768px) calc((100vw - 48px) / 2), ...
+      className="rounded-lg"  // Optional Tailwind classes
+    />
+  );
+}
+```
+
+### Shopify Image URL Format
+
+Shopify CDN automatically optimizes images. Append `?width=X` to get specific sizes:
+
+```
+Base: https://cdn.shopify.com/.../product.jpg?v=1234567890
+330px: https://cdn.shopify.com/.../product.jpg?v=1234567890&width=330
+720px: https://cdn.shopify.com/.../product.jpg?v=1234567890&width=720
+1440px: https://cdn.shopify.com/.../product.jpg?v=1234567890&width=1440
+```
+
+### Image srcset + sizes Pattern
+
+ResponsiveImage generates this automatically for Shopify URLs:
+
+```tsx
+<img
+  src="https://cdn.shopify.com/.../product.jpg?v=123&width=1066"
+  srcSet="
+    https://cdn.shopify.com/.../product.jpg?v=123&width=330 165w,
+    https://cdn.shopify.com/.../product.jpg?v=123&width=720 360w,
+    https://cdn.shopify.com/.../product.jpg?v=123&width=1066 533w,
+    https://cdn.shopify.com/.../product.jpg?v=123&width=1440 720w,
+    https://cdn.shopify.com/.../product.jpg?v=123&width=1880 940w
+  "
+  sizes="(min-width: 1200px) 1066px, (min-width: 768px) calc((100vw - 48px) / 2), calc((100vw - 32px) / 2)"
+  alt="Product name"
+/>
+```
+
+### Image Optimization Benefits
+
+- ✅ Automatic compression by Shopify CDN
+- ✅ Responsive sizing (smaller files on mobile)
+- ✅ Global CDN distribution (fast delivery)
+- ✅ WebP format support (fallback to JPG)
+- ✅ Mobile devices save bandwidth (~50KB vs ~200KB on desktop)
+
+---
 
 ## When to Update This File
 

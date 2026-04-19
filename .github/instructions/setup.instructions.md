@@ -186,10 +186,16 @@ NODE_ENV=development
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/turath_db
 
-# Shopify
-SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
-SHOPIFY_API_KEY=your_api_key
-SHOPIFY_API_SECRET=your_api_secret
+# Shopify Headless (REQUIRED for ecommerce)
+## Frontend (Storefront API - public, customer-facing)
+VITE_SHOPIFY_STOREFRONT_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxx
+VITE_SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+VITE_SHOPIFY_STORE_API_VERSION=2024-01
+
+## Backend (Admin API - private, server-only)
+SHOPIFY_API_KEY=sk_live_xxxxxxxx
+SHOPIFY_API_SECRET=shpss_xxxxxxxxxxxxxxx
+SHOPIFY_ADMIN_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxx
 
 # Email Service
 SMTP_HOST=smtp.gmail.com
@@ -203,33 +209,102 @@ JWT_SECRET=your_jwt_secret_key
 
 **Important**: Never commit `.env.local` (it's in `.gitignore`).
 
-## Shopify Integration
+---
 
-### Setup
-1. Create a Shopify app in your store's admin
-2. Get API credentials (API key, API secret, access token)
-3. Add to `.env.local`:
-   ```env
-   SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
-   SHOPIFY_API_KEY=your_api_key
-   SHOPIFY_API_SECRET=your_api_secret
-   ```
+## Shopify Headless Integration
 
-### Using Shopify API
+### Step 1: Create Shopify App
+1. Go to **Shopify Admin** → **Settings** → **Apps and Integrations**
+2. Click **Develop apps** → **Create an app**
+3. Name: `Turath Collective Headless`
+4. Enable scopes:
+   - **Storefront API**: `unauthenticated_read_products`, `unauthenticated_read_product_listings`
+   - **Admin API**: `write_orders`, `read_orders`, `write_customers`, `read_customers`
+
+### Step 2: Get API Credentials
+
+**Frontend (Storefront API)**:
+- Access token: Copy from **Storefront API** section
+- This is PUBLIC—safe to use in frontend code
+- Example: `shpat_abcdef123456...`
+
+**Backend (Admin API)**:
+- API Key: Copy from **Admin API** section
+- Access Token: Underneath the API key
+- These are PRIVATE—server-only
+- Examples: `sk_live_xxx` and `shpat_xxx`
+
+**Store Domain**:
+- Found at top of Shopify Admin
+- Format: `your-store-name.myshopify.com`
+
+### Step 3: Add to `.env.local`
+
+```env
+# Mandatory for all development/production
+VITE_SHOPIFY_STOREFRONT_TOKEN=shpat_[your_storefront_token]
+VITE_SHOPIFY_STORE_DOMAIN=[your-store-name].myshopify.com
+VITE_SHOPIFY_STORE_API_VERSION=2024-01
+
+# Backend only (never expose on frontend)
+SHOPIFY_API_KEY=sk_live_[your_api_key]
+SHOPIFY_ADMIN_ACCESS_TOKEN=shpat_[your_admin_token]
+```
+
+### Step 4: Verify Connection
+
+Test your Shopify API connection:
+
+```bash
+curl -X POST https://[your-store].myshopify.com/api/2024-01/graphql.json \
+  -H "X-Shopify-Storefront-Access-Token: $VITE_SHOPIFY_STOREFRONT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ products(first: 1) { edges { node { id title } } } }"
+  }'
+```
+
+Should return product data (not an error).
+
+### Shopify API Versions
+
+Current target: **2024-01** (latest stable)
+- Update annually to latest version
+- Changelog: https://shopify.dev/docs/api/admin/changelog
+- Breaking changes rare but check release notes
+
+### Using Shopify Service Layer
+
 Located at `client/src/lib/shopify.ts`:
 
 ```typescript
-import shopifyClient from "@/lib/shopify";
+import { shopifyService } from "@/lib/shopify";
 
-// Fetch products
-const products = await shopifyClient.getProducts();
+// Fetch single product (with fallback to mock)
+const product = await shopifyService.getProduct("indigo-bowl");
 
-// Fetch product by ID
-const product = await shopifyClient.getProduct(productId);
+// Fetch all products (returns ShopifyProduct[] or [])
+const products = await shopifyService.getProducts();
 
 // Fetch collections
-const collections = await shopifyClient.getCollections();
+const collections = await shopifyService.getCollections();
 ```
+
+**Graceful fallback**: If Shopify API is unavailable (network error, token expired, etc.), service layer automatically falls back to mock data. No component changes needed.
+
+### Server-Side Proxy
+
+All Shopify requests from frontend go through `server/routes.ts` endpoint `/api/shopify/*`:
+
+**Benefits**:
+- Storefront token never exposed in browser
+- Safer error handling
+- Rate limiting possible
+- Logging/analytics possible
+
+See [shopify-integration.instructions.md](.github/instructions/shopify-integration.instructions.md) for detailed integration patterns.
+
+---
 
 ## i18n (Internationalization)
 
