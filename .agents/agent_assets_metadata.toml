@@ -1,0 +1,49 @@
+uploads = []
+
+[[generated]]
+id = "DmODzfWKf0rkgvNPisGfp"
+uri = "file://attached_assets/product_designs/concept_1_editorial.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "mzHznt5S3rEYW2Qe3VsEF"
+uri = "file://attached_assets/product_designs/concept_2_asymmetric.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "j7hpyYnsvDcHRNXxdUUVy"
+uri = "file://attached_assets/product_designs/concept_3_story.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "L9WWxrBNk3rxpRVYx61QL"
+uri = "file://attached_assets/product_designs/concept_4_floating.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "5uSK277wQ5JyVgiAgk7fo"
+uri = "file://attached_assets/product_designs/concept_1_editorial.png"
+type = "image"
+title = "Concept 1 — Editorial Magazine"
+
+[[outputs]]
+id = "gWLQ-Ozf4SeszglYMHvUG"
+uri = "file://attached_assets/product_designs/concept_2_asymmetric.png"
+type = "image"
+title = "Concept 2 — Asymmetric Gallery"
+
+[[outputs]]
+id = "6wgPrCAjI6D0YK6I5Fkwx"
+uri = "file://attached_assets/product_designs/concept_3_story.png"
+type = "image"
+title = "Concept 3 — Immersive Story"
+
+[[outputs]]
+id = "zDSS8g3SISGqfg45dveOB"
+uri = "file://attached_assets/product_designs/concept_4_floating.png"
+type = "image"
+title = "Concept 4 — Floating Detail Card"
