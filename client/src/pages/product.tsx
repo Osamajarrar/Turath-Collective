@@ -1,20 +1,16 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useRoute, Link } from "wouter";
+import { useRoute } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronLeft, ChevronRight, ShoppingBag, ChevronDown, ChevronUp, Brush, Droplets,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingBag, Plus, Minus } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import SuggestedProductCard from "@/components/suggested-product-card";
 import ResponsiveImage from "@/components/ui/responsive-image";
 import ProductImageCarousel from "@/components/product-image-carousel";
-import ProductGallery from "@/components/product-gallery";
 import QuantityCounter from "@/components/QuantityCounter";
 import QuantitySetSelector from "@/components/QuantitySetSelector";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
-import { getAvailableCategories } from "@/lib/collections";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // Mock assets
@@ -83,7 +79,6 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     price: parseFloat(e.node.price.amount),
   }));
 
-  // Ensure at least one variation
   if (variations.length === 0) {
     variations.push({
       color: "Default",
@@ -93,11 +88,9 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     });
   }
 
-  // Extract quantity style and max sets from metafields (optional)
   let quantityStyle = p.quantityStyle ?? "counter";
   let maxSets = p.maxSets ?? 3;
 
-  // If metafields were fetched from Shopify, parse them (filter out nulls)
   if (p.metafields && Array.isArray(p.metafields)) {
     const metafieldsMap = Object.fromEntries(
       p.metafields.filter((mf: any) => mf != null).map((mf: any) => [mf.key, mf.value])
@@ -126,23 +119,35 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
   };
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────
+// ── Refined Accordion ─────────────────────────────────────────────────────
 
-const Accordion = ({ title, children, duration = 0.3 }: { title: string; children: React.ReactNode; duration?: number }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Accordion = ({
+  title,
+  children,
+  defaultOpen = false,
+  duration = 0.3,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+  duration?: number;
+}) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-border">
+    <div className="border-b border-border/60">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-6 flex justify-between items-center group"
+        className="w-full py-5 flex justify-between items-center group"
         data-testid={`accordion-${title.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="text-xs uppercase tracking-[0.2em] font-bold group-hover:text-primary transition-colors">
+        <span className="font-serif text-base text-foreground group-hover:text-primary transition-colors">
           {title}
         </span>
-        {isOpen ? <ChevronUp className="w-4 h-4 opacity-40" /> : <ChevronDown className="w-4 h-4 opacity-40" />}
+        <span className="text-foreground/40 group-hover:text-primary transition-colors">
+          {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+        </span>
       </button>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
@@ -151,7 +156,7 @@ const Accordion = ({ title, children, duration = 0.3 }: { title: string; childre
             transition={{ duration }}
             className="overflow-hidden"
           >
-            <div className="pb-8 text-sm text-foreground/60 font-light leading-relaxed">
+            <div className="pb-6 pr-4 text-sm text-foreground/70 font-light leading-relaxed">
               {children}
             </div>
           </motion.div>
@@ -175,8 +180,6 @@ export default function ProductPage() {
   const [suggestedProducts, setSuggestedProducts] = useState<DisplayProduct[]>([]);
   const [isLoading, setIsLoading] = useState(() => import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
 
-  // Animation durations based on motion preference
-  const imageDuration = prefersReducedMotion ? 0.1 : 1;
   const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
   const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
 
@@ -185,12 +188,9 @@ export default function ProductPage() {
     if (!handle) return;
     let cancelled = false;
 
-    // Skip API calls if using mock products
     if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
       const mockProduct = MOCK_PRODUCTS.find((p) => p.handle === handle);
-      if (mockProduct) {
-        setLiveProduct(mockProduct);
-      }
+      if (mockProduct) setLiveProduct(mockProduct);
       const suggested = MOCK_PRODUCTS
         .filter((p) => p.handle !== handle)
         .sort(() => Math.random() - 0.5)
@@ -199,37 +199,22 @@ export default function ProductPage() {
       return;
     }
 
-    // Fetch from Shopify API
     setIsLoading(true);
-    console.log("[Product Page] Fetching product from Shopify:", handle);
     shopifyService.getProduct(handle).then((result) => {
       if (cancelled) return;
-      console.log("[Product Page] Shopify fetch result:", result);
-      if (result) {
-        const normalized = normaliseShopify(result);
-        console.log("[Product Page] Normalized product with variants:", normalized);
-        setLiveProduct(normalized);
-      } else {
-        console.warn("[Product Page] Shopify returned null, will fallback to mock");
-      }
+      if (result) setLiveProduct(normaliseShopify(result));
       setIsLoading(false);
-    }).catch((err) => {
+    }).catch(() => {
       if (cancelled) return;
-      console.error("[Product Page] Shopify fetch error:", err);
       setIsLoading(false);
     });
 
-    // Fetch suggested products with fallback to mock data
     shopifyService.getProducts().then((products) => {
       if (cancelled) return;
-
-      // Use fetched products or fallback to mock
       const productsToUse = products && products.length > 0 ? products : MOCK_PRODUCTS;
-
       const normalized = productsToUse
         .filter((p) => (p as any).handle !== handle)
         .map((p) => {
-          // Check if it's a ShopifyProduct (has variants.edges) or already normalized
           if ("variants" in p && "edges" in (p as any).variants) {
             return normaliseShopify(p as ShopifyProduct);
           }
@@ -239,7 +224,6 @@ export default function ProductPage() {
         .slice(0, 8);
       setSuggestedProducts(normalized);
     }).catch(() => {
-      // On error, use mock products
       if (cancelled) return;
       const normalized = MOCK_PRODUCTS
         .filter((p) => p.handle !== handle)
@@ -253,8 +237,6 @@ export default function ProductPage() {
 
   const product: DisplayProduct = useMemo(() => {
     if (liveProduct) return liveProduct;
-    
-    // If loading from API, show a minimal skeleton product
     if (isLoading) {
       return {
         id: "loading",
@@ -269,8 +251,6 @@ export default function ProductPage() {
         specs: {},
       };
     }
-    
-    // Loading complete - use mock as fallback if not in API mode
     return (
       MOCK_PRODUCTS.find((p) => p.handle === params?.id) ||
       MOCK_PRODUCTS.find((p) => p.id === params?.id) ||
@@ -281,15 +261,20 @@ export default function ProductPage() {
   const currentVariation = product.variations[selectedVariationIdx] ?? product.variations[0];
   const images = currentVariation?.images ?? [];
 
+  // Split images for the unified left column:
+  // - Hero: first image (large)
+  // - Grid: next up to 4 images (2x2 below the hero) — keeps left column comparable to right
+  // - Overflow: any extra images render full-width 4-col below the unified section
+  const heroImage = images[0];
+  const gridImages = images.slice(1, 5);
+  const overflowImages = images.slice(5);
+
   const handleAddToCart = async () => {
     if (!currentVariation.variantId) return;
     const primaryImage = images[0];
     const imageUrl = typeof primaryImage === "string" ? primaryImage : String(primaryImage ?? "");
 
-    console.log("[Product Page] Adding to cart - variantId:", currentVariation.variantId, "isMock:", currentVariation.variantId.startsWith("mock-"));
-
     if (currentVariation.variantId.startsWith("mock-")) {
-      console.log("[Product Page] Using mock cart flow");
       await addItem(currentVariation.variantId, quantity, {
         productTitle: product.name,
         variantTitle: currentVariation.color,
@@ -299,8 +284,6 @@ export default function ProductPage() {
       });
       return;
     }
-
-    console.log("[Product Page] Using Shopify cart flow");
     await addItem(currentVariation.variantId, quantity);
   };
 
@@ -312,7 +295,7 @@ export default function ProductPage() {
 
   return (
     <PageLayout>
-      {/* Mobile Product Image Carousel (visible on mobile only) */}
+      {/* MOBILE: swipeable image carousel (Embla) */}
       <ProductImageCarousel
         images={images}
         selectedImageIdx={selectedImage}
@@ -320,30 +303,44 @@ export default function ProductPage() {
         productName={product.name}
       />
 
-      {/* SECTION 1: Main Product Image + Details */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-8 items-start bg-background">
-        {/* Left Column: Main Image - Square (3/5 width) - Desktop only */}
-        <motion.div
-          key={`${selectedVariationIdx}-${selectedImage}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: imageDuration }}
-          className="hidden lg:flex lg:col-span-3 justify-center items-center overflow-hidden bg-background rounded-lg"
-        >
-          {images[selectedImage] && (
-            <ResponsiveImage
-              src={images[selectedImage]}
-              alt={product.name}
-              layout="product-hero"
-              width={1791}
-              height={1791}
-              className={`transition-transform ${prefersReducedMotion ? "duration-100" : "duration-1000"}`}
-            />
+      {/* UNIFIED PRODUCT SECTION — single grid with images left, all info right */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start bg-background">
+        {/* LEFT COLUMN (3/5): Hero + 2-col grid of secondary images (desktop only) */}
+        <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
+          {heroImage && (
+            <div className="overflow-hidden bg-background rounded-lg">
+              <ResponsiveImage
+                src={heroImage}
+                alt={`${product.name} - main view`}
+                layout="product-hero"
+                width={1791}
+                height={1791}
+              />
+            </div>
           )}
-        </motion.div>
+          {gridImages.length > 0 && (
+            <div className="grid grid-cols-2 gap-4">
+              {gridImages.map((image, idx) => (
+                <div
+                  key={idx}
+                  className="aspect-square overflow-hidden bg-background rounded-lg"
+                  data-testid={`gallery-image-${idx + 1}`}
+                >
+                  <ResponsiveImage
+                    src={image}
+                    alt={`${product.name} - view ${idx + 2}`}
+                    layout="thumbnail"
+                    width={900}
+                    height={900}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Right Column: Details Text Block (2/5 width) */}
-        <div className="lg:col-span-2 self-center">
+        {/* RIGHT COLUMN (2/5): All product info + accordion */}
+        <div className="lg:col-span-2 lg:sticky lg:top-24 self-start">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -353,28 +350,28 @@ export default function ProductPage() {
             {/* Badge */}
             {product.isBestSeller && (
               <div className="mb-4">
-                <div className="badge-product w-fit">
-                  Top Rated
-                </div>
+                <div className="badge-product w-fit">Top Rated</div>
               </div>
             )}
 
             {/* Title & Price */}
             <div className="mb-4">
-              <div className="flex items-center justify-between gap-4 mb-2">
-                <h1 className="font-serif text-4xl leading-tight text-foreground flex-1">
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <h1 className="font-serif text-3xl md:text-4xl leading-tight text-foreground flex-1">
                   {product.name}
                 </h1>
-                <p className="font-sans text-xl font-medium text-foreground/80 text-right whitespace-nowrap" data-testid="text-price">
+                <p
+                  className="font-sans text-xl font-medium text-foreground/80 text-right whitespace-nowrap pt-2"
+                  data-testid="text-price"
+                >
                   ${currentVariation?.price.toFixed(2)}
                 </p>
               </div>
             </div>
 
-            {/* Separator */}
             <div className="border-b border-border my-6" />
 
-            {/* Color Variations Section */}
+            {/* Color Variations */}
             {product.variations.length > 1 && (
               <>
                 <div className="mb-6">
@@ -403,21 +400,12 @@ export default function ProductPage() {
                     ))}
                   </div>
                 </div>
-
-                {/* Separator */}
                 <div className="border-b border-border my-6" />
               </>
             )}
 
-            {/* Quantity & CTA Section */}
+            {/* Quantity & CTA */}
             <div className="space-y-4">
-              {/* Debug: Show whether using Shopify or Mock */}
-              <div className={`p-2 rounded text-[10px] text-center font-bold uppercase tracking-widest ${
-                liveProduct ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-              }`}>
-                {liveProduct ? "✓ Using Real Shopify Data" : "⚠ Using Mock Data (Fallback)"}
-              </div>
-
               {product.quantityStyle === "sets" ? (
                 <QuantitySetSelector
                   quantity={quantity}
@@ -425,7 +413,7 @@ export default function ProductPage() {
                   maxSets={product.maxSets || 3}
                 />
               ) : (
-                <QuantityCounter quantity={quantity} setQuantity={setQuantity} />
+                <QuantityCounter quantity={quantity} setQuantity={setQuantity} fullWidth />
               )}
               <button
                 onClick={handleAddToCart}
@@ -446,78 +434,61 @@ export default function ProductPage() {
                 </button>
               )}
             </div>
+
+            {/* Refined Accordion: Description / Details & Materials / Care & Shipping */}
+            <div className="mt-10">
+              <Accordion title="Description" defaultOpen duration={accordionDuration}>
+                <p>{product.description}</p>
+              </Accordion>
+              <Accordion title="Details & Materials" duration={accordionDuration}>
+                {Object.keys(product.specs).length > 0 ? (
+                  <ul className="space-y-3">
+                    {Object.entries(product.specs).map(([key, val]) => (
+                      <li key={key} className="flex justify-between gap-4">
+                        <span className="capitalize text-foreground/60">{key}</span>
+                        <span className="font-medium text-foreground text-right">{val}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Hand-crafted in Hebron, Palestine, using traditional materials and techniques passed down through generations.</p>
+                )}
+              </Accordion>
+              <Accordion title="Care & Shipping" duration={accordionDuration}>
+                <p>
+                  Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
+                  Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
+                </p>
+              </Accordion>
+            </div>
           </motion.div>
         </div>
       </div>
 
-      {/* SECTION 2: Images Gallery + Features/Accordions */}
-      {images.length > 1 && (
-        <div className="mt-8 md:mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Left: Product Gallery (3/5 width) - Desktop: grid, Mobile: hidden */}
-          <ProductGallery
-            images={images}
-            selectedImageIdx={selectedImage}
-            onImageSelect={setSelectedImage}
-            productName={product.name}
-          />
-
-          {/* Right: Features + Accordions (2/5 width) */}
-          <div className="lg:col-span-2 flex flex-col">
-            {/* Product Features */}
-            <div className="rounded-lg p-6 bg-gradient-to-br from-background to-muted/20 border border-border mb-8">
-              <div className="grid grid-cols-2 gap-8">
-                <div className="flex flex-row items-start gap-4">
-                  <div className="shrink-0 mt-0.5">
-                    <Droplets className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Dishwasher Safe</p>
-                    <p className="text-xs text-foreground/60 leading-relaxed">Everyday convenience without compromise</p>
-                  </div>
-                </div>
-                <div className="flex flex-row items-start gap-4">
-                  <div className="shrink-0 mt-0.5">
-                    <Brush className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Hand Painted</p>
-                    <p className="text-xs text-foreground/60 leading-relaxed">Traditional artistry in every brushstroke</p>
-                  </div>
-                </div>
+      {/* OVERFLOW IMAGES — render below the unified section, full-width 4-col */}
+      {overflowImages.length > 0 && (
+        <div className="hidden lg:block mt-8">
+          <div className="grid grid-cols-4 gap-4">
+            {overflowImages.map((image, idx) => (
+              <div
+                key={idx}
+                className="aspect-square overflow-hidden bg-background rounded-lg"
+                data-testid={`gallery-overflow-${idx}`}
+              >
+                <ResponsiveImage
+                  src={image}
+                  alt={`${product.name} - view ${idx + gridImages.length + 2}`}
+                  layout="thumbnail"
+                  width={700}
+                  height={700}
+                />
               </div>
-
-              {/* Separator */}
-              <div className="border-b border-border" />
-
-              {/* Accordions */}
-              <div>
-                <Accordion title="Description" duration={accordionDuration}>
-                  <p className="text-sm leading-relaxed">{product.description}</p>
-                </Accordion>
-                {Object.keys(product.specs).length > 0 && (
-                  <Accordion title="Details" duration={accordionDuration}>
-                    <ul className="space-y-3 text-sm">
-                      {Object.entries(product.specs).map(([key, val]) => (
-                        <li key={key} className="flex justify-between gap-4">
-                          <span className="capitalize text-foreground/70">{key}</span>
-                          <span className="font-medium text-foreground text-right">{val}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </Accordion>
-                )}
-                <Accordion title="Care" duration={accordionDuration}>
-                  <p className="text-sm leading-relaxed text-foreground/80">
-                    Hand-crafted in Palestine. Dishwasher safe for easy cleaning. Hand painted with natural dyes. Handle with care to preserve the artistry of each piece.
-                  </p>
-                </Accordion>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Suggested Products */}
+      {/* SUGGESTED PRODUCTS */}
       {suggestedProducts.length > 0 && (
         <div className="mt-20 md:mt-24 border-t border-border pt-16 md:pt-20">
           <div className="mb-12 md:mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -527,22 +498,14 @@ export default function ProductPage() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => {
-                  if (carouselRef.current) {
-                    carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
-                  }
-                }}
+                onClick={() => carouselRef.current?.scrollBy({ left: -300, behavior: "smooth" })}
                 className="p-3 rounded-full border border-border hover:bg-muted transition-colors"
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={() => {
-                  if (carouselRef.current) {
-                    carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
-                  }
-                }}
+                onClick={() => carouselRef.current?.scrollBy({ left: 300, behavior: "smooth" })}
                 className="p-3 rounded-full border border-border hover:bg-muted transition-colors"
                 aria-label="Scroll right"
               >
@@ -551,7 +514,6 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* Carousel Container */}
           <div
             ref={carouselRef}
             className="flex overflow-x-auto scrollbar-hide gap-4 md:gap-6 pb-4"
