@@ -9,20 +9,21 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import ScrollToTop from "@/components/scroll-to-top";
 
-// Dynamic imports for code splitting (pages load only when needed)
-// Using default exports from each page file
-const Home = lazy(() => import("@/pages/home"));
-const ProductPage = lazy(() => import("@/pages/product"));
-const ShopPage = lazy(() => import("@/pages/shop"));
+// Critical pages loaded eagerly for fast initial load
+import Home from "@/pages/home";
+import ProductPage from "@/pages/product";
+import ShopPage from "@/pages/shop";
+import ComingSoon from "@/pages/coming-soon";
+import NotFound from "@/pages/not-found";
+
+// Secondary pages lazy-loaded (less critical for initial render)
 const ContactPage = lazy(() => import("@/pages/contact"));
-const ComingSoon = lazy(() => import("@/pages/coming-soon"));
 const About = lazy(() => import("@/pages/about"));
 const ShippingAndReturns = lazy(() => import("@/pages/ShippingAndReturns"));
 const Care = lazy(() => import("@/pages/care"));
 const FAQ = lazy(() => import("@/pages/faq"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
-const NotFound = lazy(() => import("@/pages/not-found"));
 
 // Auth pages (login, signup, forgot-password) removed for launch v1.
 // Shopify handles customer accounts. Re-add imports + routes when needed.
