@@ -54,6 +54,7 @@ export interface ShopifyProductVariant {
   price: ShopifyMoneyV2;
   compareAtPrice: ShopifyMoneyV2 | null;
   selectedOptions: Array<{ name: string; value: string }>;
+  quantityAvailable?: number;
 }
 
 export interface ShopifyProduct {
@@ -120,7 +121,7 @@ const PRODUCT_FRAGMENT = `
   variants(first: 20) {
     edges {
       node {
-        id title availableForSale
+        id title availableForSale quantityAvailable
         price { amount currencyCode }
         compareAtPrice { amount currencyCode }
         selectedOptions { name value }

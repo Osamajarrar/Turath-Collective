@@ -34,6 +34,8 @@
   --color-border: hsl(40 10% 85%);
   --color-input: hsl(40 10% 85%);
   --color-ring: hsl(0 81% 13%);
+  --color-error: hsl(0 81% 30%);
+  --color-error-foreground: hsl(0 81% 95%);
   
   --font-sans: 'Comfortaa', sans-serif;
   --font-serif: 'Playfair Display', serif;

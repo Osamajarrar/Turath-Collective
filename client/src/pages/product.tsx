@@ -36,8 +36,8 @@ const MOCK_PRODUCTS = [
     isBestSeller: true,
     availableForSale: true,
     variations: [
-      { color: "Indigo", variantId: "mock-variant-1-indigo", images: eightImages(classicBowl, classicMezze), price: 45.0 },
-      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: eightImages(burgundyBowl, burgundyMezze), price: 48.0 },
+      { color: "Indigo", variantId: "mock-variant-1-indigo", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 3 },
+      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: eightImages(burgundyBowl, burgundyMezze), price: 48.0, quantityAvailable: 12 },
     ],
     description:
       "A hand-painted indigo bowl inspired by traditional Palestinian motifs. Each stroke is a tribute to the craftsmen of Hebron.",
@@ -59,7 +59,7 @@ const MOCK_PRODUCTS = [
     isBestSeller: false,
     availableForSale: true,
     variations: [
-      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [burgundyMezze, burgundyBowl], price: 38.0 },
+      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [burgundyMezze, burgundyBowl], price: 38.0, quantityAvailable: 8 },
     ],
     description: "Hand-painted mezze plate in deep burgundy, perfect for sharing.",
     specs: { material: "Hebron Clay", size: "22cm Diameter", weight: "650g", origin: "Hebron, Palestine" },
@@ -75,7 +75,7 @@ const MOCK_PRODUCTS = [
     isBestSeller: true,
     availableForSale: true,
     variations: [
-      { color: "Indigo", variantId: "mock-variant-3-indigo", images: [classicMezze, classicBowl], price: 38.0 },
+      { color: "Indigo", variantId: "mock-variant-3-indigo", images: [classicMezze, classicBowl], price: 38.0, quantityAvailable: 5 },
     ],
     description: "Classic indigo mezze plate, hand-painted with traditional motifs.",
     specs: { material: "Hebron Clay", size: "22cm Diameter", weight: "650g", origin: "Hebron, Palestine" },
@@ -91,7 +91,7 @@ const MOCK_PRODUCTS = [
     isBestSeller: false,
     availableForSale: true,
     variations: [
-      { color: "Burgundy", variantId: "mock-variant-4-burgundy", images: [burgundyBowl, burgundyMezze], price: 45.0 },
+      { color: "Burgundy", variantId: "mock-variant-4-burgundy", images: [burgundyBowl, burgundyMezze], price: 45.0, quantityAvailable: 15 },
     ],
     description: "Rich burgundy hand-painted bowl, an heirloom in the making.",
     specs: { material: "Hebron Clay", size: "18cm Diameter", weight: "450g", origin: "Hebron, Palestine" },
@@ -107,7 +107,7 @@ const MOCK_PRODUCTS = [
     isBestSeller: false,
     availableForSale: true,
     variations: [
-      { color: "Indigo", variantId: "mock-variant-5-indigo", images: [classicBowl, classicMezze], price: 45.0 },
+      { color: "Indigo", variantId: "mock-variant-5-indigo", images: [classicBowl, classicMezze], price: 45.0, quantityAvailable: 20 },
     ],
     description: "A timeless indigo bowl in our signature mosaic pattern.",
     specs: { material: "Hebron Clay", size: "18cm Diameter", weight: "450g", origin: "Hebron, Palestine" },
@@ -131,6 +131,7 @@ interface Variation {
   variantId: string;
   images: string[];
   price: number;
+  quantityAvailable?: number;
 }
 
 interface DisplayProduct {
@@ -154,6 +155,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     variantId: e.node.id,
     images: p.images.edges.map((img) => img.node.url),
     price: parseFloat(e.node.price.amount),
+    quantityAvailable: e.node.quantityAvailable,
   }));
 
   if (variations.length === 0) {
@@ -162,6 +164,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
       variantId: "",
       images: p.images.edges.map((img) => img.node.url),
       price: parseFloat(p.priceRange.minVariantPrice.amount),
+      quantityAvailable: 0,
     });
   }
 
@@ -449,6 +452,11 @@ export default function ProductPage() {
     return () => { cancelled = true; };
   }, [params?.id]);
 
+  // Reset quantity to 1 when switching variants
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedVariationIdx]);
+
   const product: DisplayProduct = useMemo(() => {
     if (liveProduct) return liveProduct;
 
@@ -670,7 +678,12 @@ export default function ProductPage() {
                     maxSets={product.maxSets || 3}
                   />
                 ) : (
-                  <QuantityCounter quantity={quantity} setQuantity={setQuantity} fullWidth />
+                  <QuantityCounter 
+                    quantity={quantity} 
+                    setQuantity={setQuantity} 
+                    availableQuantity={currentVariation.quantityAvailable}
+                    fullWidth 
+                  />
                 )}
                 <button
                   ref={addToCartBtnRef}
