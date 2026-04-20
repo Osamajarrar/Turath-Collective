@@ -165,10 +165,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       imageUrl?: string;
     }
   ) => {
-      // Cap quantity at 10 per order
-      const cappedQuantity = Math.min(quantity, 10);
+      // Shopify validates inventory at checkout
       const mode = getShopifyMode();
-      console.log("[Cart Context] addItem called:", { variantId, quantity, cappedQuantity, isMock: isMockVariantId(variantId), mode });
+      console.log("[Cart Context] addItem called:", { variantId, quantity, isMock: isMockVariantId(variantId), mode });
       
       if (isMockVariantId(variantId)) {
         // In live mode, mock cart is not allowed
@@ -184,7 +183,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           if (existing) {
             next = prev.map((l) =>
               l.variantId === variantId
-                ? { ...l, quantity: Math.min(l.quantity + cappedQuantity, 10) }
+                ? { ...l, quantity: l.quantity + quantity }
                 : l
             );
           } else {
@@ -195,7 +194,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 variantId,
                 productTitle: meta.productTitle,
                 variantTitle: meta.variantTitle,
-                quantity: cappedQuantity,
+                quantity: quantity,
                 price: meta.price,
                 currencyCode: meta.currencyCode,
                 imageUrl: meta.imageUrl,
@@ -218,12 +217,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         if (existingId) {
           console.log("[Cart Context] Adding to existing Shopify cart:", existingId);
           next = await shopifyService.addToCart(existingId, [
-            { merchandiseId: variantId, quantity: cappedQuantity },
+            { merchandiseId: variantId, quantity: quantity },
           ]);
         } else {
           console.log("[Cart Context] Creating new Shopify cart");
           next = await shopifyService.createCart([
-            { merchandiseId: variantId, quantity: cappedQuantity },
+            { merchandiseId: variantId, quantity: quantity },
           ]);
         }
         console.log("[Cart Context] Shopify cart response:", next);
@@ -243,15 +242,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Update quantity of item in cart (Shopify or mock)
   const updateLineQuantity = async (lineId: string, quantity: number) => {
-      // Cap quantity at 10 per order
-      const cappedQuantity = Math.min(quantity, 10);
+      // Shopify validates inventory at checkout
       if (lineId.startsWith("mock-line-") || mockLines.some((l) => l.lineId === lineId)) {
         setMockLines((prev) => {
           const next =
-            cappedQuantity < 1
+            quantity < 1
               ? prev.filter((l) => l.lineId !== lineId)
               : prev.map((l) =>
-                  l.lineId === lineId ? { ...l, quantity: cappedQuantity } : l
+                  l.lineId === lineId ? { ...l, quantity: quantity } : l
                 );
           saveMockCart(next);
           return next;
@@ -264,10 +262,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsBusy(true);
       try {
         let next: ShopifyCart | null;
-        if (cappedQuantity < 1) {
+        if (quantity < 1) {
           next = await shopifyService.removeCartLines(id, [lineId]);
         } else {
-          next = await shopifyService.updateCartLines(id, [{ id: lineId, quantity: cappedQuantity }]);
+          next = await shopifyService.updateCartLines(id, [{ id: lineId, quantity: quantity }]);
         }
         if (next) {
           setCart(next);

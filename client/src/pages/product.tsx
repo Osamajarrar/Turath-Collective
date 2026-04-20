@@ -332,7 +332,7 @@ function SkeletonCarousel() {
 
 export default function ProductPage() {
   const [, params] = useRoute("/product/:id");
-  const { addItem, isBusy } = useCart();
+  const { addItem, isBusy, cart, mockLines, hasMockCart } = useCart();
   const prefersReducedMotion = useReducedMotion();
   const [quantity, setQuantity] = useState(1);
   const [selectedVariationIdx, setSelectedVariationIdx] = useState(0);
@@ -503,6 +503,26 @@ export default function ProductPage() {
   const currentVariation = product.variations[selectedVariationIdx] ?? product.variations[0];
   const images = currentVariation?.images ?? [];
 
+  // Calculate remaining inventory (available - already in cart)
+  const remainingInventory = useMemo(() => {
+    const available = currentVariation.quantityAvailable ?? Infinity;
+    let cartQuantity = 0;
+
+    if (hasMockCart) {
+      // Check mock cart for this variant
+      const mockLine = mockLines.find((line) => line.variantId === currentVariation.variantId);
+      cartQuantity = mockLine?.quantity ?? 0;
+    } else if (cart) {
+      // Check Shopify cart for this variant
+      const cartLine = cart.lines.edges.find(
+        (edge) => edge.node.merchandise.id === currentVariation.variantId
+      );
+      cartQuantity = cartLine?.node.quantity ?? 0;
+    }
+
+    return Math.max(0, available - cartQuantity);
+  }, [currentVariation.variantId, currentVariation.quantityAvailable, cart, mockLines, hasMockCart]);
+
   // Split images for the unified left column:
   // - Hero: first image (large)
   // - Grid: next up to 4 images (2x2 below the hero) — keeps left column comparable to right
@@ -524,9 +544,11 @@ export default function ProductPage() {
         currencyCode: product.currencyCode,
         imageUrl: imageUrl || undefined,
       });
+      setQuantity(1);
       return;
     }
     await addItem(currentVariation.variantId, quantity);
+    setQuantity(1);
   };
 
   const handleBuyNow = async () => {
@@ -681,19 +703,19 @@ export default function ProductPage() {
                   <QuantityCounter 
                     quantity={quantity} 
                     setQuantity={setQuantity} 
-                    availableQuantity={currentVariation.quantityAvailable}
+                    availableQuantity={remainingInventory}
                     fullWidth 
                   />
                 )}
                 <button
                   ref={addToCartBtnRef}
                   onClick={handleAddToCart}
-                  disabled={!product.availableForSale || isBusy}
+                  disabled={!product.availableForSale || isBusy || remainingInventory <= 0}
                   data-testid="button-add-to-cart"
                   className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ShoppingBag className="h-4 w-4" />
-                  {product.availableForSale ? "Add to Bag" : "Sold Out"}
+                  {!product.availableForSale ? "Sold Out" : remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}
                 </button>
               </div>
 
@@ -815,11 +837,11 @@ export default function ProductPage() {
               {/* Right (or full-width on mobile/tablet): Add to Bag button */}
               <button
                 onClick={handleAddToCart}
-                disabled={!product.availableForSale || isBusy}
+                disabled={!product.availableForSale || isBusy || remainingInventory <= 0}
                 className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
-                <span>{product.availableForSale ? "Add to Bag" : "Sold Out"}</span>
+                <span>{!product.availableForSale ? "Sold Out" : remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}</span>
               </button>
             </div>
           </motion.div>

@@ -13,8 +13,8 @@ export default function QuantityCounter({
   availableQuantity = Infinity,
   fullWidth = false,
 }: QuantityCounterProps) {
-  // Cap at minimum of 10 or available inventory
-  const maxQuantity = Math.min(10, availableQuantity);
+  // Cap at available inventory (Shopify validates at checkout)
+  const maxQuantity = availableQuantity;
   const isLowStock = availableQuantity > 0 && availableQuantity <= 5;
   const isAtMax = quantity >= maxQuantity;
 
@@ -56,11 +56,6 @@ export default function QuantityCounter({
           <AlertCircle className="h-4 w-4 text-error shrink-0" />
           <span className="text-sm font-medium text-error">Running Low — order soon</span>
         </div>
-      )}
-
-      {/* Max quantity reached message */}
-      {isAtMax && maxQuantity <= 10 && (
-        <p className="text-xs text-secondary">Maximum {maxQuantity} per order</p>
       )}
     </div>
   );
