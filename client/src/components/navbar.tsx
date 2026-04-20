@@ -10,6 +10,14 @@ import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
 
+// Helper to slugify product title for mock cart links
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
@@ -22,6 +30,8 @@ export default function Navbar() {
     isBusy,
     updateLineQuantity,
     removeLine,
+    isCartOpenSignal,
+    resetCartOpenSignal,
   } = useCart();
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,6 +53,14 @@ export default function Navbar() {
     applyRtl(i18n.language);
     setHidden(false);
   }, [i18n.language]);
+
+  // Listen to cart open signal and open cart automatically
+  useEffect(() => {
+    if (isCartOpenSignal) {
+      setIsCartOpen(true);
+      resetCartOpenSignal();
+    }
+  }, [isCartOpenSignal, resetCartOpenSignal]);
 
   const switchLang = (code: string) => {
     i18n.changeLanguage(code);
@@ -269,20 +287,24 @@ export default function Navbar() {
                         key={line.id}
                         className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
                       >
-                        <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                        <Link onClick={() => setIsCartOpen(false)} href={`/product/${line.merchandise.product.handle}`} className="h-24 w-20 flex-shrink-0 bg-muted border border-transparent hover:border-primary transition-opacity">
                           {img ? (
                             <img
                               src={img}
-                              alt=""
+                              alt={line.merchandise.product.title}
                               className="h-full w-full object-cover"
                             />
                           ) : (
                             <div className="h-full w-full bg-muted" />
                           )}
-                        </div>
+                        </Link>
                         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
-                          <div>
-                            <h4 className="text-product-name leading-tight">
+                          <Link
+                            onClick={() => setIsCartOpen(false)}
+                            href={`/product/${line.merchandise.product.handle}`}
+                            className="group hover:opacity-70 transition-opacity"
+                          >
+                            <h4 className="text-product-name leading-tight ">
                               {line.merchandise.product.title}
                             </h4>
                             {line.merchandise.title && line.merchandise.title !== "Default Title" && (
@@ -290,7 +312,7 @@ export default function Navbar() {
                                 {line.merchandise.title}
                               </p>
                             )}
-                          </div>
+                          </Link>
                           <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center border border-border">
                               <button
@@ -342,24 +364,28 @@ export default function Navbar() {
                       key={line.lineId}
                       className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
                     >
-                      <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                      <Link onClick={() => setIsCartOpen(false)} href={`/product/${slugify(line.productTitle)}`} className="h-24 w-20 flex-shrink-0 bg-muted hover:opacity-80 transition-opacity">
                         {line.imageUrl ? (
                           <img
                             src={line.imageUrl}
-                            alt=""
+                            alt={line.productTitle}
                             className="h-full w-full object-cover"
                           />
                         ) : (
                           <div className="h-full w-full bg-muted" />
                         )}
-                      </div>
+                      </Link>
                       <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
-                        <div>
-                          <h4 className="text-product-name leading-tight">{line.productTitle}</h4>
-                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40">
+                        <Link
+                          onClick={() => setIsCartOpen(false)}
+                          href={`/product/${slugify(line.productTitle)}`}
+                          className="group hover:opacity-70 transition-opacity"
+                        >
+                          <h4 className="text-product-name leading-tight group-hover:underline">{line.productTitle}</h4>
+                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-60">
                             {line.variantTitle}
                           </p>
-                        </div>
+                        </Link>
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="flex items-center border border-border">
                             <button

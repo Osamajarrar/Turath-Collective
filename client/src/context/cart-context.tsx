@@ -62,6 +62,8 @@ type CartContextValue = {
   hasMockCart: boolean;
   isBusy: boolean;
   totalQuantity: number;
+  /** Signal to open the cart sidebar (auto-resets after navbar reads it) */
+  isCartOpenSignal: boolean;
   addItem: (
     variantId: string,
     quantity: number,
@@ -77,6 +79,8 @@ type CartContextValue = {
   removeLine: (lineId: string) => Promise<void>;
   refreshCart: () => Promise<void>;
   clearCartId: () => void;
+  /** Reset the cart open signal (called by navbar after opening) */
+  resetCartOpenSignal: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -90,6 +94,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<ShopifyCart | null>(null);
   const [mockLines, setMockLines] = useState<MockCartLine[]>(readInitialMockLines);
   const [isBusy, setIsBusy] = useState(false);
+  const [isCartOpenSignal, setIsCartOpenSignal] = useState(false);
 
   // Persist cart ID to localStorage
   const persistCartId = (id: string) => {
@@ -100,6 +105,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCartId = () => {
     localStorage.removeItem(CART_ID_KEY);
     setCart(null);
+  };
+
+  // Reset the cart open signal (called by navbar)
+  const resetCartOpenSignal = () => {
+    setIsCartOpenSignal(false);
   };
 
   // Refresh cart from Shopify (or clear if not found)
@@ -193,6 +203,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
           saveMockCart(next);
           return next;
         });
+        // Signal to open the cart
+        setIsCartOpenSignal(true);
         return;
       }
 
@@ -219,6 +231,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setCart(next);
           setMockLines([]);
           saveMockCart([]);
+          // Signal to open the cart
+          setIsCartOpenSignal(true);
         }
       } finally {
         setIsBusy(false);
@@ -303,13 +317,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       hasMockCart: mockLines.length > 0,
       isBusy,
       totalQuantity,
+      isCartOpenSignal,
       addItem,
       updateLineQuantity,
       removeLine,
       refreshCart,
       clearCartId,
+      resetCartOpenSignal,
     }),
-    [cart, mockLines, isBusy, totalQuantity]
+    [cart, mockLines, isBusy, totalQuantity, isCartOpenSignal]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRoute } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart } from "lucide-react";
@@ -173,13 +173,13 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     const metafieldsMap = Object.fromEntries(
       p.metafields.filter((mf: any) => mf != null).map((mf: any) => [mf.key, mf.value])
     );
-    
+
     // Extract specs from metafields
     if (metafieldsMap.material) specs.material = metafieldsMap.material;
     if (metafieldsMap.size) specs.size = metafieldsMap.size;
     if (metafieldsMap.weight) specs.weight = metafieldsMap.weight;
     if (metafieldsMap.origin) specs.origin = metafieldsMap.origin;
-    
+
     if (metafieldsMap.quantity_style && ["counter", "sets"].includes(metafieldsMap.quantity_style)) {
       quantityStyle = metafieldsMap.quantity_style;
     }
@@ -341,6 +341,34 @@ export default function ProductPage() {
   const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
   const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
 
+  const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    const btn = addToCartBtnRef.current;
+    if (!btn) return;
+
+    let lastScrollY = window.scrollY;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const currentScrollY = window.scrollY;
+        const scrollingDown = currentScrollY > lastScrollY;
+        lastScrollY = currentScrollY;
+
+        if (!entry.isIntersecting && scrollingDown) {
+          setShowStickyBar(true);
+        } else if (entry.isIntersecting) {
+          setShowStickyBar(false);
+        }
+      },
+  { threshold: 0, rootMargin: "-40px 0px 0px 0px" }
+    );
+
+    observer.observe(btn);
+    return () => observer.disconnect();
+  }, [liveProduct, isLoading]);
+
   useEffect(() => {
     const handle = params?.id;
     if (!handle) return;
@@ -423,7 +451,7 @@ export default function ProductPage() {
 
   const product: DisplayProduct = useMemo(() => {
     if (liveProduct) return liveProduct;
-    
+
     // Show loading skeleton while fetching from Shopify
     if (isLoading) {
       return {
@@ -576,127 +604,128 @@ export default function ProductPage() {
               transition={{ duration: sectionDuration }}
               className="w-full"
             >
-            {/* Badge - hidden on mobile */}
-            {product.isBestSeller && (
-              <div className="mb-4 hidden md:block">
-                <div className="badge-product w-fit">Top Rated</div>
-              </div>
-            )}
-
-            {/* Title & Price */}
-            <div className="mb-4">
-              <div className="flex items-start justify-between gap-4 mb-2">
-                <h1 className="font-serif text-3xl md:text-4xl leading-tight text-foreground flex-1">
-                  {product.name}
-                </h1>
-                <p
-                  className="font-sans text-xl font-medium text-foreground/80 text-right whitespace-nowrap pt-2"
-                  data-testid="text-price"
-                >
-                  ${currentVariation?.price.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            <div className="border-b border-border my-6" />
-
-            {/* Color Variations */}
-            {product.variations.length > 1 && (
-              <>
-                <div className="mb-6">
-                  <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-foreground">
-                    Color: <span className="opacity-60">{currentVariation?.color}</span>
-                  </p>
-                  <div className="flex gap-3">
-                    {product.variations.map((v, idx) => (
-                      <button
-                        key={v.color}
-                        onClick={() => { setSelectedVariationIdx(idx); setSelectedImage(0); }}
-                        data-testid={`button-variation-${idx}`}
-                        className={cn(
-                          "h-10 w-10 rounded-full border-2 p-0.5 transition-all",
-                          selectedVariationIdx === idx ? "border-primary" : "border-border/50 opacity-70 hover:opacity-100"
-                        )}
-                        title={v.color}
-                      >
-                        <div
-                          className={cn(
-                            "h-full w-full rounded-full",
-                            v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-primary"
-                          )}
-                        />
-                      </button>
-                    ))}
-                  </div>
+              {/* Badge - hidden on mobile */}
+              {product.isBestSeller && (
+                <div className="mb-4 hidden md:block">
+                  <div className="badge-product w-fit">Top Rated</div>
                 </div>
-                <div className="border-b border-border my-6" />
-              </>
-            )}
-
-            {/* Quantity & CTA */}
-            <div className="space-y-4">
-              {product.quantityStyle === "sets" ? (
-                <QuantitySetSelector
-                  quantity={quantity}
-                  setQuantity={setQuantity}
-                  maxSets={product.maxSets || 3}
-                />
-              ) : (
-                <QuantityCounter quantity={quantity} setQuantity={setQuantity} fullWidth />
               )}
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.availableForSale || isBusy}
-                data-testid="button-add-to-cart"
-                className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ShoppingBag className="h-4 w-4" />
-                {product.availableForSale ? "Add to Bag" : "Sold Out"}
-              </button>
-            </div>
 
-            {/* Product Features — compact icon row above the accordion */}
-            <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5">
-              {PRODUCT_FEATURES.map(({ icon: Icon, label }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-3"
-                  data-testid={`feature-${label.toLowerCase().replace(/\s+/g, "-")}`}
-                >
-                  <Icon className="h-4 w-4 text-primary shrink-0" strokeWidth={1.5} />
-                  <span className="text-xs uppercase tracking-[0.15em] text-foreground/70">
-                    {label}
-                  </span>
+              {/* Title & Price */}
+              <div className="mb-4">
+                <div className="flex items-start justify-between gap-4 mb-2">
+                  <h1 className="font-serif text-3xl md:text-4xl leading-tight text-foreground flex-1">
+                    {product.name}
+                  </h1>
+                  <p
+                    className="font-sans text-xl font-medium text-foreground/80 text-right whitespace-nowrap pt-2"
+                    data-testid="text-price"
+                  >
+                    ${currentVariation?.price.toFixed(2)}
+                  </p>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {/* Refined Accordion: Description / Details / Care */}
-            <div className="mt-8 border-t border-border/60">
-              <Accordion title="Description" duration={accordionDuration}>
-                <p>{product.description}</p>
-              </Accordion>
-              <Accordion title="Details" duration={accordionDuration}>
-                {Object.keys(product.specs).length > 0 ? (
-                  <ul className="space-y-3">
-                    {Object.entries(product.specs).map(([key, val]) => (
-                      <li key={key} className="flex justify-between gap-4">
-                        <span className="capitalize text-foreground/60">{key}</span>
-                        <span className="font-medium text-foreground text-right">{val}</span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="border-b border-border my-6" />
+
+              {/* Color Variations */}
+              {product.variations.length > 1 && (
+                <>
+                  <div className="mb-6">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-foreground">
+                      Color: <span className="opacity-60">{currentVariation?.color}</span>
+                    </p>
+                    <div className="flex gap-3">
+                      {product.variations.map((v, idx) => (
+                        <button
+                          key={v.color}
+                          onClick={() => { setSelectedVariationIdx(idx); setSelectedImage(0); }}
+                          data-testid={`button-variation-${idx}`}
+                          className={cn(
+                            "h-10 w-10 rounded-full border-2 p-0.5 transition-all",
+                            selectedVariationIdx === idx ? "border-primary" : "border-border/50 opacity-70 hover:opacity-100"
+                          )}
+                          title={v.color}
+                        >
+                          <div
+                            className={cn(
+                              "h-full w-full rounded-full",
+                              v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-primary"
+                            )}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border-b border-border my-6" />
+                </>
+              )}
+
+              {/* Quantity & CTA */}
+              <div className="space-y-4">
+                {product.quantityStyle === "sets" ? (
+                  <QuantitySetSelector
+                    quantity={quantity}
+                    setQuantity={setQuantity}
+                    maxSets={product.maxSets || 3}
+                  />
                 ) : (
-                  <p>Hand-crafted in Hebron, Palestine, using traditional materials and techniques passed down through generations.</p>
+                  <QuantityCounter quantity={quantity} setQuantity={setQuantity} fullWidth />
                 )}
-              </Accordion>
-              <Accordion title="Care" duration={accordionDuration}>
-                <p>
-                  Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
-                  Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
-                </p>
-              </Accordion>
-            </div>
+                <button
+                  ref={addToCartBtnRef}
+                  onClick={handleAddToCart}
+                  disabled={!product.availableForSale || isBusy}
+                  data-testid="button-add-to-cart"
+                  className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <ShoppingBag className="h-4 w-4" />
+                  {product.availableForSale ? "Add to Bag" : "Sold Out"}
+                </button>
+              </div>
+
+              {/* Product Features — compact icon row above the accordion */}
+              <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5">
+                {PRODUCT_FEATURES.map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-3"
+                    data-testid={`feature-${label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    <Icon className="h-4 w-4 text-primary shrink-0" strokeWidth={1.5} />
+                    <span className="text-xs uppercase tracking-[0.15em] text-foreground/70">
+                      {label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Refined Accordion: Description / Details / Care */}
+              <div className="mt-8 border-t border-border/60">
+                <Accordion title="Description" duration={accordionDuration}>
+                  <p>{product.description}</p>
+                </Accordion>
+                <Accordion title="Details" duration={accordionDuration}>
+                  {Object.keys(product.specs).length > 0 ? (
+                    <ul className="space-y-3">
+                      {Object.entries(product.specs).map(([key, val]) => (
+                        <li key={key} className="flex justify-between gap-4">
+                          <span className="capitalize text-foreground/60">{key}</span>
+                          <span className="font-medium text-foreground text-right">{val}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>Hand-crafted in Hebron, Palestine, using traditional materials and techniques passed down through generations.</p>
+                  )}
+                </Accordion>
+                <Accordion title="Care" duration={accordionDuration}>
+                  <p>
+                    Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
+                    Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
+                  </p>
+                </Accordion>
+              </div>
             </motion.div>
           )}
         </div>
@@ -749,6 +778,40 @@ export default function ProductPage() {
           </div>
         </section>
       )}
+      {/* STICKY ADD TO BAG BAR */}
+      <AnimatePresence>
+        {showStickyBar && !isLoading && liveProduct && (
+          <motion.div
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "100%", opacity: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0.05 : 0.3, ease: "easeInOut" }}
+            className="fixed bottom-0 left-0 right-0 z-50 shadow-md bg-primary "
+          >
+            <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
+              {/* Left: product name + price — desktop (1024px+) only */}
+              <div className="flex flex-col justify-center min-w-0">
+                <h2 className="font-serif text-lg md:text-xl leading-tight text-primary-foreground">
+                  {product.name}
+                </h2>
+                <span className="text-xs font-sans tracking-widest mt-0.5 text-primary-foreground/80">
+                  {currentVariation?.color}
+                </span>
+              </div>
+
+              {/* Right (or full-width on mobile/tablet): Add to Bag button */}
+              <button
+                onClick={handleAddToCart}
+                disabled={!product.availableForSale || isBusy}
+                className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <ShoppingBag className="h-3.5 w-3.5" />
+                <span>{product.availableForSale ? "Add to Bag" : "Sold Out"}</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </PageLayout>
   );
 }

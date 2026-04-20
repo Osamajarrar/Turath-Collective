@@ -30,7 +30,7 @@ All colors are defined in `client/src/index.css` using HSL for consistency. Use 
 |-------|-----|-----|-------|
 | `--color-primary` | hsl(0 81% 13%) | #3A0606 | Maroon - CTAs, accents, primary buttons |
 | `--color-secondary` | hsl(82 24% 14%) | #262C1B | Forest Green - badges, secondary actions |
-| `--color-background` | hsl(40 17% 97%) | #FAF9F6 | Cream/Sand - main background |
+| `--color-background` | hsl(36, 20%, 95%) | #FAF9F6 | Cream/Sand - main background |
 | `--color-foreground` | hsl(0 0% 10%) | #1A1A1A | Deep Charcoal - body text, primary text |
 | `--color-muted` | hsl(40 10% 90%) | - | Light background, subtle accents |
 | `--color-muted-foreground` | hsl(0 0% 40%) | - | Secondary text, helper text |

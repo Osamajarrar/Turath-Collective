@@ -58,7 +58,7 @@ See [shopify-integration.instructions.md](.github/instructions/shopify-integrati
 /* Primary Brand Colors */
 --color-primary: #3A0606 (Maroon) /* hsl(0 81% 13%) */
 --color-secondary: #262C1B (Forest Green) /* hsl(82 24% 14%) */
---color-background: #FAF9F6 (Cream) /* hsl(40 17% 97%) */
+--color-background: #FAF9F6 (Cream) /* hsl(36, 20%, 95%) */
 
 /* Neutral tones, surface colors, accents defined in index.css */
 ```

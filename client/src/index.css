@@ -8,17 +8,17 @@
   --color-background-secondary: hsl(36, 20%, 90%); /* Slightly darker cream for depth */
   --color-foreground: hsl(0 0% 10%);   /* #1A1A1A - Deep Charcoal */
   
-  --color-card: hsl(40 17% 97%);
+  --color-card: hsl(36, 20%, 95%);
   --color-card-foreground: hsl(0 0% 10%);
   
-  --color-popover: hsl(40 17% 97%);
+  --color-popover: hsl(36, 20%, 95%);
   --color-popover-foreground: hsl(0 0% 10%);
   
   --color-primary: hsl(0 81% 13%);     /* #3A0606 - Maroon */
-  --color-primary-foreground: hsl(40 17% 97%);
+  --color-primary-foreground: hsl(36, 20%, 95%);
   
   --color-secondary: hsl(82 24% 14%);  /* #262C1B - Forest Green */
-  --color-secondary-foreground: hsl(40 17% 97%);
+  --color-secondary-foreground: hsl(36, 20%, 95%);
   
   --color-badge-bg: hsl(36, 18%, 85%); /* Darker cream for badges */
   
