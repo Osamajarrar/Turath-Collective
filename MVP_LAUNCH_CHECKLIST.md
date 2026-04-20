@@ -96,6 +96,59 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 
 ---
 
+## 11. Detailed Shopify Integration Notes
+
+- [ ] **Storefront API token scopes** — read_products, read_product_listings, read_collections, read_inventory, unauthenticated_read_*; write_checkouts for cart
+- [ ] **Metafields strategy** — define a namespace (e.g. `turath.specs`) for: dimensions, materials, care instructions, artisan name, region of origin, edition size. Required for product detail accordion to show real data instead of fallback copy.
+- [ ] **Variant model** — color/size mapping; ensure swatch hex codes stored as a metafield on each variant (currently the shop-page swatches read `variant.colorHex`)
+- [ ] **Collection structure** — at minimum `ceramics`, `embroidery`, `new-arrivals`, `best-sellers`, `limited-edition` to drive shop filters and homepage modules
+- [ ] **Inventory display** — decide whether to show "low stock" / "sold out" badges based on `availableForSale` and `quantityAvailable`
+- [ ] **Tax & shipping** — configure in Shopify admin: Quebec QST + GST, US sales tax (Shopify Tax), international shipping zones with calculated rates
+- [ ] **Order notifications** — customize Shopify's transactional emails to match brand (logo, colors, FR/EN/AR copy)
+- [ ] **Webhook endpoints** (optional v1) — `orders/create`, `customers/create` for any future CRM sync
+
+## 12. Accessibility (WCAG 2.1 AA)
+
+- [ ] All interactive elements reachable by keyboard (tab order, visible focus rings)
+- [ ] Color contrast ≥ 4.5:1 for body text (audit burgundy on cream combinations)
+- [ ] `alt` text on every product image — pulled from Shopify image `altText` field, not auto-generated
+- [ ] Form inputs have associated `<label>` elements
+- [ ] Quantity stepper announces value changes to screen readers (`aria-live`)
+- [ ] Carousel on mobile product page has prev/next controls reachable without swipe
+- [ ] Skip-to-content link in header
+- [ ] Reduced-motion media query respected by all framer-motion animations (currently honored on shop grid only — audit elsewhere)
+
+## 13. Security / Ops Hardening (Post-Launch)
+
+- [ ] Run a fresh dependency + SAST scan after Shopify auth migration
+- [ ] HTML-escape interpolated values in `server/email.ts` before re-enabling contact route
+- [ ] Add a tight rate limiter (e.g. 5/min) to contact and newsletter endpoints when re-enabled
+- [ ] Set up error tracking (Sentry or similar) for both client and server
+- [ ] Configure log retention / rotation in production
+- [ ] Backup strategy for the Postgres database (Replit-managed snapshots verified working)
+- [ ] Review all `process.env` reads — fail fast at boot if a required prod var is missing
+- [ ] Consider `helmet` `crossOriginEmbedderPolicy` and `referrerPolicy: "strict-origin-when-cross-origin"` once Shopify CDN domains are finalised in CSP
+
+## 14. Pre-Launch Soft Test (Recommended)
+
+- [ ] Deploy to a staging subdomain (e.g. `staging.turathcollective.com`) with `noindex` meta
+- [ ] Invite 5–10 trusted users to walk through: browse → product → add to cart → checkout → order confirmation email
+- [ ] Collect feedback in a single doc; triage blocker vs. nice-to-have
+- [ ] Run Lighthouse + axe DevTools on every key page
+- [ ] Place one real test order end-to-end with refund afterwards
+- [ ] Verify Shopify order fulfillment workflow with the artisan / fulfillment partner
+
+## 15. Launch Day Runbook
+
+- [ ] Switch DNS to production deployment; verify TLS cert is valid
+- [ ] Remove `noindex` meta tag and submit `sitemap.xml` to Google Search Console + Bing Webmaster Tools
+- [ ] Verify GA4 receiving live traffic
+- [ ] Announce on social channels with prepared assets
+- [ ] Monitor `/api/health`, GA4 real-time, Shopify orders dashboard, and error tracker for the first 24h
+- [ ] Have a rollback plan: prior deployment kept warm so you can flip back if a regression appears
+
+---
+
 ## Already Done ✅
 
 - Premium product page redesign (unified 2-col layout, accordion, quantity stepper)
