@@ -178,7 +178,7 @@ export default function Navbar() {
                         className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
                       >
                         {category.title}
-                        <span className="text-[8px] uppercase tracking-widest bg-background text-foreground px-2 py-1 rounded-[5px]">{t("nav.comingSoon")}</span>
+                        <span className="text-[8px] uppercase tracking-widest bg-background text-foreground px-2 py-1 rounded-md">{t("nav.comingSoon")}</span>
                       </div>
                     ) : (
                       <Link

@@ -8,8 +8,9 @@ interface ResponsiveImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>,
   className?: string;
   width?: number;
   height?: number;
+  maxWidth?: string;
   priority?: boolean;
-  fetchpriority?: "high" | "low" | "auto";
+  fetchPriority?: "high" | "low" | "auto";
 }
 
 /**
@@ -46,8 +47,9 @@ export default function ResponsiveImage({
   className = "",
   width,
   height,
+  maxWidth,
   priority = false,
-  fetchpriority = "auto",
+  fetchPriority = "auto",
 }: ResponsiveImageProps) {
   const attrs = generateResponsiveImageAttrs(src, alt, layout);
 
@@ -60,10 +62,11 @@ export default function ResponsiveImage({
       decoding="async"
       className={`w-full h-full object-cover ${className}`}
       style={{
+        maxWidth: maxWidth || 'none',
         height: 'auto',
         aspectRatio: width && height ? `${width} / ${height}` : undefined,
       }}
-      {...(fetchpriority && { fetchpriority: fetchpriority as any })}
+      {...(fetchPriority && { fetchPriority: fetchPriority as any })}
     />
   );
 }

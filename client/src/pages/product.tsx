@@ -8,6 +8,7 @@ import ResponsiveImage from "@/components/ui/responsive-image";
 import ProductImageCarousel from "@/components/product-image-carousel";
 import QuantityCounter from "@/components/QuantityCounter";
 import QuantitySetSelector from "@/components/QuantitySetSelector";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
@@ -61,7 +62,7 @@ const MOCK_PRODUCTS = [
       { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [burgundyMezze, burgundyBowl], price: 38.0 },
     ],
     description: "Hand-painted mezze plate in deep burgundy, perfect for sharing.",
-    specs: { material: "Hebron Clay", size: "22cm Diameter", origin: "Hebron, Palestine" },
+    specs: { material: "Hebron Clay", size: "22cm Diameter", weight: "650g", origin: "Hebron, Palestine" },
     quantityStyle: "counter" as const,
     maxSets: 3,
   },
@@ -77,7 +78,7 @@ const MOCK_PRODUCTS = [
       { color: "Indigo", variantId: "mock-variant-3-indigo", images: [classicMezze, classicBowl], price: 38.0 },
     ],
     description: "Classic indigo mezze plate, hand-painted with traditional motifs.",
-    specs: { material: "Hebron Clay", size: "22cm Diameter", origin: "Hebron, Palestine" },
+    specs: { material: "Hebron Clay", size: "22cm Diameter", weight: "650g", origin: "Hebron, Palestine" },
     quantityStyle: "counter" as const,
     maxSets: 3,
   },
@@ -93,7 +94,7 @@ const MOCK_PRODUCTS = [
       { color: "Burgundy", variantId: "mock-variant-4-burgundy", images: [burgundyBowl, burgundyMezze], price: 45.0 },
     ],
     description: "Rich burgundy hand-painted bowl, an heirloom in the making.",
-    specs: { material: "Hebron Clay", size: "18cm Diameter", origin: "Hebron, Palestine" },
+    specs: { material: "Hebron Clay", size: "18cm Diameter", weight: "450g", origin: "Hebron, Palestine" },
     quantityStyle: "counter" as const,
     maxSets: 3,
   },
@@ -109,7 +110,7 @@ const MOCK_PRODUCTS = [
       { color: "Indigo", variantId: "mock-variant-5-indigo", images: [classicBowl, classicMezze], price: 45.0 },
     ],
     description: "A timeless indigo bowl in our signature mosaic pattern.",
-    specs: { material: "Hebron Clay", size: "18cm Diameter", origin: "Hebron, Palestine" },
+    specs: { material: "Hebron Clay", size: "18cm Diameter", weight: "450g", origin: "Hebron, Palestine" },
     quantityStyle: "counter" as const,
     maxSets: 3,
   },
@@ -166,11 +167,19 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 
   let quantityStyle = p.quantityStyle ?? "counter";
   let maxSets = p.maxSets ?? 3;
+  const specs: Record<string, string> = {};
 
   if (p.metafields && Array.isArray(p.metafields)) {
     const metafieldsMap = Object.fromEntries(
       p.metafields.filter((mf: any) => mf != null).map((mf: any) => [mf.key, mf.value])
     );
+    
+    // Extract specs from metafields
+    if (metafieldsMap.material) specs.material = metafieldsMap.material;
+    if (metafieldsMap.size) specs.size = metafieldsMap.size;
+    if (metafieldsMap.weight) specs.weight = metafieldsMap.weight;
+    if (metafieldsMap.origin) specs.origin = metafieldsMap.origin;
+    
     if (metafieldsMap.quantity_style && ["counter", "sets"].includes(metafieldsMap.quantity_style)) {
       quantityStyle = metafieldsMap.quantity_style;
     }
@@ -189,7 +198,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     availableForSale: p.availableForSale,
     variations,
     description: p.description,
-    specs: {},
+    specs,
     quantityStyle: quantityStyle as "counter" | "sets",
     maxSets,
   };
@@ -216,7 +225,7 @@ const Accordion = ({
         className="w-full py-5 flex justify-between items-center group"
         data-testid={`accordion-${title.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="font-serif text-base text-foreground group-hover:text-primary transition-colors">
+        <span className="font-sans text-base text-foreground group-hover:text-primary transition-colors">
           {title}
         </span>
         <span className="text-foreground/40 group-hover:text-primary transition-colors">
@@ -241,6 +250,80 @@ const Accordion = ({
     </div>
   );
 };
+
+// ── Skeleton Product Details Component ─────────────────────────────────────
+
+function SkeletonProductDetails() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full space-y-6"
+    >
+      {/* Title & Price */}
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-3/4" />
+        <Skeleton className="h-6 w-1/3" />
+      </div>
+
+      <div className="border-b border-border my-6" />
+
+      {/* Color Variations */}
+      <div className="space-y-4">
+        <Skeleton className="h-4 w-32" />
+        <div className="flex gap-3">
+          {[0, 1].map((i) => (
+            <Skeleton key={i} className="h-10 w-10 rounded-full" />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b border-border my-6" />
+
+      {/* Quantity & CTA */}
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+
+      {/* Product Features */}
+      <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5">
+        {[0, 1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-4 w-20" />
+        ))}
+      </div>
+
+      {/* Accordion placeholders */}
+      <div className="mt-8 border-t border-border/60 space-y-4 pt-4">
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} className="h-12 w-full" />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Skeleton Carousel Component ────────────────────────────────────────────
+
+function SkeletonCarousel() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="lg:hidden"
+    >
+      <Skeleton className="w-full aspect-square rounded-lg shadow-md" />
+      {/* Dots placeholder */}
+      <div className="flex gap-2 justify-center mt-4 pb-4">
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} className="h-1 w-6 rounded-full" />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 // ── Page ──────────────────────────────────────────────────────────────────
 
@@ -277,34 +360,62 @@ export default function ProductPage() {
     setIsLoading(true);
     shopifyService.getProduct(handle).then((result) => {
       if (cancelled) return;
+      console.log("[Product] Single product fetched:", result?.handle || "not found");
       if (result) setLiveProduct(normaliseShopify(result));
       setIsLoading(false);
-    }).catch(() => {
+    }).catch((err) => {
+      console.error("[Product] Error fetching single product:", err);
       if (cancelled) return;
       setIsLoading(false);
     });
 
     shopifyService.getProducts().then((products) => {
       if (cancelled) return;
-      const productsToUse = products && products.length > 0 ? products : MOCK_PRODUCTS;
-      const normalized = productsToUse
-        .filter((p) => (p as any).handle !== handle)
-        .map((p) => {
-          if ("variants" in p && "edges" in (p as any).variants) {
-            return normaliseShopify(p as ShopifyProduct);
-          }
-          return p as DisplayProduct;
-        })
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 8);
-      setSuggestedProducts(normalized);
-    }).catch(() => {
-      if (cancelled) return;
-      const normalized = MOCK_PRODUCTS
+      console.log("[Product] Shopify products fetched:", products?.length || 0);
+      if (!products || products.length === 0) {
+        console.log("[Product] No Shopify products");
+        // Only fallback to mocks if explicitly enabled
+        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+          console.log("[Product] Using mock fallback");
+          const normalized = MOCK_PRODUCTS
+            .filter((p) => p.handle !== handle)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 8);
+          setSuggestedProducts(normalized);
+        }
+        return;
+      }
+      const normalized = products
         .filter((p) => p.handle !== handle)
+        .map((p) => normaliseShopify(p))
         .sort(() => Math.random() - 0.5)
         .slice(0, 8);
-      setSuggestedProducts(normalized);
+      console.log("[Product] Suggested products (Shopify):", normalized.length);
+      // If no suggested products after filtering, only use mocks if explicitly enabled
+      if (normalized.length === 0) {
+        console.log("[Product] No suggested products after filtering");
+        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+          console.log("[Product] Using mock fallback");
+          const mockFallback = MOCK_PRODUCTS
+            .filter((p) => p.handle !== handle)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 8);
+          setSuggestedProducts(mockFallback);
+        }
+      } else {
+        setSuggestedProducts(normalized);
+      }
+    }).catch((err) => {
+      console.error("[Product] Error fetching Shopify products:", err);
+      if (cancelled) return;
+      // Only fallback to mocks if explicitly enabled
+      if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+        const normalized = MOCK_PRODUCTS
+          .filter((p) => p.handle !== handle)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 8);
+        setSuggestedProducts(normalized);
+      }
     });
 
     return () => { cancelled = true; };
@@ -312,6 +423,8 @@ export default function ProductPage() {
 
   const product: DisplayProduct = useMemo(() => {
     if (liveProduct) return liveProduct;
+    
+    // Show loading skeleton while fetching from Shopify
     if (isLoading) {
       return {
         id: "loading",
@@ -326,11 +439,29 @@ export default function ProductPage() {
         specs: {},
       };
     }
-    return (
-      MOCK_PRODUCTS.find((p) => p.handle === params?.id) ||
-      MOCK_PRODUCTS.find((p) => p.id === params?.id) ||
-      MOCK_PRODUCTS[0]
-    );
+
+    // Only use mock products if explicitly enabled in env
+    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+      return (
+        MOCK_PRODUCTS.find((p) => p.handle === params?.id) ||
+        MOCK_PRODUCTS.find((p) => p.id === params?.id) ||
+        MOCK_PRODUCTS[0]
+      );
+    }
+
+    // No product found and not in mock mode - show empty state
+    return {
+      id: "not-found",
+      handle: params?.id ?? "",
+      name: "Product Not Found",
+      price: 0,
+      currencyCode: "CAD",
+      isBestSeller: false,
+      availableForSale: false,
+      variations: [{ color: "N/A", variantId: "", images: [], price: 0 }],
+      description: "This product could not be found.",
+      specs: {},
+    };
   }, [liveProduct, params?.id, isLoading]);
 
   const currentVariation = product.variations[selectedVariationIdx] ?? product.variations[0];
@@ -371,60 +502,83 @@ export default function ProductPage() {
   return (
     <PageLayout>
       {/* MOBILE: swipeable image carousel (Embla) */}
-      <ProductImageCarousel
-        images={images}
-        selectedImageIdx={selectedImage}
-        onImageSelect={setSelectedImage}
-        productName={product.name}
-      />
+      {isLoading && !liveProduct ? (
+        <SkeletonCarousel />
+      ) : (
+        <ProductImageCarousel
+          images={images}
+          selectedImageIdx={selectedImage}
+          onImageSelect={setSelectedImage}
+          productName={product.name}
+        />
+      )}
 
       {/* UNIFIED PRODUCT SECTION — single grid with images left, all info right */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start bg-background">
         {/* LEFT COLUMN (3/5): Hero + 2-col grid of secondary images (desktop only) */}
-        <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
-          {heroImage && (
-            <div className="overflow-hidden bg-background rounded-lg">
-              <ResponsiveImage
-                src={heroImage}
-                alt={`${product.name} - main view`}
-                layout="product-hero"
-                width={1791}
-                height={1791}
-              />
-            </div>
-          )}
-          {gridImages.length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
-              {gridImages.map((image, idx) => (
-                <div
-                  key={idx}
-                  className="aspect-square overflow-hidden bg-background rounded-lg"
-                  data-testid={`gallery-image-${idx + 1}`}
-                >
+        <div className="hidden lg:flex lg:col-span-3 flex-col gap-4 justify-center">
+          {isLoading && !liveProduct ? (
+            // Skeleton images while loading
+            <>
+              <Skeleton className="w-full aspect-square rounded-lg" />
+              <div className="grid grid-cols-2 gap-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="w-full aspect-square rounded-lg" />
+                ))}
+              </div>
+            </>
+          ) : (
+            // Real images when loaded
+            <>
+              {heroImage && (
+                <div className="overflow-hidden bg-background rounded-lg flex justify-center">
                   <ResponsiveImage
-                    src={image}
-                    alt={`${product.name} - view ${idx + 2}`}
-                    layout="thumbnail"
-                    width={900}
-                    height={900}
+                    src={heroImage}
+                    alt={`${product.name} - main view`}
+                    layout="product-hero"
+                    width={1791}
+                    height={1791}
+                    maxWidth="70%"
                   />
                 </div>
-              ))}
-            </div>
+              )}
+              {gridImages.length > 0 && (
+                <div className="grid grid-cols-2 gap-4">
+                  {gridImages.map((image, idx) => (
+                    <div
+                      key={idx}
+                      className="aspect-square overflow-hidden bg-background rounded-lg"
+                      data-testid={`gallery-image-${idx + 1}`}
+                    >
+                      <ResponsiveImage
+                        src={image}
+                        alt={`${product.name} - view ${idx + 2}`}
+                        layout="thumbnail"
+                        width={900}
+                        height={900}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* RIGHT COLUMN (2/5): All product info + accordion */}
         <div className="lg:col-span-2 lg:sticky lg:top-24 self-start">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: sectionDuration }}
-            className="w-full"
-          >
-            {/* Badge */}
+          {isLoading && !liveProduct ? (
+            <SkeletonProductDetails />
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: sectionDuration }}
+              className="w-full"
+            >
+            {/* Badge - hidden on mobile */}
             {product.isBestSeller && (
-              <div className="mb-4">
+              <div className="mb-4 hidden md:block">
                 <div className="badge-product w-fit">Top Rated</div>
               </div>
             )}
@@ -499,15 +653,6 @@ export default function ProductPage() {
                 <ShoppingBag className="h-4 w-4" />
                 {product.availableForSale ? "Add to Bag" : "Sold Out"}
               </button>
-              {product.availableForSale && currentVariation?.variantId && !currentVariation.variantId.startsWith("mock-") && (
-                <button
-                  onClick={handleBuyNow}
-                  data-testid="button-buy-now"
-                  className="w-full border border-primary py-3 text-sm font-medium uppercase tracking-widest text-primary transition-all hover:bg-primary/5"
-                >
-                  Buy Now
-                </button>
-              )}
             </div>
 
             {/* Product Features — compact icon row above the accordion */}
@@ -526,12 +671,12 @@ export default function ProductPage() {
               ))}
             </div>
 
-            {/* Refined Accordion: Description / Details & Materials / Care & Shipping */}
+            {/* Refined Accordion: Description / Details / Care */}
             <div className="mt-8 border-t border-border/60">
               <Accordion title="Description" duration={accordionDuration}>
                 <p>{product.description}</p>
               </Accordion>
-              <Accordion title="Details & Materials" duration={accordionDuration}>
+              <Accordion title="Details" duration={accordionDuration}>
                 {Object.keys(product.specs).length > 0 ? (
                   <ul className="space-y-3">
                     {Object.entries(product.specs).map(([key, val]) => (
@@ -545,14 +690,15 @@ export default function ProductPage() {
                   <p>Hand-crafted in Hebron, Palestine, using traditional materials and techniques passed down through generations.</p>
                 )}
               </Accordion>
-              <Accordion title="Care & Shipping" duration={accordionDuration}>
+              <Accordion title="Care" duration={accordionDuration}>
                 <p>
                   Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
                   Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
                 </p>
               </Accordion>
             </div>
-          </motion.div>
+            </motion.div>
+          )}
         </div>
       </div>
 

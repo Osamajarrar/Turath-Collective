@@ -33,7 +33,7 @@ export default function ProductImageCarousel({
 }: ProductImageCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
-    loop: false,
+    loop: true,
     skipSnaps: false,
   });
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -76,32 +76,34 @@ export default function ProductImageCarousel({
   };
 
   return (
-    <div className="lg:hidden relative w-full">
-      {/* Carousel Container */}
+    <div className="lg:hidden w-full">
+      {/* Carousel Container - shows next image peeking for UX */}
       <div ref={emblaRef} className="overflow-hidden w-full">
-        <div className="flex w-full touch-pan-y">
+        <div className="flex w-full touch-pan-y gap-4">
           {images.map((image, idx) => (
             <div
               key={idx}
-              className="flex-[0_0_100%] min-w-0 aspect-square"
+              className="flex-[0_0_90%] min-w-0 aspect-square"
               role="group"
               aria-roledescription="slide"
               aria-label={`Slide ${idx + 1} of ${images.length}`}
             >
-              <ResponsiveImage
-                src={image}
-                alt={`${productName} - image ${idx + 1}`}
-                layout="product-hero"
-                width={1200}
-                height={1200}
-              />
+              <div className="w-full h-full overflow-hidden">
+                <ResponsiveImage
+                  src={image}
+                  alt={`${productName} - image ${idx + 1}`}
+                  layout="product-hero"
+                  width={1200}
+                  height={1200}
+                />
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Navigation Arrows (visible only if more than one image) */}
-      {images.length > 1 && (
+      {/* Navigation Arrows (visible only if more than one image) - hidden on mobile */}
+      {images.length > 1 && false && (
         <>
           <button
             onClick={handlePrev}
@@ -125,9 +127,9 @@ export default function ProductImageCarousel({
         </>
       )}
 
-      {/* Dot Indicators */}
+      {/* Dot Indicators - styled like Heritage section, positioned below */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        <div className="flex gap-2 justify-center mt-4 pb-4">
           {images.map((_, idx) => (
             <button
               key={idx}
@@ -136,10 +138,10 @@ export default function ProductImageCarousel({
                   emblaApi.scrollTo(idx);
                 }
               }}
-              className={`h-2 rounded-full transition-all ${
+              className={`h-1 transition-all duration-500 ${
                 idx === selectedImageIdx
-                  ? "bg-white w-6"
-                  : "bg-white/50 w-2 hover:bg-white/70"
+                  ? "w-6 bg-primary"
+                  : "w-3 bg-primary/30 hover:bg-primary/50"
               }`}
               aria-label={`Go to image ${idx + 1}`}
               aria-current={idx === selectedImageIdx ? "true" : "false"}

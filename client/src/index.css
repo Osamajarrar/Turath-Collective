@@ -140,7 +140,7 @@
   button,
   [role="button"],
   .badge {
-    @apply rounded-[5px];
+    @apply rounded-md;
   }
 
   /* Default badge background: cream with dark text */

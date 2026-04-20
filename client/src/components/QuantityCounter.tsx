@@ -15,7 +15,7 @@ export default function QuantityCounter({
 }: QuantityCounterProps) {
   return (
     <div
-      className={`flex items-center border border-border ${
+      className={`flex items-center border border-border rounded-md ${
         fullWidth ? "w-full justify-between" : "w-fit"
       }`}
     >

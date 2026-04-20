@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
 import img3 from "@/assets/burgundy-bowl.png";
@@ -165,6 +166,23 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
   };
 }
 
+// ── SkeletonProductCard Component ──────────────────────────────────────────
+
+function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefersReducedMotion: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
+      className="group"
+    >
+      <Skeleton className="mb-6 aspect-square w-full rounded-xl shadow-sm" />
+      <Skeleton className="mb-2 h-5 w-3/4" />
+      <Skeleton className="h-4 w-1/4" />
+    </motion.div>
+  );
+}
+
 // ── ProductCard Component with Variant Swatches ────────────────────────────
 
 interface ProductCardProps {
@@ -176,6 +194,7 @@ interface ProductCardProps {
 
 function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
   const [, navigate] = useLocation();
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Link href={`/product/${product.handle}`}>
@@ -186,7 +205,13 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
         className="group cursor-pointer"
         data-testid={`card-product-${product.id}`}
       >
-        <div className="relative mb-6 aspect-square overflow-hidden bg-muted">
+        <div className="relative mb-6 aspect-square overflow-hidden bg-muted rounded-xl shadow-sm" style={{
+          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.03) 100%)'
+        }}
+        onMouseEnter={() => !prefersReducedMotion && setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Primary Image */}
           <img
             src={product.image}
             alt={product.name}
@@ -196,6 +221,21 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
             loading="lazy"
             decoding="async"
           />
+
+          {/* Secondary Image (slides up on hover) */}
+          {product.imageSecondary && (
+            <img
+              src={product.imageSecondary}
+              alt={`${product.name} alternate view`}
+              className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${
+                isHovered ? 'translate-y-0' : 'translate-y-full'
+              }`}
+              width={500}
+              height={500}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
 
           <div className="pointer-events-none absolute left-4 top-4 flex flex-row gap-2">
             {product.isBestSeller && (
@@ -256,7 +296,10 @@ export default function ShopPage() {
   const search = useSearch();
   const prefersReducedMotion = useReducedMotion();
   const [sortBy, setSortBy] = useState("newest");
-  const [products, setProducts] = useState<DisplayProduct[]>(MOCK_PRODUCTS);
+  const [isLoading, setIsLoading] = useState(import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [products, setProducts] = useState<DisplayProduct[]>(
+    import.meta.env.VITE_USE_MOCK_PRODUCTS === "true" ? MOCK_PRODUCTS : []
+  );
 
   const availableCategories = useMemo(() => getAvailableCategories(t), [t]);
   const availableCategoryHandles = useMemo(
@@ -302,12 +345,23 @@ export default function ShopPage() {
   useEffect(() => {
     // Skip API call if using mock products
     if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+      setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
     let cancelled = false;
+    
     shopifyService.getProducts().then((result) => {
-      if (cancelled || !result?.length) return;
+      if (cancelled) return;
+      console.log("[Shop] Shopify products fetched:", result?.length || 0);
+      
+      if (!result?.length) {
+        console.log("[Shop] No Shopify products found");
+        setIsLoading(false);
+        return;
+      }
+      
       const fallbackCategory = availableCategoryHandles[0] || "ceramics";
       const normalizedProducts = result.map((item) => {
         const normalized = normaliseShopify(item);
@@ -316,11 +370,16 @@ export default function ShopPage() {
         }
         return { ...normalized, category: fallbackCategory };
       });
+      console.log("[Shop] Normalized products:", normalizedProducts.length);
       setProducts(normalizedProducts);
+      setIsLoading(false);
+    }).catch((err) => {
+      console.error("[Shop] Error fetching Shopify products:", err);
+      if (cancelled) return;
+      setIsLoading(false);
     });
-    return () => {
-      cancelled = true;
-    };
+    
+    return () => { cancelled = true; };
   }, [availableCategoryHandles]);
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -414,11 +473,23 @@ export default function ShopPage() {
           </div>
         </header>
 
-        <div
-          className="grid gap-5 md:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {filteredAndSortedProducts.map((product, idx) => (
-            <ProductCard key={product.id} product={product} idx={idx} prefersReducedMotion={prefersReducedMotion} t={t} />
-          ))}
+        <div className="grid gap-5 md:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {isLoading ? (
+            // Show skeleton cards while loading
+            Array.from({ length: 12 }).map((_, idx) => (
+              <SkeletonProductCard key={idx} idx={idx} prefersReducedMotion={prefersReducedMotion} />
+            ))
+          ) : filteredAndSortedProducts.length > 0 ? (
+            // Show real products
+            filteredAndSortedProducts.map((product, idx) => (
+              <ProductCard key={product.id} product={product} idx={idx} prefersReducedMotion={prefersReducedMotion} t={t} />
+            ))
+          ) : (
+            // Show empty state if no products
+            <div className="col-span-full text-center py-16">
+              <p className="text-muted-foreground">{t("shop.noProducts", "No products found")}</p>
+            </div>
+          )}
         </div>
       </div>
     </PageLayout>

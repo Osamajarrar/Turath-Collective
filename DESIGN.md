@@ -409,12 +409,12 @@ Badges use a unified style across the site.
 import { Badge } from "@/components/ui/badge";
 
 // Default badge styling
-<Badge className="bg-background text-foreground px-4 py-1.5 rounded-[5px] text-[10px] uppercase tracking-widest font-bold">
+<Badge className="bg-background text-foreground px-4 py-1.5 rounded-md text-[10px] uppercase tracking-widest font-bold">
   Best Seller
 </Badge>
 
 // Product card badge
-<Badge className="absolute top-6 left-6 z-20 bg-background text-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-[5px]">
+<Badge className="absolute top-6 left-6 z-20 bg-background text-foreground text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-md">
   {product.badge}
 </Badge>
 ```
@@ -422,7 +422,7 @@ import { Badge } from "@/components/ui/badge";
 **Style Guidelines:**
 - **Background**: `bg-background` (cream) for standard badges
 - **Text Color**: `text-foreground` or `text-foreground/60` for muted
-- **Border Radius**: `rounded-[5px]` (subtle rounding)
+- **Border Radius**: `rounded-md` (subtle rounding)
 - **Padding**: `px-4 py-1.5` standard, adjust for size needs
 - **Typography**: `text-[10px] uppercase tracking-widest font-bold`
 - **Position**: Absolute positioning for product overlays (top-6 left-6)
@@ -1072,11 +1072,11 @@ Before merging AI-generated code, verify:
 - [ ] **Forms**: All inputs have `<label htmlFor>` associations
 - [ ] **Buttons**: Primary CTAs use custom button pattern with arrow icon; regular actions use `<Button>` component
 - [ ] **Links**: Use `<ArrowLink>` for text CTAs, `<Link>` for navigation
-- [ ] **Badges**: Use `bg-background text-foreground` with `rounded-[5px]`, not secondary colors
+- [ ] **Badges**: Use `bg-background text-foreground` with `rounded-md`, not secondary colors
 - [ ] **Spacing**: Use `gap-`, `p-`, `m-` utilities (no arbitrary values)
 - [ ] **Focus States**: Interactive elements have `focus-visible:ring` or equivalent
 - [ ] **Hover States**: Visible feedback (shadow + background change for CTAs, not subtle 95% opacity)
-- [ ] **Border Radius**: Use `rounded-lg` max for images/cards; `rounded-[5px]` for badges
+- [ ] **Border Radius**: Use `rounded-lg` max for images/cards; `rounded-md` for badges
 - [ ] **Contrast**: Text has 4.5:1+ contrast ratio
 - [ ] **Animations**: Duration is 300-800ms (not 1000ms+ unless necessary)
 
