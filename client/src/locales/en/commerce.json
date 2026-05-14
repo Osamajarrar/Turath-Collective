@@ -12,8 +12,23 @@
     "badges": {
       "bestSeller": "Best Seller",
       "new": "New",
-      "limitedStock": "Limited Stock"
+      "limitedStock": "Limited Stock",
+      "outOfStock": "Out of Stock"
     },
+    "filters": {
+      "showOutOfStock": "Show Out of Stock"
+    },
+    "notifyMe": {
+      "title": "Notify Me",
+      "description": "Get notified when this item is back in stock.",
+      "emailPlaceholder": "Enter your email",
+      "optIn": "Send me promotional emails",
+      "notify": "Notify Me",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "success": "Thanks! We'll notify you when it's back in stock."
+    },
+    "outOfStock": "Out of Stock",
     "categoryFilter": {
       "all": "All",
       "ceramics": "Ceramics",

@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useRoute } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart } from "lucide-react";
+import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart, Bell } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import SuggestedProductCard from "@/components/suggested-product-card";
 import ResponsiveImage from "@/components/ui/responsive-image";
@@ -9,6 +10,8 @@ import ProductImageCarousel from "@/components/product-image-carousel";
 import QuantityCounter from "@/components/QuantityCounter";
 import QuantitySetSelector from "@/components/QuantitySetSelector";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
@@ -36,8 +39,13 @@ const MOCK_PRODUCTS = [
     isBestSeller: true,
     availableForSale: true,
     variations: [
-      { color: "Indigo", variantId: "mock-variant-1-indigo", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 3 },
-      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: eightImages(burgundyBowl, burgundyMezze), price: 48.0, quantityAvailable: 12 },
+      { color: "Cream", variantId: "mock-variant-1-cream", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 12 },
+      { color: "Rose", variantId: "mock-variant-1-rose", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 8 },
+      { color: "Gray", variantId: "mock-variant-1-gray", images: eightImages(classicMezze, classicBowl), price: 45.0, quantityAvailable: 5 },
+      { color: "Navy", variantId: "mock-variant-1-navy", images: eightImages(burgundyBowl, burgundyMezze), price: 48.0, quantityAvailable: 0 },
+      { color: "Sage", variantId: "mock-variant-1-sage", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 10 },
+      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: eightImages(burgundyBowl, burgundyMezze), price: 45.0, quantityAvailable: 6 },
+      { color: "Taupe", variantId: "mock-variant-1-taupe", images: eightImages(classicBowl, classicMezze), price: 45.0, quantityAvailable: 0 },
     ],
     description:
       "A hand-painted indigo bowl inspired by traditional Palestinian motifs. Each stroke is a tribute to the craftsmen of Hebron.",
@@ -59,7 +67,13 @@ const MOCK_PRODUCTS = [
     isBestSeller: false,
     availableForSale: true,
     variations: [
-      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [burgundyMezze, burgundyBowl], price: 38.0, quantityAvailable: 8 },
+      { color: "Cream", variantId: "mock-variant-2-cream", images: eightImages(burgundyMezze, burgundyBowl), price: 38.0, quantityAvailable: 4 },
+      { color: "Mauve", variantId: "mock-variant-2-mauve", images: eightImages(burgundyMezze, burgundyBowl), price: 38.0, quantityAvailable: 0 },
+      { color: "Gray", variantId: "mock-variant-2-gray", images: eightImages(classicBowl, classicMezze), price: 38.0, quantityAvailable: 7 },
+      { color: "Navy", variantId: "mock-variant-2-navy", images: eightImages(classicMezze, classicBowl), price: 38.0, quantityAvailable: 0 },
+      { color: "Sage", variantId: "mock-variant-2-sage", images: eightImages(burgundyBowl, classicMezze), price: 38.0, quantityAvailable: 3 },
+      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: eightImages(burgundyMezze, burgundyBowl), price: 38.0, quantityAvailable: 8 },
+      { color: "Natural", variantId: "mock-variant-2-natural", images: eightImages(burgundyMezze, burgundyBowl), price: 38.0, quantityAvailable: 9 },
     ],
     description: "Hand-painted mezze plate in deep burgundy, perfect for sharing.",
     specs: { material: "Hebron Clay", size: "22cm Diameter", weight: "650g", origin: "Hebron, Palestine" },
@@ -132,6 +146,7 @@ interface Variation {
   images: string[];
   price: number;
   quantityAvailable?: number;
+  colorHex?: string;
 }
 
 interface DisplayProduct {
@@ -150,13 +165,23 @@ interface DisplayProduct {
 }
 
 function normaliseShopify(p: ShopifyProduct): DisplayProduct {
-  const variations: Variation[] = p.variants.edges.map((e) => ({
-    color: e.node.selectedOptions.find((o) => o.name.toLowerCase() === "color")?.value ?? e.node.title,
-    variantId: e.node.id,
-    images: p.images.edges.map((img) => img.node.url),
-    price: parseFloat(e.node.price.amount),
-    quantityAvailable: e.node.quantityAvailable,
-  }));
+  const variations: Variation[] = p.variants.edges.map((e) => {
+    const colorHex = e.node.colorHexMf?.value ?? undefined;
+    // Start with variant's main image
+    const variantImage = e.node.image?.url ? [e.node.image.url] : [];
+    // Get additional images from variant media references
+    const mediaImages = (e.node.variantMediaMf?.references?.nodes?.map((node) => node.image?.url).filter(Boolean) as string[]) ?? [];
+    // Use variant image first, then media images, otherwise fall back to product images
+    const images = variantImage.length > 0 || mediaImages.length > 0 ? [...variantImage, ...mediaImages] : p.images.edges.map((img) => img.node.url);
+    return {
+      color: e.node.selectedOptions.find((o) => o.name.toLowerCase() === "color")?.value ?? e.node.title,
+      variantId: e.node.id,
+      images: images,
+      price: parseFloat(e.node.price.amount),
+      quantityAvailable: e.node.quantityAvailable,
+      colorHex: colorHex,
+    };
+  });
 
   if (variations.length === 0) {
     variations.push({
@@ -165,6 +190,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
       images: p.images.edges.map((img) => img.node.url),
       price: parseFloat(p.priceRange.minVariantPrice.amount),
       quantityAvailable: 0,
+      colorHex: "#cccccc",
     });
   }
 
@@ -254,6 +280,107 @@ const Accordion = ({
   );
 };
 
+// ── NotifyMe Modal Component ───────────────────────────────────────────────
+
+interface NotifyMeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  product: DisplayProduct;
+  variant: Variation;
+  t: any;
+}
+
+function NotifyMeModal({ isOpen, onClose, product, variant, t }: NotifyMeModalProps) {
+  const [email, setEmail] = useState("");
+  const [optIn, setOptIn] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+    try {
+      // Simulate API call - replace with actual endpoint
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Notify me request:", { email, productHandle: product.handle, variantId: variant.variantId, optIn });
+      setSubmitted(true);
+      setTimeout(() => {
+        setEmail("");
+        setOptIn(true);
+        setSubmitted(false);
+        onClose();
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting notify me:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialogContent className="max-w-md">
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("shop.notifyMe.title", "Notify Me")}</AlertDialogTitle>
+          <AlertDialogDescription className="text-left space-y-4">
+            {!submitted ? (
+              <>
+                <div className="text-sm text-foreground/70">
+                  {t("shop.notifyMe.description", "Get notified when this item is back in stock.")}
+                </div>
+                <div className="bg-muted p-3 rounded text-sm">
+                  <p className="font-medium text-foreground">{product.name}</p>
+                  <p className="text-foreground/60">{variant.color}</p>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <input
+                    type="email"
+                    placeholder={t("shop.notifyMe.emailPlaceholder", "Enter your email")}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 border border-border rounded text-sm focus:outline-none focus:border-primary"
+                  />
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={optIn}
+                      onChange={(e) => setOptIn(e.target.checked)}
+                      className="w-4 h-4 border border-border rounded cursor-pointer accent-primary"
+                    />
+                    <span className="text-xs text-foreground/60">
+                      {t("shop.notifyMe.optIn", "Send me promotional emails")}
+                    </span>
+                  </label>
+                  <div className="flex gap-3 pt-4">
+                    <AlertDialogCancel className="flex-1" onClick={onClose}>
+                      {t("shop.notifyMe.cancel", "Cancel")}
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      type="submit"
+                      onClick={handleSubmit}
+                      disabled={!email || isSubmitting}
+                      className="flex-1"
+                    >
+                      {isSubmitting ? t("shop.notifyMe.submitting", "Submitting...") : t("shop.notifyMe.notify", "Notify Me")}
+                    </AlertDialogAction>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-foreground font-medium">{t("shop.notifyMe.success", "Thanks! We'll notify you when it's back in stock.")}</p>
+              </div>
+            )}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 // ── Skeleton Product Details Component ─────────────────────────────────────
 
 function SkeletonProductDetails() {
@@ -277,7 +404,7 @@ function SkeletonProductDetails() {
         <Skeleton className="h-4 w-32" />
         <div className="flex gap-3">
           {[0, 1].map((i) => (
-            <Skeleton key={i} className="h-10 w-10 rounded-full" />
+            <Skeleton key={i} className="h-8 w-8 rounded-full" />
           ))}
         </div>
       </div>
@@ -331,6 +458,7 @@ function SkeletonCarousel() {
 // ── Page ──────────────────────────────────────────────────────────────────
 
 export default function ProductPage() {
+  const { t } = useTranslation("commerce");
   const [, params] = useRoute("/product/:id");
   const { addItem, isBusy, cart, mockLines, hasMockCart } = useCart();
   const prefersReducedMotion = useReducedMotion();
@@ -340,6 +468,8 @@ export default function ProductPage() {
   const [liveProduct, setLiveProduct] = useState<DisplayProduct | null>(null);
   const [suggestedProducts, setSuggestedProducts] = useState<DisplayProduct[]>([]);
   const [isLoading, setIsLoading] = useState(() => import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [notifyModalOpen, setNotifyModalOpen] = useState(false);
+  const [selectedNotifyVariant, setSelectedNotifyVariant] = useState<Variation | null>(null);
 
   const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
   const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
@@ -634,12 +764,17 @@ export default function ProductPage() {
               transition={{ duration: sectionDuration }}
               className="w-full"
             >
-              {/* Badge - hidden on mobile */}
-              {product.isBestSeller && (
-                <div className="mb-4 hidden md:block">
+              {/* Badges - hidden on mobile */}
+              <div className="mb-4 hidden md:block space-y-2">
+                {!product.availableForSale && (
+                  <div className="badge-product w-fit bg-red-600 text-white">
+                    {t("product.soldOut")}
+                  </div>
+                )}
+                {product.isBestSeller && (
                   <div className="badge-product w-fit">Top Rated</div>
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Title & Price */}
               <div className="mb-4">
@@ -666,25 +801,27 @@ export default function ProductPage() {
                       Color: <span className="opacity-60">{currentVariation?.color}</span>
                     </p>
                     <div className="flex gap-3">
-                      {product.variations.map((v, idx) => (
-                        <button
-                          key={v.color}
-                          onClick={() => { setSelectedVariationIdx(idx); setSelectedImage(0); }}
-                          data-testid={`button-variation-${idx}`}
-                          className={cn(
-                            "h-10 w-10 rounded-full border-2 p-0.5 transition-all",
-                            selectedVariationIdx === idx ? "border-primary" : "border-border/50 opacity-70 hover:opacity-100"
-                          )}
-                          title={v.color}
-                        >
-                          <div
-                            className={cn(
-                              "h-full w-full rounded-full",
-                              v.color === "Indigo" ? "bg-[#3D52A0]" : "bg-primary"
-                            )}
+                      {product.variations.map((v, idx) => {
+                        const isOutOfStock = (v.quantityAvailable ?? 0) === 0;
+                        const colorHex = v.colorHex || "#cccccc";
+
+                        return (
+                          <ColorSwatch
+                            key={v.color}
+                            color={v.color}
+                            hex={colorHex}
+                            isSelected={selectedVariationIdx === idx}
+                            isOutOfStock={isOutOfStock}
+                            onClick={() => {
+                              setSelectedVariationIdx(idx);
+                              setSelectedImage(0);
+                            }}
+                            size="md"
+                            showOutOfStockStyle={true}
+                            t={t}
                           />
-                        </button>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                   <div className="border-b border-border my-6" />
@@ -693,30 +830,46 @@ export default function ProductPage() {
 
               {/* Quantity & CTA */}
               <div className="space-y-4">
-                {product.quantityStyle === "sets" ? (
-                  <QuantitySetSelector
-                    quantity={quantity}
-                    setQuantity={setQuantity}
-                    maxSets={product.maxSets || 3}
-                  />
+                {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
+                  <button
+                    onClick={() => {
+                      setSelectedNotifyVariant(currentVariation);
+                      setNotifyModalOpen(true);
+                    }}
+                    data-testid="button-notify-me"
+                    className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90"
+                  >
+                    <Bell className="h-4 w-4" />
+                    {t("shop.notifyMe.title", "Notify Me")}
+                  </button>
                 ) : (
-                  <QuantityCounter 
-                    quantity={quantity} 
-                    setQuantity={setQuantity} 
-                    availableQuantity={remainingInventory}
-                    fullWidth 
-                  />
+                  <>
+                    {product.quantityStyle === "sets" ? (
+                      <QuantitySetSelector
+                        quantity={quantity}
+                        setQuantity={setQuantity}
+                        maxSets={product.maxSets || 3}
+                      />
+                    ) : (
+                      <QuantityCounter 
+                        quantity={quantity} 
+                        setQuantity={setQuantity} 
+                        availableQuantity={remainingInventory}
+                        fullWidth 
+                      />
+                    )}
+                    <button
+                      ref={addToCartBtnRef}
+                      onClick={handleAddToCart}
+                      disabled={isBusy || remainingInventory <= 0}
+                      data-testid="button-add-to-cart"
+                      className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                      {remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}
+                    </button>
+                  </>
                 )}
-                <button
-                  ref={addToCartBtnRef}
-                  onClick={handleAddToCart}
-                  disabled={!product.availableForSale || isBusy || remainingInventory <= 0}
-                  data-testid="button-add-to-cart"
-                  className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <ShoppingBag className="h-4 w-4" />
-                  {!product.availableForSale ? "Sold Out" : remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}
-                </button>
               </div>
 
               {/* Product Features — compact icon row above the accordion */}
@@ -847,6 +1000,15 @@ export default function ProductPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {selectedNotifyVariant && (
+        <NotifyMeModal
+          isOpen={notifyModalOpen}
+          onClose={() => setNotifyModalOpen(false)}
+          product={product}
+          variant={selectedNotifyVariant}
+          t={t}
+        />
+      )}
     </PageLayout>
   );
 }

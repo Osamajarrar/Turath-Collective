@@ -1,5 +1,71 @@
 {
-  "shop": {},
-  "product": {},
-  "checkout": {}
+  "shop": {
+    "title": "المجموعة",
+    "pricesCurrency": "جميع الأسعار بالدولار الكندي",
+    "sortBy": "ترتيب حسب",
+    "sortOptions": {
+      "newest": "الأحدث",
+      "priceLow": "السعر: من الأقل إلى الأعلى",
+      "priceHigh": "السعر: من الأعلى إلى الأقل",
+      "bestSeller": "الأكثر مبيعاً"
+    },
+    "badges": {
+      "bestSeller": "الأكثر مبيعاً",
+      "new": "جديد",
+      "limitedStock": "مخزون محدود",
+      "outOfStock": "نفد المخزون"
+    },
+    "filters": {
+      "showOutOfStock": "إظهار العناصر المنتهية"
+    },
+    "notifyMe": {
+      "title": "أخبرني",
+      "description": "احصل على إشعار عندما يكون هذا العنصر متاحاً مرة أخرى.",
+      "emailPlaceholder": "أدخل بريدك الإلكتروني",
+      "optIn": "أرسل لي رسائل بريد إلكترونية ترويجية",
+      "notify": "أخبرني",
+      "submitting": "جاري الإرسال...",
+      "cancel": "إلغاء",
+      "success": "شكراً! سنخبرك عندما يكون هذا العنصر متاحاً مرة أخرى."
+    },
+    "outOfStock": "نفد المخزون",
+    "categoryFilter": {
+      "all": "الكل",
+      "ceramics": "السيراميك",
+      "embroidery": "التطريز"
+    }
+  },
+  "product": {
+    "backButton": "العودة إلى المجموعة",
+    "addToBag": "أضف إلى الحقيبة",
+    "soldOut": "نفد المخزون",
+    "buyNow": "اشتر الآن",
+    "colorLabel": "اللون:",
+    "quantityLabel": "الكمية",
+    "accordion": {
+      "description": "الوصف",
+      "specifications": "المواصفات",
+      "shippingReturns": "الشحن والمرتجعات"
+    },
+    "specifications": {
+      "material": "المادة",
+      "size": "الحجم",
+      "weight": "الوزن",
+      "origin": "الأصل"
+    }
+  },
+  "checkout": {
+    "header": {
+      "branding": "تراث جماعي",
+      "tagline": "الحرف اليدوية التراثية",
+      "backButton": "رجوع"
+    },
+    "expressCheckout": "الدفع السريع",
+    "paymentMethods": {
+      "applePay": "Apple Pay",
+      "stripe": "Stripe",
+      "divider": "أو ادفع بواسطة بطاقة"
+    },
+    "currency": "CAD"
+  }
 }

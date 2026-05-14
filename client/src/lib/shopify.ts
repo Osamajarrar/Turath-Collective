@@ -55,6 +55,9 @@ export interface ShopifyProductVariant {
   compareAtPrice: ShopifyMoneyV2 | null;
   selectedOptions: Array<{ name: string; value: string }>;
   quantityAvailable?: number;
+  image?: ShopifyImage | null;
+  colorHexMf?: { value: string | null };
+  variantMediaMf?: { references: { nodes: Array<{ image: ShopifyImage }> } };
 }
 
 export interface ShopifyProduct {
@@ -125,6 +128,22 @@ const PRODUCT_FRAGMENT = `
         price { amount currencyCode }
         compareAtPrice { amount currencyCode }
         selectedOptions { name value }
+        image { url altText }
+        colorHexMf: metafield(namespace: "custom", key: "color_hex") {
+          value
+        }
+        variantMediaMf: metafield(namespace: "custom", key: "variant_media") {
+          references(first: 10) {
+            nodes {
+              ... on MediaImage {
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

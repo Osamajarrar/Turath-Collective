@@ -7,6 +7,8 @@ import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ColorSwatch } from "@/components/ColorSwatch";
+
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
 import img3 from "@/assets/burgundy-bowl.png";
@@ -15,12 +17,15 @@ import classicBowl from "@/assets/classic-bowl.png";
 import classicMezze from "@/assets/classic-mezze-plate.png";
 import { getAvailableCategories } from "@/lib/collections";
 
-// ── Variant interface ──────────────────────────────────────────────────────
+// ── Variation interface ───────────────────────────────────────────────────
 
-interface ProductVariant {
+interface Variation {
   color: string;
-  colorHex: string;
-  image: string;
+  variantId: string;
+  images: string[];
+  price: number;
+  quantityAvailable?: number;
+  colorHex?: string;
 }
 
 // ── Local mock data (fallback) ─────────────────────────────────────────────
@@ -38,10 +43,16 @@ export const MOCK_PRODUCTS = [
     isBestSeller: true,
     isNew: false,
     isLimited: false,
+    availableForSale: true,
     dateAdded: "2024-01-15",
-    variants: [
-      { color: "Burgundy", colorHex: "#8B0000", image: img1 },
-      { color: "Navy", colorHex: "#000080", image: classicBowl },
+    variations: [
+      { color: "Cream", variantId: "mock-variant-1-cream", images: [img1], price: 45, quantityAvailable: 12 },
+      { color: "Rose", variantId: "mock-variant-1-rose", images: [classicBowl], price: 45, quantityAvailable: 8 },
+      { color: "Gray", variantId: "mock-variant-1-gray", images: [classicMezze], price: 45, quantityAvailable: 5 },
+      { color: "Navy", variantId: "mock-variant-1-navy", images: [img2], price: 48, quantityAvailable: 0 },
+      { color: "Sage", variantId: "mock-variant-1-sage", images: [img3], price: 45, quantityAvailable: 10 },
+      { color: "Burgundy", variantId: "mock-variant-1-burgundy", images: [img4], price: 45, quantityAvailable: 6 },
+      { color: "Taupe", variantId: "mock-variant-1-taupe", images: [classicBowl], price: 45, quantityAvailable: 0 },
     ],
   },
   {
@@ -56,10 +67,16 @@ export const MOCK_PRODUCTS = [
     isBestSeller: false,
     isNew: true,
     isLimited: true,
+    availableForSale: false,
     dateAdded: "2024-02-10",
-    variants: [
-      { color: "Burgundy", colorHex: "#8B0000", image: img2 },
-      { color: "Green", colorHex: "#2D5016", image: classicBowl },
+    variations: [
+      { color: "Cream", variantId: "mock-variant-2-cream", images: [img2], price: 120, quantityAvailable: 4 },
+      { color: "Mauve", variantId: "mock-variant-2-mauve", images: [classicBowl], price: 120, quantityAvailable: 0 },
+      { color: "Gray", variantId: "mock-variant-2-gray", images: [img1], price: 120, quantityAvailable: 7 },
+      { color: "Navy", variantId: "mock-variant-2-navy", images: [classicMezze], price: 120, quantityAvailable: 0 },
+      { color: "Sage", variantId: "mock-variant-2-sage", images: [img3], price: 120, quantityAvailable: 3 },
+      { color: "Burgundy", variantId: "mock-variant-2-burgundy", images: [img4], price: 120, quantityAvailable: 0 },
+      { color: "Natural", variantId: "mock-variant-2-natural", images: [img2], price: 120, quantityAvailable: 9 },
     ],
   },
   // {
@@ -117,8 +134,9 @@ interface DisplayProduct {
   isBestSeller: boolean;
   isNew: boolean;
   isLimited: boolean;
+  availableForSale: boolean;
   dateAdded: string;
-  variants?: ProductVariant[];
+  variations?: Variation[];
 }
 
 function normaliseShopify(p: ShopifyProduct): DisplayProduct {
@@ -148,21 +166,52 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     return value.replace(/\s+/g, "-").replace(/&/g, "and");
   };
 
+  const variations: Variation[] = p.variants.edges.map((e) => {
+    const colorHex = e.node.colorHexMf?.value ?? undefined;
+    // Start with variant's main image
+    const variantImage = e.node.image?.url ? [e.node.image.url] : [];
+    // Get additional images from variant media references
+    const mediaImages = (e.node.variantMediaMf?.references?.nodes?.map((node) => node.image?.url).filter(Boolean) as string[]) ?? [];
+    // Use variant image first, then media images, otherwise fall back to product images
+    const images = variantImage.length > 0 || mediaImages.length > 0 ? [...variantImage, ...mediaImages] : p.images.edges.map((img) => img.node.url);
+    return {
+      color: e.node.selectedOptions.find((o) => o.name.toLowerCase() === "color")?.value ?? e.node.title,
+      variantId: e.node.id,
+      images: images,
+      price: parseFloat(e.node.price.amount),
+      quantityAvailable: e.node.quantityAvailable,
+      colorHex: colorHex,
+    };
+  });
+
+  if (variations.length === 0) {
+    variations.push({
+      color: "Default",
+      variantId: "",
+      images: p.images.edges.map((img) => img.node.url),
+      price: parseFloat(p.priceRange.minVariantPrice.amount),
+      quantityAvailable: 0,
+      colorHex: "#cccccc",
+    });
+  }
+
   return {
     id: p.id,
     name: p.title,
     handle: p.handle,
     category: inferCategoryHandle(normalizedCategory),
-    price: parseInt(p.priceRange.minVariantPrice.amount),
+    price: parseFloat(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
     imageSecondary: p.images.edges[1]?.node.url ?? null,
     isBestSeller: p.tags?.includes("best-seller") ?? false,
     isNew: p.tags?.includes("new") ?? false,
     isLimited: p.tags?.includes("limited") ?? false,
+    availableForSale: p.availableForSale ?? true,
     dateAdded: p.createdAt
       ? p.createdAt.split("T")[0]
       : new Date().toISOString().split("T")[0],
+    variations,
   };
 }
 
@@ -183,6 +232,8 @@ function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefe
   );
 }
 
+// ── NotifyMe Modal Component ───────────────────────────────────────────────
+
 // ── ProductCard Component with Variant Swatches ────────────────────────────
 
 interface ProductCardProps {
@@ -197,94 +248,108 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href={`/product/${product.handle}`}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
-        className="group cursor-pointer"
-        data-testid={`card-product-${product.id}`}
-      >
-        <div className="relative mb-6 aspect-square overflow-hidden bg-muted rounded-xl shadow-sm" style={{
-          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.03) 100%)'
-        }}
-        onMouseEnter={() => !prefersReducedMotion && setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+    <>
+      <Link href={`/product/${product.handle}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
+          className="group cursor-pointer"
+          data-testid={`card-product-${product.id}`}
         >
-          {/* Primary Image */}
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-full w-full object-cover"
-            width={500}
-            height={500}
-            loading="lazy"
-            decoding="async"
-          />
-
-          {/* Secondary Image (slides up on hover) */}
-          {product.imageSecondary && (
+          <div className="relative mb-6 aspect-square overflow-hidden bg-muted rounded-xl shadow-sm" style={{
+            backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.03) 100%)'
+          }}
+          onMouseEnter={() => !prefersReducedMotion && setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* Primary Image */}
             <img
-              src={product.imageSecondary}
-              alt={`${product.name} alternate view`}
-              className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${
-                isHovered ? 'translate-y-0' : 'translate-y-full'
-              }`}
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover"
               width={500}
               height={500}
               loading="lazy"
               decoding="async"
             />
-          )}
 
-          <div className="pointer-events-none absolute left-4 top-4 flex flex-row gap-2">
-            {product.isBestSeller && (
-              <div className="badge-product !hidden md:!block">
-                {t("shop.badges.bestSeller")}
-              </div>
-            )}
-            {product.isNew && (
-              <div className="badge-product !hidden md:!block">
-                {t("shop.badges.new")}
-              </div>
-            )}
-            {product.isLimited && (
-              <div className="badge-product !hidden md:!block">
-                {t("shop.badges.limitedStock")}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="mb-2 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-4">
-          <h3 className="font-sans font-normal text-base md:text-lg lg:text-xl leading-tight tracking-wide mb-0 w-full md:w-auto">{product.name}</h3>
-          <p className="text-xs md:text-sm lg:text-base md:whitespace-nowrap">${Math.floor(product.price)}</p>
-        </div>
-
-        {/* Variant Swatches */}
-        {product.variants && product.variants.length > 0 && (
-          <div
-            className="flex gap-2 mt-3 pointer-events-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {product.variants.map((variant, variantIdx) => (
-              <button
-                key={variantIdx}
-                onClick={(e) => {
-                  e.preventDefault?.();
-                  e.stopPropagation();
-                  navigate(`/product/${product.handle}?variant=${variantIdx}`);
-                }}
-                className="w-8 h-8 rounded-full border-2 border-border hover:border-foreground transition-all"
-                style={{ backgroundColor: variant.colorHex }}
-                title={variant.color}
-                aria-label={`Select ${variant.color} variant`}
+            {/* Secondary Image (slides up on hover) */}
+            {product.imageSecondary && (
+              <img
+                src={product.imageSecondary}
+                alt={`${product.name} alternate view`}
+                className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${
+                  isHovered ? 'translate-y-0' : 'translate-y-full'
+                }`}
+                width={500}
+                height={500}
+                loading="lazy"
+                decoding="async"
               />
-            ))}
+            )}
+
+            <div className="pointer-events-none absolute left-4 top-4 flex flex-row gap-2">
+              {!product.availableForSale && (
+                <div className="badge-product !hidden md:!block bg-red-600 text-white">
+                  {t("shop.badges.outOfStock")}
+                </div>
+              )}
+              {product.isBestSeller && (
+                <div className="badge-product !hidden md:!block">
+                  {t("shop.badges.bestSeller")}
+                </div>
+              )}
+              {product.isNew && (
+                <div className="badge-product !hidden md:!block">
+                  {t("shop.badges.new")}
+                </div>
+              )}
+              {product.isLimited && (
+                <div className="badge-product !hidden md:!block">
+                  {t("shop.badges.limitedStock")}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </motion.div>
-    </Link>
+
+          <div className="mb-2 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-4">
+            <h3 className="font-sans font-normal text-base md:text-lg lg:text-xl leading-tight tracking-wide mb-0 w-full md:w-auto">{product.name}</h3>
+            <p className="text-xs md:text-sm lg:text-base md:whitespace-nowrap">${Math.floor(product.price)}</p>
+          </div>
+
+          {/* Variation Color Swatches */}
+          {product.variations && product.variations.length > 0 && (
+            <div
+              className="flex flex-wrap gap-2 mt-3 pointer-events-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {product.variations.map((variation, variantIdx) => {
+                const isOutOfStock = (variation.quantityAvailable ?? 0) === 0;
+                const colorHex = variation.colorHex || "#cccccc";
+
+                return (
+                  <ColorSwatch
+                    key={variantIdx}
+                    color={variation.color}
+                    hex={colorHex}
+                    isSelected={false}
+                    isOutOfStock={isOutOfStock}
+                    onClick={() => {
+                      navigate(`/product/${product.handle}?variant=${variantIdx}`);
+                    }}
+                    size="sm"
+                    showOutOfStockStyle={false}
+                    showBorder={false}
+                    t={t}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </motion.div>
+      </Link>
+    </>
   );
 }
 
@@ -470,6 +535,8 @@ export default function ShopPage() {
                 <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
               </select>
             </div>
+
+
           </div>
         </header>
 

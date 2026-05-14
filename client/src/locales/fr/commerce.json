@@ -12,8 +12,23 @@
     "badges": {
       "bestSeller": "Meilleure vente",
       "new": "Nouveau",
-      "limitedStock": "Stock limité"
+      "limitedStock": "Stock limité",
+      "outOfStock": "Rupture de stock"
     },
+    "filters": {
+      "showOutOfStock": "Afficher les articles en rupture de stock"
+    },
+    "notifyMe": {
+      "title": "Me Notifier",
+      "description": "Recevez une notification quand cet article sera à nouveau en stock.",
+      "emailPlaceholder": "Entrez votre email",
+      "optIn": "M'envoyer des emails promotionnels",
+      "notify": "Me Notifier",
+      "submitting": "Envoi en cours...",
+      "cancel": "Annuler",
+      "success": "Merci ! Nous vous notifierons quand cet article sera à nouveau en stock."
+    },
+    "outOfStock": "Rupture de stock",
     "categoryFilter": {
       "all": "Tous",
       "ceramics": "Céramiques",
