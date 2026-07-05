@@ -17,7 +17,12 @@ const registerSchema = z.object({
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
-  // Backend + session kept for future launch; UI pages are currently removed.
+  // DEFERRED: routes disabled for launch v1 (no auth UI, users table not
+  // provisioned). Backend + session logic kept in place for future launch —
+  // flip AUTH_ENABLED to re-enable rather than reimplementing.
+  const AUTH_ENABLED = false;
+
+  if (AUTH_ENABLED) {
 
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     const parsed = registerSchema.safeParse(req.body);
@@ -68,6 +73,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Not authenticated" });
     return res.json(req.user);
   });
+
+  } // AUTH_ENABLED
 
   // ── Contact ───────────────────────────────────────────────────────────────
   // DEFERRED: route disabled for launch v1. UI form remains visible.
