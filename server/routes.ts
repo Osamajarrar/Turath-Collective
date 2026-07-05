@@ -5,6 +5,7 @@ import passport from "passport";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
 import { shopifyLimiter } from "./index.js";
+import { getPostHog } from "./posthog";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -33,6 +34,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
     req.login({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName }, (err) => {
       if (err) return res.status(500).json({ message: "Login after register failed" });
+      getPostHog()?.capture({
+        distinctId: String(user.id),
+        event: "user_registered",
+        properties: { email: user.email },
+      });
       return res.status(201).json({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
     });
   });
@@ -43,6 +49,11 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       if (!user) return res.status(401).json({ message: info?.message || "Invalid credentials" });
       req.login(user, (err) => {
         if (err) return next(err);
+        getPostHog()?.capture({
+          distinctId: String(user.id),
+          event: "user_logged_in",
+          properties: { email: user.email },
+        });
         return res.json({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
       });
     })(req, res, next);

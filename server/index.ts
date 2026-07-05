@@ -16,6 +16,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { setupAuth } from "./auth";
+import { shutdownPostHog } from "./posthog";
 
 const app = express();
 const httpServer = createServer(app);
@@ -38,7 +39,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "https:", "data:"],
-      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com"],
+      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com", "https://us.i.posthog.com", "https://*.posthog.com"],
       frameSrc: ["'none'"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
     },
@@ -155,4 +156,11 @@ app.use((req, res, next) => {
       log(`serving on http://${host}:${port}`);
     },
   );
+
+  for (const sig of ["SIGTERM", "SIGINT"]) {
+    process.once(sig, async () => {
+      await shutdownPostHog();
+      process.exit(0);
+    });
+  }
 })();
