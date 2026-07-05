@@ -37,7 +37,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       getPostHog()?.capture({
         distinctId: String(user.id),
         event: "user_registered",
-        properties: { email: user.email },
       });
       return res.status(201).json({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
     });
@@ -52,7 +51,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         getPostHog()?.capture({
           distinctId: String(user.id),
           event: "user_logged_in",
-          properties: { email: user.email },
         });
         return res.json({ id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName });
       });
