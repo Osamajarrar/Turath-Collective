@@ -25,6 +25,12 @@ export default function SocialProof() {
   const isDraggingRef = useRef(false);
   const currentXRef = useRef(0);
 
+  // TODO: these are placeholder Instagram posts with fake usernames, for
+  // structural testing only. Replace `socialPosts` above with a real
+  // Instagram embed or real customer posts, then remove this guard. Never
+  // let this render with fake community content once ad traffic starts.
+  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+
   useEffect(() => {
     isDraggingRef.current = isDragging;
   }, [isDragging]);
@@ -47,6 +53,8 @@ export default function SocialProof() {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, []);
+
+  if (!showPlaceholder) return null;
 
   return (
     <section className="py-12 bg-background border-t border-border">

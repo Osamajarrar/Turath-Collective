@@ -46,6 +46,8 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 ## 5. Content
 
 - [ ] Replace all placeholder/mock product data with real Shopify products (5 mock products currently live in `client/src/data/products.ts`)
+- [ ] **Replace placeholder reviews in `review-carousel.tsx`** — currently hardcoded fake names/cities/quotes (Elena M., Sami K., Amira J.) for structural testing only; gated behind `VITE_SHOW_PLACEHOLDER_CONTENT` env flag, must stay unset in Vercel until real reviews exist
+- [ ] **Replace placeholder Instagram community in `social-proof.tsx`** — currently hardcoded fake usernames (@layla_designs, @marwan_ab, @thecuratedhome) reusing product photos; gated behind same `VITE_SHOW_PLACEHOLDER_CONTENT` flag, must stay unset in Vercel until real content exists
 - [ ] Final hi-res product photography (≥4 angles per product; consistent crop / background)
 - [ ] Artisan story copy (Montreal + Palestine origin narrative)
 - [ ] About page content (mission, sourcing, ethics)
