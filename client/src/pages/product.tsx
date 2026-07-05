@@ -15,6 +15,7 @@ import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
+import { trackEvent } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // Mock assets
@@ -674,15 +675,35 @@ export default function ProductPage() {
         currencyCode: product.currencyCode,
         imageUrl: imageUrl || undefined,
       });
-      setQuantity(1);
+      trackEvent("add_to_cart", {
+        product_name: product.name,
+        variant: currentVariation.color,
+        price: currentVariation.price,
+        currency: product.currencyCode,
+        quantity,
+      });
       return;
     }
+
     await addItem(currentVariation.variantId, quantity);
-    setQuantity(1);
+    trackEvent("add_to_cart", {
+      product_name: product.name,
+      variant: currentVariation.color,
+      price: currentVariation.price,
+      currency: product.currencyCode,
+      quantity,
+    });
   };
 
   const handleBuyNow = async () => {
     if (!currentVariation.variantId || currentVariation.variantId.startsWith("mock-")) return;
+    trackEvent("begin_checkout", {
+      product_name: product.name,
+      variant: currentVariation.color,
+      price: currentVariation.price,
+      currency: product.currencyCode,
+      quantity,
+    });
     const url = await shopifyService.buyNow(currentVariation.variantId, quantity);
     if (url) window.location.href = url;
   };
