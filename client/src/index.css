@@ -4,20 +4,23 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: hsl(40 17% 97%); /* #FAF9F6 - Cream/Sand */
+  --color-background: hsl(36, 20%, 95%); /* #f5f3f0 - Cream/Sand */
+  --color-background-secondary: hsl(36, 20%, 90%); /* Slightly darker cream for depth */
   --color-foreground: hsl(0 0% 10%);   /* #1A1A1A - Deep Charcoal */
   
-  --color-card: hsl(40 17% 97%);
+  --color-card: hsl(36, 20%, 95%);
   --color-card-foreground: hsl(0 0% 10%);
   
-  --color-popover: hsl(40 17% 97%);
+  --color-popover: hsl(36, 20%, 95%);
   --color-popover-foreground: hsl(0 0% 10%);
   
   --color-primary: hsl(0 81% 13%);     /* #3A0606 - Maroon */
-  --color-primary-foreground: hsl(40 17% 97%);
+  --color-primary-foreground: hsl(36, 20%, 95%);
   
   --color-secondary: hsl(82 24% 14%);  /* #262C1B - Forest Green */
-  --color-secondary-foreground: hsl(40 17% 97%);
+  --color-secondary-foreground: hsl(36, 20%, 95%);
+  
+  --color-badge-bg: hsl(36, 18%, 85%); /* Darker cream for badges */
   
   --color-muted: hsl(40 10% 90%);
   --color-muted-foreground: hsl(0 0% 40%);
@@ -31,13 +34,21 @@
   --color-border: hsl(40 10% 85%);
   --color-input: hsl(40 10% 85%);
   --color-ring: hsl(0 81% 13%);
+  --color-error: hsl(0 81% 30%);
+  --color-error-foreground: hsl(0 81% 95%);
   
-  --font-sans: 'Montserrat', sans-serif;
+  --font-sans: 'Comfortaa', sans-serif;
   --font-serif: 'Playfair Display', serif;
   
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.5rem;
+  
+  /* Button and badge border colors */
+  --button-outline: hsl(0 0% 85%);
+  --secondary-border: hsl(82 24% 14%);
+  --destructive-border: hsl(0 84.2% 60.2%);
+  --badge-outline: hsl(0 81% 13%);
 }
 
 @layer base {
@@ -49,5 +60,159 @@
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
+  }
+}
+
+@layer utilities {
+  /* Typography System - Base sizes and tracking */
+  /* Body text baseline: 14px for readability */
+  .text-body {
+    @apply text-base font-light leading-relaxed tracking-[0.015em];
+  }
+
+  .text-body-sm {
+    @apply text-sm font-light leading-relaxed tracking-[0.01em];
+  }
+
+  .text-body-lg {
+    @apply text-lg font-light leading-relaxed tracking-[0.02em];
+  }
+
+  /* Label and button text: smaller with premium letter spacing */
+  .text-label {
+    @apply text-xs uppercase tracking-[0.25em] font-bold;
+  }
+
+  .text-label-sm {
+    @apply text-[10px] uppercase tracking-[0.3em] font-bold;
+  }
+
+  /* Premium feel: increase letter spacing slightly on headers */
+  .text-heading {
+    @apply font-serif tracking-[0.02em];
+  }
+
+  /* Semantic Typography Classes - Brand-consistent hierarchy */
+  
+  /* Page titles (h1 equivalents) - PlayfairDisplay exclusive */
+  .heading-page {
+    @apply font-serif text-6xl md:text-8xl lg:text-[10rem] font-bold leading-[0.9] tracking-[0.02em];
+  }
+
+  /* Section headings (h2 equivalents) - PlayfairDisplay for brand presence */
+  .heading-section {
+    @apply font-serif text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-[0.02em];
+  }
+
+  /* Subsection headings (h3 equivalents) - Comfortaa bold for hierarchy */
+  .heading-subsection {
+    @apply font-sans text-xl md:text-2xl font-bold leading-tight tracking-wide;
+  }
+
+  /* Product names - Comfortaa bold to distinguish from headers */
+  .text-product-name {
+    @apply font-sans text-lg md:text-lg font-normal leading-tight tracking-wide;
+  }
+
+  /* Collection/Category names - Comfortaa bold for consistency */
+  .text-collection-name {
+    @apply font-sans text-xl md:text-2xl font-bold leading-tight tracking-wide;
+  }
+
+  /* Featured statistics and numbers - Comfortaa bold for prominence */
+  .text-featured-stat {
+    @apply font-serif text-xl md:text-2xl  leading-tight tracking-wide;
+  }
+
+  /* Testimonials and quotes - Comfortaa italic */
+  .text-quote {
+    @apply font-sans text-base md:text-lg italic leading-relaxed tracking-[0.01em];
+  }
+
+  /* Interactive elevation effects */
+  .hover-elevate {
+    @apply hover:shadow-lg hover:shadow-black/10 transition-all duration-200;
+  }
+
+  .active-elevate-2 {
+    @apply active:shadow-sm active:shadow-black/5 transition-all duration-150;
+  }
+
+  /* Badge and button styling with rounded corners */
+  button,
+  [role="button"],
+  .badge {
+    @apply rounded-md;
+  }
+
+  /* Default badge background: cream with dark text */
+  .badge {
+    @apply bg-background text-foreground/60;
+  }
+
+  /* Product badge styling: darker cream background with maroon text */
+  .badge-product {
+    @apply inline-flex w-fit text-[10px] capitalize px-4 py-1.5 rounded-md border-none font-bold shadow-sm;
+    background-color: var(--color-badge-bg);
+    color: var(--color-primary);
+  }
+
+  /* Consistent hover states */
+  .hover-primary {
+    @apply hover:text-primary hover:underline transition-colors duration-300;
+  }
+
+  .hover-primary-border {
+    @apply border-primary/20 hover:border-primary transition-all duration-300;
+  }
+
+  /* Cursor indicators for all interactive elements */
+  button,
+  a,
+  [role="button"],
+  [role="menuitem"],
+  [role="tab"],
+  [role="link"],
+  select,
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [data-clickable],
+  label[for],
+  .cursor-pointer {
+    @apply cursor-pointer;
+  }
+
+  /* Disabled states */
+  button:disabled,
+  select:disabled,
+  [role="checkbox"][aria-disabled="true"],
+  [role="radio"][aria-disabled="true"],
+  [role="switch"][aria-disabled="true"],
+  [aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+
+  /* Preserve text cursor for text inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea {
+    @apply cursor-text;
+  }
+
+  /* Draggable elements */
+  [draggable="true"],
+  .cursor-grab {
+    @apply cursor-grab;
+
+    &:active,
+    &.active {
+      @apply cursor-grabbing;
+    }
   }
 }

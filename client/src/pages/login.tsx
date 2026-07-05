@@ -26,7 +26,7 @@ export default function LoginPage() {
         <Link href="/">
           <div className="flex flex-col items-center cursor-pointer">
             <span className="font-serif text-3xl tracking-[0.2em] text-foreground">TURATH</span>
-            <span className="text-[9px] uppercase tracking-[0.5em] text-primary font-bold mt-1">Collective</span>
+            <span className="text-[10px] uppercase tracking-[0.5em] text-primary font-bold mt-1">Collective</span>
           </div>
         </Link>
       </header>
@@ -59,7 +59,7 @@ export default function LoginPage() {
             <div className="flex justify-between items-center">
               <Label className="text-[10px] uppercase tracking-widest font-bold opacity-50">Password</Label>
               <Link href="/forgot-password">
-                <span className="text-[9px] uppercase tracking-widest text-primary hover:underline cursor-pointer">Forgot?</span>
+                <span className="text-[10px] uppercase tracking-widest text-primary hover:underline cursor-pointer">Forgot?</span>
               </Link>
             </div>
             <Input
@@ -92,7 +92,7 @@ export default function LoginPage() {
         <div className="mt-8 space-y-3">
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
-            <div className="relative flex justify-center text-[8px] uppercase tracking-widest"><span className="bg-white px-2 text-muted-foreground font-bold">Or continue with</span></div>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-white px-2 text-muted-foreground font-bold">Or continue with</span></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" className="rounded-none py-6 border-border hover:bg-muted text-[10px] uppercase tracking-widest font-bold" disabled>Google</Button>

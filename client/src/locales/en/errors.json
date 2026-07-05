@@ -1,0 +1,42 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "This field must be at least {{min}} characters",
+    "maxLength": "This field must not exceed {{max}} characters",
+    "pattern": "Please enter a valid value"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid email or password",
+    "accountNotFound": "Account not found",
+    "accountLocked": "Account is locked. Please try again later",
+    "sessionExpired": "Your session has expired. Please log in again",
+    "unauthorized": "You are not authorized to perform this action"
+  },
+  "cart": {
+    "outOfStock": "This item is out of stock",
+    "quantityExceeded": "Maximum quantity exceeded",
+    "addFailed": "Failed to add item to cart",
+    "removeFailed": "Failed to remove item from cart",
+    "updateFailed": "Failed to update cart"
+  },
+  "order": {
+    "processingFailed": "Order processing failed. Please try again",
+    "paymentFailed": "Payment processing failed",
+    "invalidPayment": "Invalid payment information",
+    "orderNotFound": "Order not found",
+    "notAuthorized": "You are not authorized to access this order"
+  },
+  "shipping": {
+    "invalidAddress": "Invalid shipping address",
+    "shippingUnavailable": "Shipping is not available to this address",
+    "calculateFailed": "Failed to calculate shipping cost"
+  },
+  "general": {
+    "serverError": "Something went wrong. Please try again later",
+    "notFound": "Page not found",
+    "badRequest": "Bad request. Please check your input",
+    "networkError": "Network error. Please check your connection",
+    "timeout": "Request timeout. Please try again"
+  }
+}

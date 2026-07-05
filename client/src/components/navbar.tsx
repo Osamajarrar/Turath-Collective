@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ShoppingBag, Globe, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
+import { ShoppingBag, X, Menu, Minus, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { applyRtl } from "@/lib/i18n";
+import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
+import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import Logo from "./Logo";
 
-const LANGS = [
-  { code: "en", label: "EN", full: "English" },
-  { code: "fr", label: "FR", full: "Français" },
-  { code: "ar", label: "AR", full: "العربية" },
-] as const;
-
-const CURRENCIES = [
-  { value: "CAD", label: "Canada (CAD $)" },
-  { value: "USD", label: "United States (USD $)" },
-  { value: "ILS", label: "Palestine (ILS ₪)" },
-] as const;
+// Helper to slugify product title for mock cart links
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
+  const categories = getVisibleCategories(t);
   const {
     cart,
     mockLines,
@@ -29,39 +30,45 @@ export default function Navbar() {
     isBusy,
     updateLineQuantity,
     removeLine,
+    isCartOpenSignal,
+    resetCartOpenSignal,
   } = useCart();
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currency, setCurrency] = useState("CAD");
   const { scrollY } = useScroll();
 
   const mockSubtotal = mockLines.reduce(
     (sum, line) => sum + line.price * line.quantity,
     0
   );
-  const mockCurrency = mockLines[0]?.currencyCode ?? "CAD";
   const subtotalLabel = cart
-    ? `${cart.cost.subtotalAmount.currencyCode} $${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}`
+    ? `$${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}`
     : hasMockCart
-      ? `${mockCurrency} $${mockSubtotal.toFixed(2)}`
+      ? `$${mockSubtotal.toFixed(2)}`
       : "—";
 
   useEffect(() => {
     applyRtl(i18n.language);
+    setHidden(false);
   }, [i18n.language]);
+
+  // Listen to cart open signal and open cart automatically
+  useEffect(() => {
+    if (isCartOpenSignal) {
+      setIsCartOpen(true);
+      resetCartOpenSignal();
+    }
+  }, [isCartOpenSignal, resetCartOpenSignal]);
 
   const switchLang = (code: string) => {
     i18n.changeLanguage(code);
     applyRtl(code);
+    setHidden(false);
   };
 
-  const saveLangDialog = () => {
-    setIsLangOpen(false);
-    setIsMenuOpen(false);
-  };
+
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -72,22 +79,22 @@ export default function Navbar() {
   return (
     <>
       {/* Announcement Banner — fixed, always visible above the nav */}
-      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
+      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
         {t("announcement")}
       </div>
 
       <motion.nav
         variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
         animate={hidden ? "hidden" : "visible"}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
+        transition={{ duration: prefersReducedMotion ? 0.1 : 0.35, ease: "easeInOut" }}
         className={cn(
           "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
-          isScrolled || isCartOpen || isLangOpen || isMenuOpen
+          isScrolled || isCartOpen || isMenuOpen
             ? "border-border bg-background/80 py-4 backdrop-blur-md"
             : "border-transparent bg-transparent py-6"
         )}
       >
-        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="mx-auto px-6 md:px-12 flex items-center justify-between">
 
           {/* Mobile: hamburger */}
           <div className="md:hidden w-1/3">
@@ -115,39 +122,37 @@ export default function Navbar() {
           </div>
 
           {/* Center: logo */}
-          <div className="w-1/3 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <Link href="/">
-              <span className="font-serif text-xl md:text-2xl tracking-[0.15em] cursor-pointer text-foreground">
-                TURATH COLLECTIVE
-              </span>
+              <Logo variant="with-slogan" />
             </Link>
-            <span className="text-[8px] uppercase tracking-[0.4em] text-primary font-bold mt-1">
-              {t("nav.tagline")}
-            </span>
           </div>
 
-          {/* Right: icons (globe replaces inline pill on all breakpoints) */}
+          {/* Right: icons */}
           <div className="flex items-center gap-3 md:gap-4 w-1/3 justify-end">
-            {/* Globe icon — opens language + currency dialog */}
+            {/* Language Toggle - Desktop only */}
             <button
-              onClick={() => setIsLangOpen(true)}
-              className="p-1.5 hover:bg-muted rounded-full transition-colors"
-              data-testid="button-lang-open"
-              aria-label={t("lang.region")}
+              onClick={() => {
+                setHidden(false);
+                switchLang(i18n.language === "en" ? "fr" : "en");
+              }}
+              className="hidden md:block text-[10px] font-bold uppercase tracking-widest hover:text-primary transition-colors"
+              data-testid="button-lang-toggle"
+              aria-label={t("lang.label")}
             >
-              <Globe className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              {i18n.language === "en" ? "FR" : "EN"}
             </button>
 
             {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative rounded-full p-1.5 transition-colors hover:bg-muted"
+              className="group relative rounded-full p-1.5 transition-colors"
               data-testid="button-cart-open"
               aria-label={t("cart.heading")}
             >
-              <ShoppingBag className="w-4.5 h-4.5 text-foreground" strokeWidth={1.5} />
+              <ShoppingBag className="w-4.5 h-4.5 text-foreground transition-colors group-hover:text-primary" strokeWidth={1.5} />
               {totalQuantity > 0 && (
-                <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[7px] font-bold text-white">
+                <span className="absolute top-0 right-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[10px] font-bold text-white">
                   {totalQuantity > 99 ? "99+" : totalQuantity}
                 </span>
               )}
@@ -171,24 +176,42 @@ export default function Navbar() {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={prefersReducedMotion ? { duration: 0.1 } : { type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
-                <span className="font-serif text-xl tracking-[0.1em]">TURATH</span>
+              <div className="p-6 flex items-center justify-between border-b border-border">
+                <Logo variant="with-slogan" className="w-48 h-auto" />
                 <button onClick={() => setIsMenuOpen(false)} data-testid="button-menu-close" aria-label={t("nav.closeMenu")}>
                   <X className="w-6 h-6" />
                 </button>
               </div>
               <div className="flex-1 p-8 space-y-8 overflow-y-auto">
                 <div className="space-y-4">
-                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.collections")}</p>
+                  <p className="text-[10px] uppercase tracking-widest opacity-30">{t("nav.collections")}</p>
                   <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.allProducts")}</Link>
-                  <Link href="/shop?category=ceramics" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ceramics")}</Link>
-                  <Link href="/shop?category=embroidery" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.embroidery")}</Link>
+                  {categories.map((category) => (
+                    category.comingSoon ? (
+                      <div
+                        key={category.handle}
+                        className="block text-3xl font-serif opacity-50 cursor-not-allowed flex items-center gap-2"
+                      >
+                        {category.title}
+                        <span className="text-[8px] uppercase tracking-widest bg-background text-foreground px-2 py-1 rounded-md">{t("nav.comingSoon")}</span>
+                      </div>
+                    ) : (
+                      <Link
+                        key={category.handle}
+                        href={`/shop?category=${category.handle}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="block text-3xl font-serif"
+                      >
+                        {category.title}
+                      </Link>
+                    )
+                  ))}
                 </div>
                 <div className="space-y-4 pt-8 border-t border-border/50">
-                  <p className="text-[10px] uppercase tracking-widest font-bold opacity-30">{t("nav.brand")}</p>
+                  <p className="text-[10px] uppercase tracking-widest opacity-30">{t("nav.brand")}</p>
                   <Link href="/about" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.ourStory")}</Link>
                   <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block text-3xl font-serif">{t("nav.contact")}</Link>
                 </div>
@@ -196,7 +219,7 @@ export default function Navbar() {
                 <div className="pt-8 border-t border-border/50">
                   <p className="text-[10px] uppercase tracking-widest font-bold opacity-30 mb-4">{t("lang.label")}</p>
                   <div className="flex gap-3">
-                    {LANGS.map(({ code, label }) => (
+                    {SUPPORTED_LANGUAGES.map(({ code, label }) => (
                       <button
                         key={code}
                         onClick={() => switchLang(code)}
@@ -219,87 +242,6 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* ── Language + Currency Dialog ─────────────────────────────────────── */}
-      <AnimatePresence>
-        {isLangOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsLangOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative bg-background w-full max-w-md p-8 shadow-2xl border border-border"
-            >
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="font-serif text-2xl uppercase tracking-wider">{t("lang.region")}</h3>
-                <button onClick={() => setIsLangOpen(false)} aria-label={t("nav.closeMenu")}>
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {/* Currency selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("lang.country")}
-                  </label>
-                  <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    data-testid="select-currency"
-                    className="w-full bg-muted/50 border border-border p-3 text-sm focus:outline-none focus:border-primary transition-colors"
-                  >
-                    {CURRENCIES.map(({ value, label }) => (
-                      <option key={value} value={value}>{label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Language selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    {t("lang.label")}
-                  </label>
-                  <div className="flex gap-3">
-                    {LANGS.map(({ code, label, full }) => (
-                      <button
-                        key={code}
-                        onClick={() => switchLang(code)}
-                        data-testid={`button-dialog-lang-${code}`}
-                        className={cn(
-                          "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest border transition-all",
-                          i18n.language === code
-                            ? "bg-primary text-white border-primary"
-                            : "border-border hover:border-primary"
-                        )}
-                        title={full}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Save button */}
-                <button
-                  onClick={saveLangDialog}
-                  data-testid="button-lang-save"
-                  className="w-full bg-primary text-white py-3 text-[10px] uppercase tracking-widest font-bold hover:bg-primary/90 transition-colors"
-                >
-                  {t("lang.save")}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
       {/* ── Cart Drawer ────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {isCartOpen && (
@@ -315,11 +257,11 @@ export default function Navbar() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={prefersReducedMotion ? { duration: 0.1 } : { type: "spring", damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-md bg-background z-[110] shadow-2xl flex flex-col rtl:right-auto rtl:left-0"
             >
-              <div className="p-8 flex items-center justify-between border-b border-border">
-                <h2 className="font-serif text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
+              <div className="p-6 flex items-center justify-between border-b border-border">
+                <h2 className="font-sans font-bold text-2xl uppercase tracking-wider">{t("cart.heading")}</h2>
                 <button
                   onClick={() => setIsCartOpen(false)}
                   className="p-2 hover:bg-muted rounded-full transition-colors"
@@ -345,20 +287,24 @@ export default function Navbar() {
                         key={line.id}
                         className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
                       >
-                        <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                        <Link onClick={() => setIsCartOpen(false)} href={`/product/${line.merchandise.product.handle}`} className="h-24 w-20 flex-shrink-0 bg-muted border border-transparent hover:border-primary transition-opacity">
                           {img ? (
                             <img
                               src={img}
-                              alt=""
+                              alt={line.merchandise.product.title}
                               className="h-full w-full object-cover"
                             />
                           ) : (
                             <div className="h-full w-full bg-muted" />
                           )}
-                        </div>
+                        </Link>
                         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
-                          <div>
-                            <h4 className="font-serif text-lg leading-tight">
+                          <Link
+                            onClick={() => setIsCartOpen(false)}
+                            href={`/product/${line.merchandise.product.handle}`}
+                            className="group hover:opacity-70 transition-opacity"
+                          >
+                            <h4 className="text-product-name leading-tight ">
                               {line.merchandise.product.title}
                             </h4>
                             {line.merchandise.title && line.merchandise.title !== "Default Title" && (
@@ -366,7 +312,7 @@ export default function Navbar() {
                                 {line.merchandise.title}
                               </p>
                             )}
-                          </div>
+                          </Link>
                           <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center border border-border">
                               <button
@@ -403,7 +349,7 @@ export default function Navbar() {
                               <Trash2 className="h-4 w-4" />
                             </button>
                             <span className="ml-auto text-sm font-bold">
-                              {line.merchandise.price.currencyCode} ${lineTotal.toFixed(2)}
+                              ${lineTotal.toFixed(2)}
                             </span>
                           </div>
                         </div>
@@ -418,24 +364,28 @@ export default function Navbar() {
                       key={line.lineId}
                       className="mb-8 flex gap-6 border-b border-border/50 pb-8 last:mb-0 last:border-0 last:pb-0 rtl:flex-row-reverse"
                     >
-                      <div className="h-24 w-20 flex-shrink-0 bg-muted">
+                      <Link onClick={() => setIsCartOpen(false)} href={`/product/${slugify(line.productTitle)}`} className="h-24 w-20 flex-shrink-0 bg-muted hover:opacity-80 transition-opacity">
                         {line.imageUrl ? (
                           <img
                             src={line.imageUrl}
-                            alt=""
+                            alt={line.productTitle}
                             className="h-full w-full object-cover"
                           />
                         ) : (
                           <div className="h-full w-full bg-muted" />
                         )}
-                      </div>
+                      </Link>
                       <div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
-                        <div>
-                          <h4 className="font-serif text-lg leading-tight">{line.productTitle}</h4>
-                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40">
+                        <Link
+                          onClick={() => setIsCartOpen(false)}
+                          href={`/product/${slugify(line.productTitle)}`}
+                          className="group hover:opacity-70 transition-opacity"
+                        >
+                          <h4 className="text-product-name leading-tight group-hover:underline">{line.productTitle}</h4>
+                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-40 group-hover:opacity-60">
                             {line.variantTitle}
                           </p>
-                        </div>
+                        </Link>
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="flex items-center border border-border">
                             <button
@@ -472,7 +422,7 @@ export default function Navbar() {
                             <Trash2 className="h-4 w-4" />
                           </button>
                           <span className="ml-auto text-sm font-bold">
-                            {line.currencyCode} ${(line.price * line.quantity).toFixed(2)}
+                            ${(line.price * line.quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -481,34 +431,26 @@ export default function Navbar() {
               </div>
 
               <div className="space-y-4 border-t border-border bg-muted/20 p-8">
-                <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse">
-                  <span>{t("cart.subtotal")}</span>
-                  <span>{subtotalLabel}</span>
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse mb-1">
+                    <span>{t("cart.subtotal")}</span>
+                    <span>{subtotalLabel}</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">{t("cart.shippingTaxesNote")}</p>
                 </div>
-                {cart?.checkoutUrl ? (
-                  <button
-                    type="button"
-                    disabled={isBusy || totalQuantity === 0}
-                    onClick={() => {
+                <button
+                  type="button"
+                  disabled={isBusy || !cart?.checkoutUrl || totalQuantity === 0}
+                  onClick={() => {
+                    if (cart?.checkoutUrl) {
                       window.location.href = cart.checkoutUrl;
-                    }}
-                    className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
-                    data-testid="button-cart-checkout"
-                  >
-                    {t("cart.checkout")}
-                  </button>
-                ) : (
-                  <Link href="/checkout" className="block">
-                    <button
-                      type="button"
-                      disabled={isBusy || !hasMockCart || totalQuantity === 0}
-                      className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
-                      data-testid="button-cart-checkout"
-                    >
-                      {t("cart.checkout")}
-                    </button>
-                  </Link>
-                )}
+                    }
+                  }}
+                  className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
+                  data-testid="button-cart-checkout"
+                >
+                  {t("cart.checkout")}
+                </button>
               </div>
             </motion.div>
           </>

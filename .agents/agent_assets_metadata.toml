@@ -1,0 +1,169 @@
+uploads = []
+
+[[generated]]
+id = "DmODzfWKf0rkgvNPisGfp"
+uri = "file://attached_assets/product_designs/concept_1_editorial.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "mzHznt5S3rEYW2Qe3VsEF"
+uri = "file://attached_assets/product_designs/concept_2_asymmetric.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "j7hpyYnsvDcHRNXxdUUVy"
+uri = "file://attached_assets/product_designs/concept_3_story.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "L9WWxrBNk3rxpRVYx61QL"
+uri = "file://attached_assets/product_designs/concept_4_floating.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LBZyF9B3Thtqj5nSX_AFx"
+uri = "file://attached_assets/product_designs/v2_concept_A_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xq41FeW6Xy9CI5BI0QqK5"
+uri = "file://attached_assets/product_designs/v2_concept_A_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iQQ73PHZoXB9hGTSbqJSN"
+uri = "file://attached_assets/product_designs/v2_concept_B_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "xdOwM4gv3y1qF0gZlCSb1"
+uri = "file://attached_assets/product_designs/v2_concept_B_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w-3wraghQ-lwhrrzUjaze"
+uri = "file://attached_assets/product_designs/v2_concept_C_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LZzTuLRxmGJgyj9sCFwuS"
+uri = "file://attached_assets/product_designs/v2_concept_C_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-ypQGJOpzCch4BFBBrs_B"
+uri = "file://attached_assets/product_designs/v3_unified_A_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "35rSM00-SFPyYLAcKgxxo"
+uri = "file://attached_assets/product_designs/v3_unified_A_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "p3mJ6CW-Q1M9aWA5tf1yV"
+uri = "file://attached_assets/product_designs/v3_unified_B_desktop.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fazJHsPLnp956XAj0AaNZ"
+uri = "file://attached_assets/product_designs/v3_unified_B_mobile.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "5uSK277wQ5JyVgiAgk7fo"
+uri = "file://attached_assets/product_designs/concept_1_editorial.png"
+type = "image"
+title = "Concept 1 — Editorial Magazine"
+
+[[outputs]]
+id = "gWLQ-Ozf4SeszglYMHvUG"
+uri = "file://attached_assets/product_designs/concept_2_asymmetric.png"
+type = "image"
+title = "Concept 2 — Asymmetric Gallery"
+
+[[outputs]]
+id = "6wgPrCAjI6D0YK6I5Fkwx"
+uri = "file://attached_assets/product_designs/concept_3_story.png"
+type = "image"
+title = "Concept 3 — Immersive Story"
+
+[[outputs]]
+id = "zDSS8g3SISGqfg45dveOB"
+uri = "file://attached_assets/product_designs/concept_4_floating.png"
+type = "image"
+title = "Concept 4 — Floating Detail Card"
+
+[[outputs]]
+id = "mTrLP6nTLEtG8f2rAhVZC"
+uri = "file://attached_assets/product_designs/v2_concept_A_desktop.png"
+type = "image"
+title = "Concept A — Fable-classic (Desktop)"
+
+[[outputs]]
+id = "HoZLMAseXVbAVmcaEIGvG"
+uri = "file://attached_assets/product_designs/v2_concept_A_mobile.png"
+type = "image"
+title = "Concept A — Fable-classic (Mobile)"
+
+[[outputs]]
+id = "V7Ztw6T7aeRg7Hr_qDPcm"
+uri = "file://attached_assets/product_designs/v2_concept_B_desktop.png"
+type = "image"
+title = "Concept B — Story-Woven (Desktop)"
+
+[[outputs]]
+id = "mxPEeV43eTdAztAa-wxR6"
+uri = "file://attached_assets/product_designs/v2_concept_B_mobile.png"
+type = "image"
+title = "Concept B — Story-Woven (Mobile)"
+
+[[outputs]]
+id = "yQoCTuO_a_w1OuQCRE2K6"
+uri = "file://attached_assets/product_designs/v2_concept_C_desktop.png"
+type = "image"
+title = "Concept C — Refined Floating Card (Desktop)"
+
+[[outputs]]
+id = "EtaiGa62ewKMf0W_CAi6y"
+uri = "file://attached_assets/product_designs/v2_concept_C_mobile.png"
+type = "image"
+title = "Concept C — Refined Floating Card (Mobile)"
+
+[[outputs]]
+id = "cGgpzVT_utZ3C30ZNf-kd"
+uri = "file://attached_assets/product_designs/v3_unified_A_desktop.png"
+type = "image"
+title = "Variation A — Unified layout (Desktop)"
+
+[[outputs]]
+id = "iFqmod885CuHLNVjOp2bm"
+uri = "file://attached_assets/product_designs/v3_unified_A_mobile.png"
+type = "image"
+title = "Variation A — Unified layout (Mobile)"
+
+[[outputs]]
+id = "M7gpaQg6MYycJ4_19EYgF"
+uri = "file://attached_assets/product_designs/v3_unified_B_desktop.png"
+type = "image"
+title = "Variation B — With wrap-around image row + suggestions (Desktop)"
+
+[[outputs]]
+id = "ZbA-rR6iWYjyvfD99nuWQ"
+uri = "file://attached_assets/product_designs/v3_unified_B_mobile.png"
+type = "image"
+title = "Variation B — With wrap-around image row + suggestions (Mobile)"

@@ -1,0 +1,98 @@
+{
+  "shop": {
+    "title": "The Collection",
+    "pricesCurrency": "All prices in Canadian dollars",
+    "sortBy": "Sort By",
+    "sortOptions": {
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "bestSeller": "Best Seller"
+    },
+    "badges": {
+      "bestSeller": "Best Seller",
+      "new": "New",
+      "limitedStock": "Limited Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "filters": {
+      "showOutOfStock": "Show Out of Stock"
+    },
+    "notifyMe": {
+      "title": "Notify Me",
+      "description": "Get notified when this item is back in stock.",
+      "emailPlaceholder": "Enter your email",
+      "optIn": "Send me promotional emails",
+      "notify": "Notify Me",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "success": "Thanks! We'll notify you when it's back in stock."
+    },
+    "outOfStock": "Out of Stock",
+    "categoryFilter": {
+      "all": "All",
+      "ceramics": "Ceramics",
+      "embroidery": "Embroidery"
+    }
+  },
+  "product": {
+    "backButton": "Back to Collection",
+    "addToBag": "Add to Bag",
+    "soldOut": "Sold Out",
+    "buyNow": "Buy Now",
+    "colorLabel": "Color:",
+    "quantityLabel": "Quantity",
+    "accordion": {
+      "description": "Description",
+      "specifications": "Specifications",
+      "shippingReturns": "Shipping & Returns"
+    },
+    "specifications": {
+      "material": "Material",
+      "size": "Size",
+      "weight": "Weight",
+      "origin": "Origin"
+    },
+    "shippingReturnsText": "Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within 7–14 business days. 14-day heritage guarantee returns."
+  },
+  "checkout": {
+    "header": {
+      "branding": "TURATH COLLECTIVE",
+      "tagline": "Heritage Craftsmanship",
+      "backButton": "Back"
+    },
+    "expressCheckout": "Express Checkout",
+    "paymentMethods": {
+      "applePay": "Apple Pay",
+      "stripe": "Stripe",
+      "divider": "Or pay with card"
+    },
+    "shippingAddress": {
+      "label": "01. Shipping Address",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "address": "Address",
+      "apartment": "Apartment, suite, etc. (optional)",
+      "city": "City",
+      "postalCode": "Postal Code"
+    },
+    "paymentDetails": {
+      "label": "02. Payment Details",
+      "creditCard": "Credit Card",
+      "cardNumber": "Card Number",
+      "expiry": "MM / YY",
+      "cvv": "CVV"
+    },
+    "completePurchase": "Complete Purchase",
+    "orderSummary": {
+      "heading": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "securityNotice": "Secure SSL Encryption"
+    },
+    "agreement": "By completing your order, you agree to our Terms of Service and Privacy Policy.",
+    "footer": "© 2026 Turath Collective. All Rights Reserved.",
+    "currency": "CAD"
+  }
+}

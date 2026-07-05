@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
         <Link href="/">
           <div className="flex flex-col items-center cursor-pointer">
             <span className="font-serif text-3xl tracking-[0.2em] text-foreground">TURATH</span>
-            <span className="text-[9px] uppercase tracking-[0.5em] text-primary font-bold mt-1">Collective</span>
+            <span className="text-[10px] uppercase tracking-[0.5em] text-primary font-bold mt-1">Collective</span>
           </div>
         </Link>
       </header>

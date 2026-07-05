@@ -1,41 +1,49 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { collections } from "@/lib/collections";
-
-type Collection = (typeof collections)[number];
+import { useTranslation } from "react-i18next";
+import { getVisibleCategories, Category } from "@/lib/collections";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 function SingleCard({
-  collection,
+  category,
   idx,
+  t,
 }: {
-  collection: Collection;
+  category: Category;
   idx: number;
+  t: (key: string) => string;
 }) {
-  const href = collection.link; // Always use collection.link which includes category param
-
+  const prefersReducedMotion = useReducedMotion();
+  // Use the first collection for CTA if present, else fallback
+  const mainCollection = category.collections?.[0];
+  const href = `/shop?category=${category.handle}`;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, delay: idx * 0.2 }}
-      className={`group ${collection.comingSoon ? "pointer-events-none" : ""}`}
+      transition={{ duration: prefersReducedMotion ? 0.1 : 0.8, delay: prefersReducedMotion ? 0 : idx * 0.2 }}
+      className={`group ${category.comingSoon ? "pointer-events-none" : ""}`}
     >
-      {collection.comingSoon ? (
+      {category.comingSoon ? (
         <div className="relative mb-8 block aspect-[16/10] overflow-hidden rounded-[2rem]">
           <img
-            src={collection.image}
+            src={category.image}
             alt=""
             className="h-full w-full object-cover"
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <span className="text-[10px] uppercase tracking-[0.5em] text-white/70 font-bold">
-              Coming Soon
+              {t("collectionCards.comingSoon")}
             </span>
             <div className="h-px w-12 bg-white/30" />
             <span className="font-serif text-white text-2xl italic">
-              In the works
+              {t("collectionCards.inTheWorks")}
             </span>
           </div>
         </div>
@@ -45,34 +53,38 @@ function SingleCard({
           className="relative mb-8 block aspect-[16/10] cursor-pointer overflow-hidden rounded-[2rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <img
-            src={collection.image}
+            src={category.image}
             alt=""
-            className="h-full w-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
+            className={`h-full w-full object-cover transition-transform ${prefersReducedMotion ? "duration-100" : "duration-[1.5s]"} group-hover:scale-110`}
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
           />
-          <div className="absolute inset-0 bg-black/5 transition-colors duration-500 group-hover:bg-black/20" />
+          <div className={`absolute inset-0 bg-black/5 transition-colors ${prefersReducedMotion ? "duration-100" : "duration-500"} group-hover:bg-black/20`} />
           <span className="sr-only">
-            {collection.title} — {collection.cta}
+            {category.title} — {mainCollection?.cta || "Shop Now"}
           </span>
         </Link>
       )}
 
       <div className="px-4">
         <h3
-          className={`font-serif text-4xl mb-4 ${collection.comingSoon ? "text-foreground/40" : "text-foreground"}`}
+          className={`font-serif text-4xl mb-4 ${category.comingSoon ? "text-foreground/40" : "text-foreground"}`}
         >
-          {collection.title}
+          {category.title}
         </h3>
         <p className="text-foreground/60 font-light mb-8 max-w-sm leading-relaxed">
-          {collection.description}
+          {category.description}
         </p>
-        {collection.comingSoon ? (
+        {category.comingSoon ? (
           <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-foreground/30">
-            Available Soon
+            {t("collectionCards.availableSoon")}
           </span>
         ) : (
           <Link href={href}>
             <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary group-hover:text-foreground">
-              {collection.cta} →
+              {mainCollection?.cta || "Shop Now"} →
             </button>
           </Link>
         )}
@@ -87,12 +99,13 @@ function getGridClass(count: number): string {
 }
 
 export default function CollectionCards() {
-  const visibleCollections = collections.filter((c) => !c.hidden);
-  const isSingle = visibleCollections.length === 1;
+  const { t } = useTranslation("common");
+  const categories = getVisibleCategories(t);
+  const isSingle = categories.length === 1;
 
   return (
-    <section className="py-32 bg-background">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-12 bg-background">
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         {/* Header row */}
         <div
           className={`flex items-center ${isSingle ? "justify-center mb-4" : "justify-between mb-6"}`}
@@ -100,12 +113,12 @@ export default function CollectionCards() {
           <span
             className={`text-[10px] uppercase tracking-[0.4em] text-primary font-bold ${isSingle ? "text-center" : ""}`}
           >
-            Explore the Collections
+            {t("collectionCards.badge")}
           </span>
           {!isSingle && (
             <Link href="/shop">
-              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary mb-6">
-                Shop All →
+              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
+                {t("collectionCards.shopAll")} →
               </button>
             </Link>
           )}
@@ -117,25 +130,26 @@ export default function CollectionCards() {
             <div className="flex justify-center mb-8">
               <Link href="/shop">
                 <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
-                  Shop All →
+                  {t("collectionCards.shopAll")} →
                 </button>
               </Link>
             </div>
             <div className="flex justify-center">
               <div className="w-full md:w-7/12">
-                <SingleCard collection={visibleCollections[0]} idx={0} />
+                <SingleCard category={categories[0]} idx={0} t={t} />
               </div>
             </div>
           </>
         ) : (
           <div
-            className={`grid gap-10 ${getGridClass(visibleCollections.length)}`}
+            className={`grid gap-10 ${getGridClass(categories.length)}`}
           >
-            {visibleCollections.map((collection, idx) => (
+            {categories.map((category, idx) => (
               <SingleCard
-                key={collection.title}
-                collection={collection}
+                key={category.title}
+                category={category}
                 idx={idx}
+                t={t}
               />
             ))}
           </div>

@@ -1,14 +1,39 @@
+// Category type for Shopify-driven structure
+export interface ShopifyCategory {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  image: ShopifyImage | null;
+  collections: ShopifyCollection[];
+}
+
 /**
  * Shopify Storefront API v2024-01 — Full GraphQL Service Layer
  *
  * All requests are proxied through /api/shopify to:
  *   1. Keep the Storefront token server-side
  *   2. Avoid CORS issues
+ *   3. Control fallback behavior via VITE_SHOPIFY_MODE
  *
- * Feature flag: when SHOPIFY_STOREFRONT_TOKEN is not set on the server,
- * the proxy returns { shopifyDisabled: true } and every method returns
- * null / empty array so callers fall back to local mock data silently.
+ * Mode behavior:
+ *   - "live" (production): Fail if Shopify unavailable, no mock fallback
+ *   - "mock" (development): Fallback to local mock data silently (default)
+ *
+ * When Shopify is unavailable and mode is "live", methods throw errors.
+ * When mode is "mock", methods return null/empty so callers fallback gracefully.
  */
+
+// ── Shopify Mode Configuration ────────────────────────────────────────────────
+
+/**
+ * Get current Shopify mode from environment variable
+ * @returns "live" (production) or "mock" (development, default)
+ */
+function getShopifyMode(): "live" | "mock" {
+  const mode = import.meta.env.VITE_SHOPIFY_MODE || "mock";
+  return mode === "live" ? "live" : "mock";
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -29,6 +54,10 @@ export interface ShopifyProductVariant {
   price: ShopifyMoneyV2;
   compareAtPrice: ShopifyMoneyV2 | null;
   selectedOptions: Array<{ name: string; value: string }>;
+  quantityAvailable?: number;
+  image?: ShopifyImage | null;
+  colorHexMf?: { value: string | null };
+  variantMediaMf?: { references: { nodes: Array<{ image: ShopifyImage }> } };
 }
 
 export interface ShopifyProduct {
@@ -48,6 +77,9 @@ export interface ShopifyProduct {
   };
   images: { edges: Array<{ node: ShopifyImage }> };
   variants: { edges: Array<{ node: ShopifyProductVariant }> };
+  quantityStyle?: "counter" | "sets";
+  maxSets?: number;
+  metafields?: Array<{ key: string; value: string }>;
 }
 
 export interface ShopifyCollection {
@@ -92,12 +124,35 @@ const PRODUCT_FRAGMENT = `
   variants(first: 20) {
     edges {
       node {
-        id title availableForSale
+        id title availableForSale quantityAvailable
         price { amount currencyCode }
         compareAtPrice { amount currencyCode }
         selectedOptions { name value }
+        image { url altText }
+        colorHexMf: metafield(namespace: "custom", key: "color_hex") {
+          value
+        }
+        variantMediaMf: metafield(namespace: "custom", key: "variant_media") {
+          references(first: 10) {
+            nodes {
+              ... on MediaImage {
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
       }
     }
+  }
+  metafields(identifiers: [
+    { namespace: "custom", key: "quantity_style" }
+    { namespace: "custom", key: "max_sets" }
+  ]) {
+    key
+    value
   }
 `;
 
@@ -128,6 +183,8 @@ const CART_SELECTION = `
 // ── Core proxy caller ─────────────────────────────────────────────────────────
 
 async function shopifyQuery<T>(query: string, variables: Record<string, unknown> = {}): Promise<T | null> {
+  const mode = getShopifyMode();
+
   try {
     const res = await fetch("/api/shopify", {
       method: "POST",
@@ -135,21 +192,31 @@ async function shopifyQuery<T>(query: string, variables: Record<string, unknown>
       body: JSON.stringify({ query, variables }),
     });
 
-    if (res.status === 503) return null; // Shopify not configured — caller falls back to mock
+    if (res.status === 503) {
+      // Shopify not configured
+      if (mode === "live") {
+        throw new Error("Shopify API unavailable (not configured). Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_TOKEN.");
+      }
+      // In mock mode, silently fallback to mock data
+      return null;
+    }
 
     if (!res.ok) {
       console.warn("[Shopify] Proxy error", res.status);
+      if (mode === "live") throw new Error(`Shopify API error: ${res.status}`);
       return null;
     }
 
     const json = await res.json();
     if (json.errors) {
       console.warn("[Shopify] GraphQL errors", json.errors);
+      if (mode === "live") throw new Error(`Shopify GraphQL error: ${json.errors[0]?.message || "Unknown"}`);
       return null;
     }
     return json.data as T;
   } catch (err) {
     console.warn("[Shopify] Network error", err);
+    if (mode === "live") throw err;
     return null;
   }
 }
@@ -157,6 +224,26 @@ async function shopifyQuery<T>(query: string, variables: Record<string, unknown>
 // ── Service methods ───────────────────────────────────────────────────────────
 
 export const shopifyService = {
+    /**
+     * Fetch categories with nested collections from Shopify (using custom metafields or tags).
+     * This is a placeholder for when categories are modeled in Shopify (e.g., via custom collections or metafields).
+     * For now, returns all collections as a single category.
+     */
+    async getCategories(): Promise<ShopifyCategory[]> {
+      const collections = await this.getCollections();
+      if (!collections) return [];
+      // Example: all collections under a single "Shop" category
+      return [
+        {
+          id: "shop",
+          title: "Shop",
+          handle: "shop",
+          description: "All collections",
+          image: collections[0]?.image ?? null,
+          collections,
+        },
+      ];
+    },
   /** Fetch all products (first 50). Returns null when Shopify is not configured. */
   async getProducts(first = 50): Promise<ShopifyProduct[] | null> {
     const data = await shopifyQuery<{ products: { edges: Array<{ node: ShopifyProduct }> } }>(
@@ -197,6 +284,55 @@ export const shopifyService = {
       { first }
     );
     return data ? data.collections.edges.map(e => e.node) : null;
+  },
+
+  /** Fetch images from a specific collection by handle. Returns array of images or null when unconfigured. */
+  async getCarouselImages(collectionHandle: string, first = 10): Promise<ShopifyImage[] | null> {
+    const data = await shopifyQuery<{
+      collectionByHandle: {
+        products: {
+          edges: Array<{ node: { images: { edges: Array<{ node: ShopifyImage }> } } }>;
+        };
+      } | null;
+    }>(
+      `query GetCollectionImages($handle: String!, $first: Int!) {
+        collectionByHandle(handle: $handle) {
+          products(first: $first) {
+            edges {
+              node {
+                images(first: 5) {
+                  edges {
+                    node {
+                      url altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { handle: collectionHandle, first }
+    );
+
+    if (!data?.collectionByHandle) return null;
+
+    // Extract all images from all products (flattened) - supports multiple images per product
+    const images = data.collectionByHandle.products.edges
+      .flatMap(edge => edge.node.images.edges.map(img => img.node))
+      .filter((img): img is ShopifyImage => img !== undefined && img !== null);
+
+    return images.length > 0 ? images : null;
+  },
+
+  /** Fetch images from story carousel collection. */
+  async getStoryCarouselImages(first = 10): Promise<ShopifyImage[] | null> {
+    return this.getCarouselImages("story-carousel", first);
+  },
+
+  /** Fetch images from heritage carousel collection. */
+  async getHeritageCarouselImages(first = 10): Promise<ShopifyImage[] | null> {
+    return this.getCarouselImages("heritage-carousel", first);
   },
 
   /** Create a new cart. Returns null when unconfigured. */

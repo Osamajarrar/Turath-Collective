@@ -2,10 +2,12 @@ import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import brandVideo from "@/assets/brand-video.mp4";
 
 export default function Hero() {
   const { t } = useTranslation();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -18,16 +20,19 @@ export default function Hero() {
           loop
           muted
           playsInline
+          preload="metadata"
           className="w-full h-full object-cover opacity-90"
           src={brandVideo}
+          width={1920}
+          height={1080}
         />
       </div>
 
-      <div className="relative z-20 container mx-auto px-6 md:px-12 h-full flex flex-col justify-center items-center text-center">
+      <div className="relative z-20 container mx-auto px-6 md:px-12 max-w-[1820px] h-full flex flex-col justify-center items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: prefersReducedMotion ? 0.1 : 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
           <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-black" data-testid="text-hero-heading">
@@ -39,7 +44,7 @@ export default function Hero() {
             <Link href="/shop">
               <button
                 data-testid="button-hero-cta"
-                className="group bg-primary text-white px-14 py-6 rounded-none flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10"
+                className="group bg-primary text-white px-14 py-6 flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10"
               >
                 <span className="uppercase tracking-[0.3em] text-[10px] font-bold">{t("hero.cta")}</span>
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />
@@ -49,7 +54,7 @@ export default function Hero() {
               <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />
               </div>
-              <span className="uppercase tracking-[0.3em] text-[9px] font-bold text-black">{t("hero.watchStory")}</span>
+              <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-black">{t("hero.watchStory")}</span>
             </button> */}
           </div>
         </motion.div>
