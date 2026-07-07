@@ -195,14 +195,14 @@ export default function ShippingAndReturns() {
                     To be eligible for a return, items must be:
                   </p>
                   <ul className="space-y-1 pl-4">
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       Unused and in their original condition
                     </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       In original packaging, with all tags and materials
                       included
                     </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       Free from damage caused after delivery
                     </li>
                   </ul>
@@ -237,13 +237,13 @@ export default function ShippingAndReturns() {
                     within your 14-day window with:
                   </p>
                   <ul className="space-y-1 pl-4">
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       Your order number
                     </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       The item(s) you wish to return
                     </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
+                    <li className="before:content-['—'] before:mr-2 before:text-primary">
                       A brief reason for the return
                     </li>
                   </ul>
@@ -273,7 +273,7 @@ export default function ShippingAndReturns() {
                   </p>
                 </div>
 
-                <div className="border-l-2 border-[#C9A96E] pl-6">
+                <div className="border-l-2 border-primary pl-6">
                   <p className="font-medium text-foreground mb-1">
                     Damaged or Defective Items
                   </p>
