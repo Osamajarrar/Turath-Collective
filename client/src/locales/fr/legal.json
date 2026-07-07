@@ -92,7 +92,7 @@
   },
   "privacy": {
     "title": "Politique de confidentialité",
-    "effectiveDate": "Date d'entrée en vigueur : avril 2025 · Dernière mise à jour : avril 2025",
+    "effectiveDate": "Date d'entrée en vigueur : avril 2025 · Dernière mise à jour : juillet 2026",
     "intro": "Cette politique de confidentialité décrit comment Collectif Turath, exerçant ses activités sous le nom de Turath Collective (turathcollective.com), collecte, utilise, divulgue et protège vos informations personnelles.\n\nElle est rédigée en conformité avec la Loi sur la protection des renseignements personnels dans le secteur privé du Québec (Loi 25 / Projet de loi 64, tel que modifié) et la Loi sur la protection des renseignements personnels et les documents électroniques du Canada (LPRPDE).\n\nPour toute question ou préoccupation concernant vos informations personnelles, veuillez contacter notre agent de protection des renseignements personnels à : support@turathcollective.com",
     "sections": {
       "section1": {
@@ -145,6 +145,10 @@
         "number": "4",
         "title": "Divulgation à des tiers",
         "intro": "Nous ne vendons pas vos informations personnelles. Nous pouvons les partager avec les tiers suivants strictement si nécessaire pour exploiter notre entreprise :",
+        "tableHeaders": {
+          "party": "Tiers",
+          "purpose": "Finalité"
+        },
         "thirdParties": [
           {
             "name": "Processeur de paiement (Shopify Payments)",
@@ -157,10 +161,6 @@
           {
             "name": "Fournisseur de services de courrier (Resend)",
             "purpose": "Courriels transactionnels"
-          },
-          {
-            "name": "Plateforme de marketing (Mailchimp)",
-            "purpose": "Livraison d'infolettre (abonnés uniquement)"
           },
           {
             "name": "Hébergement Web (Vercel)",
@@ -206,7 +206,7 @@
       "section9": {
         "number": "9",
         "title": "Confidentialité des enfants",
-        "content": "Notre site Web n'est pas destiné aux enfants de moins de 14 ans. Nous ne collectons pas sciemment d'informations personnelles d'enfants. Si vous croyez qu'un enfant nous a fourni des informations personnelles, veuillez nous contacter et nous les supprimerons rapidement."
+        "content": "Notre site Web s'adresse à un public général et nous ne collectons pas sciemment de renseignements personnels auprès de mineurs."
       },
       "section10": {
         "number": "10",
@@ -222,7 +222,7 @@
   },
   "shipping": {
     "title": "Livraison et retours",
-    "lastUpdated": "Dernière mise à jour : avril 2025",
+    "lastUpdated": "Dernière mise à jour : juillet 2026",
     "shipping": {
       "title": "Livraison",
       "whereWeShip": {
@@ -235,6 +235,10 @@
       },
       "deliveryEstimates": {
         "title": "Délais de livraison estimés",
+        "tableHeaders": {
+          "service": "Service",
+          "estimate": "Délai de livraison estimé"
+        },
         "items": [
           {
             "service": "Livraison standard",
@@ -245,11 +249,11 @@
             "estimate": "2-4 jours ouvrables à partir de l'expédition"
           }
         ],
-        "note": "Note supplémentaire : Les délais de livraison commencent à partir de la date de confirmation de l'expédition, et non de la date de la commande. Les régions éloignées (Nunavut, Territoires du Nord-Ouest, Yukon et certaines régions rurales) peuvent connaître des délais de livraison plus longs."
+        "note": "Les délais de livraison commencent à partir de la date de confirmation de l'expédition, et non de la date de la commande. Les régions éloignées (Nunavut, Territoires du Nord-Ouest, Yukon et certaines régions rurales) peuvent connaître des délais de livraison plus longs."
       },
       "shippingRates": {
         "title": "Tarifs d'expédition",
-        "content": "Les tarifs d'expédition sont calculés à la caisse en fonction de votre localisation, du poids du colis et du service sélectionné. Lorsqu'un tarif forfaitaire s'applique, il sera clairement affiché à la caisse avant le paiement."
+        "content": "Les tarifs d'expédition sont calculés à la caisse en fonction de votre localisation, du poids du colis et du service sélectionné. Lorsqu'un tarif forfaitaire s'applique, il sera clairement affiché à la caisse avant le paiement. Les commandes de 100 $ CAD ou plus sont expédiées gratuitement au Canada."
       },
       "orderTracking": {
         "title": "Suivi de commande",
@@ -291,7 +295,7 @@
       },
       "damageDefective": {
         "title": "Articles endommagés ou défectueux",
-        "content": "Si votre commande arrive endommagée — qu'elle soit due au transit ou à un défaut du produit — veuillez nous contacter à support@turathcollective.com dans les 48 heures suivant la livraison avec votre numéro de commande et des photographies claires des dommages et de l'emballage. Nous organiserons un remplacement ou un remboursement complet sans frais pour vous. Ne jetez pas l'emballage avant de nous contacter, car il peut être nécessaire pour une réclamation au transporteur."
+        "content": "Si votre pièce arrive endommagée ou défectueuse, écrivez-nous à support@turathcollective.com dans les 14 jours suivant la livraison, avec des photos de l'article et de son emballage. Nous organiserons un remplacement ou un remboursement complet, frais d'expédition inclus, sans frais pour vous. Ne jetez pas l'emballage avant de nous contacter, car il peut être nécessaire pour une réclamation au transporteur."
       },
       "exchanges": {
         "title": "Échanges",
