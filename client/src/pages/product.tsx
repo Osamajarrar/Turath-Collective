@@ -695,19 +695,6 @@ export default function ProductPage() {
     });
   };
 
-  const handleBuyNow = async () => {
-    if (!currentVariation.variantId || currentVariation.variantId.startsWith("mock-")) return;
-    trackEvent("begin_checkout", {
-      product_name: product.name,
-      variant: currentVariation.color,
-      price: currentVariation.price,
-      currency: product.currencyCode,
-      quantity,
-    });
-    const url = await shopifyService.buyNow(currentVariation.variantId, quantity);
-    if (url) window.location.href = url;
-  };
-
   return (
     <PageLayout>
       {/* MOBILE: swipeable image carousel (Embla) */}
