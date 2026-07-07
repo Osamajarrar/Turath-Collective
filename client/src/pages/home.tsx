@@ -5,6 +5,8 @@ import CollectionCards from "@/components/collection-cards";
 import StorySection from "@/components/story-section";
 import Heritage from "@/components/heritage";
 import ValuesSection from "@/components/values-section";
+import ReviewCarousel from "@/components/review-carousel";
+import SocialProof from "@/components/social-proof";
 import Newsletter from "@/components/newsletter";
 
 export default function Home() {
@@ -18,8 +20,8 @@ export default function Home() {
         <StorySection />
         <ValuesSection />
         <Heritage />
-        {/* <ReviewCarousel /> */}
-        {/* <SocialProof /> */}
+        <ReviewCarousel />
+        <SocialProof />
         <Newsletter />
       </div>
     </PageLayout>
