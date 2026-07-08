@@ -1,3 +1,7 @@
+// PLACEHOLDER CONTENT — fake reviews / fake social posts for layout preview only.
+// Gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
+// Replace with real data before ungating. See plans/07-placeholder-gating.md.
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -34,7 +38,7 @@ export default function ReviewCarousel() {
   if (!showPlaceholder) return null;
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="order-2 lg:order-1 relative h-[500px] overflow-hidden rounded-2xl">
@@ -86,6 +90,7 @@ export default function ReviewCarousel() {
                 <button
                   key={idx}
                   onClick={() => setActive(idx)}
+                  aria-label={`Go to review ${idx + 1}`}
                   className={`h-1 transition-all duration-500 ${active === idx ? "w-12 bg-primary" : "w-6 bg-primary/10"}`}
                 />
               ))}
