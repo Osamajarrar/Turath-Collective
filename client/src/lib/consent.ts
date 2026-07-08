@@ -9,6 +9,13 @@
  * Storage shape (key `turath-consent`):
  *   { "status": "granted" | "denied", "timestamp": "<ISO string>" }
  *
+ * The decision is ALSO mirrored into a plain cookie (`turath-consent=granted|denied`,
+ * domain `.turathcollective.com`) because localStorage does not cross subdomains:
+ * the Shopify checkout on checkout.turathcollective.com runs a custom web pixel
+ * (see docs/shopify-checkout-pixel.md) that must honor the same choice, and the
+ * cookie is the only channel it can read. localStorage stays the source of truth
+ * on the storefront; the cookie is write-only from here.
+ *
  * Import direction: consent.ts imports from analytics.ts (one-way) to avoid a
  * circular dependency — analytics.ts only imports the read helper `getConsent`.
  */
@@ -16,6 +23,9 @@ import posthog from "posthog-js";
 import { enableAnalytics, isAnalyticsInitialized } from "./analytics";
 
 const STORAGE_KEY = "turath-consent";
+const CONSENT_COOKIE = "turath-consent";
+// Matches Law 25 guidance of re-validating consent periodically.
+const CONSENT_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year, in seconds
 
 export type ConsentStatus = "granted" | "denied";
 
@@ -30,6 +40,47 @@ type ConsentRecord = {
   status: ConsentStatus;
   timestamp: string;
 };
+
+/**
+ * Mirror the decision into a cookie shared with checkout.turathcollective.com,
+ * where the Shopify custom pixel reads it (localStorage can't cross subdomains).
+ * On localhost / preview deploys the domain attribute is omitted so the cookie
+ * still works for local testing without being rejected by the browser.
+ */
+function writeConsentCookie(status: ConsentStatus): void {
+  try {
+    const parts = [
+      `${CONSENT_COOKIE}=${status}`,
+      "path=/",
+      `max-age=${CONSENT_COOKIE_MAX_AGE}`,
+      "SameSite=Lax",
+    ];
+    const host = window.location.hostname;
+    if (host === "turathcollective.com" || host.endsWith(".turathcollective.com")) {
+      parts.push("domain=.turathcollective.com");
+    }
+    if (window.location.protocol === "https:") {
+      parts.push("Secure");
+    }
+    document.cookie = parts.join("; ");
+  } catch {
+    // Cookies unavailable — the storefront still works off localStorage; only
+    // the checkout pixel loses visibility, and it fails closed (no tracking).
+  }
+}
+
+/**
+ * Re-mirror an already-stored decision into the cookie. Called once at app
+ * startup (main.tsx) so visitors who made their choice before the cookie
+ * mirror existed — or whose cookie expired before localStorage did — are
+ * covered on the checkout domain too.
+ */
+export function syncConsentCookie(): void {
+  const status = getConsent();
+  if (status) {
+    writeConsentCookie(status);
+  }
+}
 
 /**
  * Read the stored decision. Returns null when no decision has been made yet
@@ -73,6 +124,7 @@ export function setConsent(granted: boolean): void {
     // Storage unavailable (private mode). We still apply the choice for this
     // session below; it just won't persist across reloads.
   }
+  writeConsentCookie(record.status);
 
   if (granted) {
     enableAnalytics();
