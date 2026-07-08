@@ -16,6 +16,13 @@
     "comingSoon": "Coming Soon"
   },
   "announcement": "Free shipping on orders above 100 CAD",
+  "consent": {
+    "label": "Cookie consent",
+    "message": "We use analytics to understand how visitors use the site. Nothing is tracked until you choose.",
+    "accept": "Accept analytics",
+    "decline": "Essential only",
+    "privacyLink": "Read our privacy policy."
+  },
   "lang": {
     "label": "Language",
     "region": "Region & Language",

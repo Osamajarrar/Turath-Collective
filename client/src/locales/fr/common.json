@@ -16,6 +16,13 @@
     "comingSoon": "Bientôt disponible"
   },
   "announcement": "Livraison gratuite pour les commandes supérieures à 100 CAD",
+  "consent": {
+    "label": "Consentement aux témoins",
+    "message": "Nous utilisons des données analytiques pour comprendre comment les visiteurs utilisent le site. Rien n'est suivi tant que vous n'avez pas choisi.",
+    "accept": "Accepter l'analyse",
+    "decline": "Essentiels seulement",
+    "privacyLink": "Consulter notre politique de confidentialité."
+  },
   "lang": {
     "label": "Langue",
     "region": "Région et Langue",
