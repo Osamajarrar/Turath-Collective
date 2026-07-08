@@ -33,7 +33,7 @@ function MixedContent({ text }: { text: string }) {
           {bulletLines.map((b, i) => (
             <li
               key={i}
-              className="before:content-['—'] before:mr-2 before:text-[#C9A96E]"
+              className="before:content-['—'] before:mr-2 before:text-primary"
             >
               {b}
             </li>
@@ -217,7 +217,7 @@ export default function ShippingAndReturns() {
                     {eligibilityItems.map((item, i) => (
                       <li
                         key={i}
-                        className="before:content-['—'] before:mr-2 before:text-[#C9A96E]"
+                        className="before:content-['—'] before:mr-2 before:text-primary"
                       >
                         {item}
                       </li>
@@ -244,7 +244,7 @@ export default function ShippingAndReturns() {
                   />
                 </Block>
 
-                <div className="border-l-2 border-[#C9A96E] pl-6">
+                <div className="border-l-2 border-primary pl-6">
                   <p className="font-medium text-foreground mb-1">
                     {t("shipping.returnsRefunds.damageDefective.title")}
                   </p>

@@ -38,10 +38,12 @@
   "product": {
     "backButton": "Retour à la collection",
     "addToBag": "Ajouter au panier",
+    "alreadyInBag": "Déjà dans le panier",
     "soldOut": "Épuisé",
     "buyNow": "Acheter maintenant",
     "colorLabel": "Couleur:",
     "quantityLabel": "Quantité",
+    "seeShippingReturns": "Voir livraison et retours",
     "accordion": {
       "description": "Description",
       "specifications": "Spécifications",
@@ -53,7 +55,12 @@
       "weight": "Poids",
       "origin": "Origine"
     },
-    "shippingReturnsText": "Fabriqué à la main en Palestine, expédié avec une logistique neutre en carbone. Livraison dans les 7 à 14 jours ouvrables. Retours garantis 14 jours."
+    "shippingReturnsText": "Fabriqué à la main en Palestine, expédié avec une logistique neutre en carbone. Livraison dans les 7 à 14 jours ouvrables. Retours garantis 14 jours.",
+    "related": {
+      "eyebrow": "La Collection",
+      "heading": "Vous aimerez aussi",
+      "subtitle": "Découvrez d'autres pièces artisanales, chacune porteuse de l'héritage d'Hébron."
+    }
   },
   "checkout": {
     "header": {

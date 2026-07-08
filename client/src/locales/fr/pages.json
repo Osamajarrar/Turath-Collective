@@ -4,7 +4,7 @@
     "intro": "Certaines choses sont trop importantes pour être oubliées.",
     "paragraph1": "Turath Collective est née d'une conviction simple : les mains qui façonnent l'argile à Hébron et enfilent l'aiguille dans les villages palestiniens méritent une place dans le monde — non pas comme des artefacts du passé, mais comme des expressions vivantes d'une culture qui perdure.",
     "paragraph2": "Turath — تراث — signifie patrimoine en arabe. C'est le fil qui relie les générations, le savoir transmis discrètement d'artisan à apprenti, le motif en broderie qui raconte une histoire plus ancienne que toute frontière.",
-    "paragraph3": "Nous sommes un collectif basé à Montréal dédié à apporter l'artisanat palestinien du patrimoine dans les foyers du monde entier. Chaque pièce que nous proposons est faite à la main par des artisans qui ont hérité de siècles de tradition et continuent de la pratiquer avec une habileté extraordinaire.",
+    "paragraph3": "Nous sommes un collectif basé à Montréal dédié à apporter l'artisanat palestinien du patrimoine dans les foyers du monde entier. Chaque pièce que nous proposons est faite à la main par des artisans qui ont hérité de générations de savoir-faire et continuent de la pratiquer avec une précision tranquille.",
     "whatWeCarry": {
       "title": "Ce que nous proposons",
       "intro": "Nous travaillons avec deux métiers fondamentaux — choisis parce qu'ils représentent la profondeur et la diversité du patrimoine artistique palestinien.",
@@ -20,7 +20,7 @@
     "commitment": {
       "title": "Notre engagement",
       "paragraph1": "Nous travaillons directement avec les communautés artisanales, en veillant à ce que les personnes dont l'habileté rend ce travail possible soient rémunérées équitablement et correctement créditées. Nous ne romantisons pas la pauvreté. Nous croyons que l'artisanat devrait soutenir les personnes qui le pratiquent.",
-      "paragraph2": "Chaque achat auprès de Turath Collective soutient une famille d'artisans qui perpétue une tradition que le monde ne peut pas se permettre de perdre."
+      "paragraph2": "Chaque achat auprès de Turath Collective soutient une famille d'artisans qui perpétue un héritage qui mérite d'être préservé."
     },
     "authenticity": {
       "title": "Une note sur l'authenticité",
@@ -42,8 +42,8 @@
         "label": "Fait Main"
       },
       "stat2": {
-        "value": "Sélectionné à",
-        "label": "Montréal"
+        "value": "Montréal",
+        "label": "Sélectionné à"
       }
     },
     "quote": "Les plus beaux objets sont ceux qui nous invitent à être présents.",
@@ -163,7 +163,7 @@
         "items": [
           {
             "question": "Où sont fabriqués les produits Turath?",
-            "answer": "Notre collection de céramiques est fabriquée à la main à Hébron, en Palestine — une ville avec plus de 2 000 ans de tradition continue de poterie. Chaque pièce voyage des mains des artisans palestiniens directement à votre domicile."
+            "answer": "Notre collection de céramiques est fabriquée à la main à Hébron, en Palestine — une ville dont la tradition de poterie se transmet de génération en génération. Chaque pièce voyage des mains des artisans palestiniens directement à votre domicile."
           },
           {
             "question": "Qui sont les artisans derrière les pièces?",
