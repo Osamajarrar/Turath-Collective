@@ -29,7 +29,7 @@ export default function ReviewCarousel() {
       setActive((prev) => (prev + 1) % reviews.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [reviews.length]);
 
   if (!showPlaceholder) return null;
 
