@@ -46,6 +46,8 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 ## 5. Content
 
 - [ ] Replace all placeholder/mock product data with real Shopify products (5 mock products currently live in `client/src/data/products.ts`)
+- [ ] **Replace placeholder reviews in `review-carousel.tsx`** — currently hardcoded fake names/cities/quotes (Elena M., Sami K., Amira J.) for structural testing only; gated behind `VITE_SHOW_PLACEHOLDER_CONTENT` env flag, must stay unset in Vercel until real reviews exist
+- [ ] **Replace placeholder Instagram community in `social-proof.tsx`** — currently hardcoded fake usernames (@layla_designs, @marwan_ab, @thecuratedhome) reusing product photos; gated behind same `VITE_SHOW_PLACEHOLDER_CONTENT` flag, must stay unset in Vercel until real content exists
 - [ ] Final hi-res product photography (≥4 angles per product; consistent crop / background)
 - [ ] Artisan story copy (Montreal + Palestine origin narrative)
 - [ ] About page content (mission, sourcing, ethics)
@@ -128,6 +130,33 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 - [ ] Backup strategy for the Postgres database (Replit-managed snapshots verified working)
 - [ ] Review all `process.env` reads — fail fast at boot if a required prod var is missing
 - [ ] Consider `helmet` `crossOriginEmbedderPolicy` and `referrerPolicy: "strict-origin-when-cross-origin"` once Shopify CDN domains are finalised in CSP
+
+## 13a. PostHog Analytics — Open Issues (found 2026-07-05)
+
+- [x] CSP `scriptSrc` was missing PostHog's asset domains (`us-assets.i.posthog.com`, `*.posthog.com`),
+      blocking `config.js`, `posthog-recorder.js`, `surveys.js`, `dead-clicks-autocapture.js`, and
+      `web-vitals.js` from ever loading — likely the root cause of session replay silently not working.
+      Fixed in `server/index.ts` CSP `scriptSrc`/`connectSrc`.
+- [ ] **Still unresolved**: even after the CSP fix, no PostHog capture requests (`$pageview` or custom
+      events) were observed firing at all when testing locally against `/product/indigo-mosaic-bowl` —
+      `config.js` and the feature scripts load fine (200s, no console errors), but no `/e/` or `/capture`
+      network call was ever seen, even after waiting 15s. Needs deeper investigation: check PostHog
+      project settings (event capture toggle, autocapture config in the loaded remote config), verify
+      `VITE_POSTHOG_KEY`/`VITE_POSTHOG_HOST` values in `.env.local` are valid/current, and check
+      posthog-js's internal state (queue/flush behavior) rather than just network requests.
+- [x] `handleBuyNow` in `client/src/pages/product.tsx`, which fired `begin_checkout` but was never
+      wired to any button, has been removed. `begin_checkout` now fires from the real cart-drawer
+      checkout button (`data-testid="button-cart-checkout"` in `navbar.tsx`) via
+      `trackEventThenNavigate()`, which uses sendBeacon/event_callback so the event survives the
+      redirect to Shopify checkout. (`shopifyService.buyNow` and the "Buy Now" locale strings are
+      kept for a future Buy Now button.)
+- [ ] Once capture requests are confirmed working, re-verify `add_to_cart` and `begin_checkout` fire
+      end-to-end. A local Playwright run on 2026-07-07 confirmed the UI flow works (add to cart →
+      drawer checkout button → redirect to Shopify) but still saw **zero** PostHog capture requests,
+      not even `$pageview`, while config.js and all feature scripts load fine. That pattern strongly
+      suggests a PostHog project-side cause: check billing/quota limits and project settings in the
+      PostHog dashboard, and inspect the remote config (`/array/<key>/config.js`) response for
+      quota/capture flags.
 
 ## 14. Pre-Launch Soft Test (Recommended)
 

@@ -18,12 +18,20 @@ export default function ReviewCarousel() {
   const images = [img1, img2, img3];
   const [active, setActive] = useState(0);
 
+  // TODO: these reviews are placeholder/fake data for structural testing only.
+  // Replace client/src/locales/*/common.json → reviewCarousel.reviews with real
+  // customer reviews, then remove this guard. Never let this render with fake
+  // testimonials once ad traffic starts.
+  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+
   useEffect(() => {
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % reviews.length);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
+
+  if (!showPlaceholder) return null;
 
   return (
     <section className="py-12 bg-white">

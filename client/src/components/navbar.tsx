@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
+import { trackEventThenNavigate } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
 
@@ -442,9 +443,19 @@ export default function Navbar() {
                   type="button"
                   disabled={isBusy || !cart?.checkoutUrl || totalQuantity === 0}
                   onClick={() => {
-                    if (cart?.checkoutUrl) {
-                      window.location.href = cart.checkoutUrl;
-                    }
+                    if (!cart?.checkoutUrl) return;
+                    const { checkoutUrl } = cart;
+                    trackEventThenNavigate(
+                      "begin_checkout",
+                      {
+                        currency: cart.cost.subtotalAmount.currencyCode,
+                        value: parseFloat(cart.cost.subtotalAmount.amount),
+                        num_items: totalQuantity,
+                      },
+                      () => {
+                        window.location.href = checkoutUrl;
+                      },
+                    );
                   }}
                   className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
                   data-testid="button-cart-checkout"
