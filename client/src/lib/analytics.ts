@@ -12,6 +12,7 @@
  * anywhere without checking configuration first.
  */
 import posthog from "posthog-js";
+import { getConsent } from "./consent";
 
 declare global {
   interface Window {
@@ -22,18 +23,53 @@ declare global {
 
 let posthogInitialized = false;
 
-/** Call once, at app startup (see main.tsx). No-op if VITE_POSTHOG_KEY is unset. */
-export function initAnalytics() {
+const POSTHOG_OPTIONS = {
+  api_host: import.meta.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com",
+  person_profiles: "always" as const,
+  // We fire the initial $pageview manually in enableAnalytics() so exactly one
+  // pageview is recorded whether consent is granted at page load or mid-session.
+  // (posthog's automatic capture_pageview fires during init() regardless of
+  // timing, which would double-count against our manual capture.)
+  capture_pageview: false,
+  capture_pageleave: true,
+};
+
+/**
+ * Perform the deferred PostHog init. Called by the consent layer the moment a
+ * visitor grants consent, and by initAnalytics() on subsequent loads once the
+ * decision is already "granted".
+ *
+ * Idempotent: safe to call more than once. On first successful init it also
+ * fires a manual $pageview, because posthog's automatic initial-pageview moment
+ * has already passed by the time consent is granted mid-session.
+ */
+export function enableAnalytics() {
   const key = import.meta.env.VITE_POSTHOG_KEY;
   if (!key || posthogInitialized) return;
 
-  posthog.init(key, {
-    api_host: import.meta.env.VITE_POSTHOG_HOST || "https://us.i.posthog.com",
-    person_profiles: "always",
-    capture_pageview: true,
-    capture_pageleave: true,
-  });
+  posthog.init(key, POSTHOG_OPTIONS);
   posthogInitialized = true;
+
+  // The automatic initial pageview fires inside posthog.init only when the SDK
+  // loads at page start. When consent is granted after the page is already
+  // interactive, capture the current page explicitly.
+  posthog.capture("$pageview");
+}
+
+/** True once PostHog has actually been initialized this session. */
+export function isAnalyticsInitialized() {
+  return posthogInitialized;
+}
+
+/**
+ * Call once, at app startup (see main.tsx). Self-gates on consent: only inits
+ * PostHog when a prior "granted" decision exists. With no decision or a "denied"
+ * decision, PostHog is never touched — no cookies, storage, or network requests
+ * exist (the strongest opt-in guarantee). No-op if VITE_POSTHOG_KEY is unset.
+ */
+export function initAnalytics() {
+  if (getConsent() !== "granted") return;
+  enableAnalytics();
 }
 
 /** Fire a custom event to GA4 and PostHog. No-op for any provider not configured. */
