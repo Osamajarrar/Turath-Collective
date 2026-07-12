@@ -141,6 +141,9 @@
     "inTheWorks": "En cours de préparation",
     "availableSoon": "Disponible bientôt"
   },
+  "featuredProducts": {
+    "badge": "Pièces en vedette"
+  },
   "reviewCarousel": {
     "badge": "Histoires des mécènes",
     "heading": "Voix du",
