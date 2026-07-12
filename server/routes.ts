@@ -78,6 +78,21 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     return res.json(req.user);
   });
 
+  // Order history for the signed-in user. Groundwork: nothing writes orders
+  // yet (checkout stays on Shopify for v1), so with DeferredStorage this
+  // surfaces the deferred error — it exists so account UI can be built
+  // against a stable contract.
+  app.get("/api/me/orders", async (req: Request, res: Response) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: "Not authenticated" });
+    try {
+      const orders = await storage.getOrdersByUser(req.user.id);
+      return res.json({ orders });
+    } catch (err) {
+      console.error("[Orders] Failed to load order history:", err);
+      return res.status(500).json({ message: "Failed to load order history" });
+    }
+  });
+
   } // AUTH_ENABLED
 
   // ── Contact ───────────────────────────────────────────────────────────────
