@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useRoute, Link } from "wouter";
+import { useRoute, useSearch, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -462,6 +462,7 @@ function SkeletonCarousel() {
 export default function ProductPage() {
   const { t } = useTranslation("commerce");
   const [, params] = useRoute("/product/:id");
+  const search = useSearch();
   const { addItem, isBusy, cart, mockLines, hasMockCart } = useCart();
   const prefersReducedMotion = useReducedMotion();
   const [quantity, setQuantity] = useState(1);
@@ -633,6 +634,19 @@ export default function ProductPage() {
       specs: {},
     };
   }, [liveProduct, params?.id, isLoading]);
+
+  // Honour ?variant=N from shop-card swatch links. Re-runs when the live
+  // product arrives (variations.length changes), so an index beyond the
+  // loading placeholder still applies once the real variations are known.
+  useEffect(() => {
+    const raw = new URLSearchParams(search).get("variant");
+    if (raw === null) return;
+    const idx = Number(raw);
+    if (Number.isInteger(idx) && idx >= 0 && idx < product.variations.length) {
+      setSelectedVariationIdx(idx);
+      setSelectedImage(0);
+    }
+  }, [search, product.variations.length]);
 
   const currentVariation = product.variations[selectedVariationIdx] ?? product.variations[0];
   const images = currentVariation?.images ?? [];

@@ -319,8 +319,9 @@ export function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCa
             <p className="text-xs md:text-sm lg:text-base md:whitespace-nowrap">${Math.floor(product.price)}</p>
           </div>
 
-          {/* Variation Color Swatches */}
-          {product.variations && product.variations.length > 0 && (
+          {/* Variation Color Swatches — hidden when there is nothing to
+              choose, matching the product page's single-variant behaviour */}
+          {product.variations && product.variations.length > 1 && (
             <div
               className="flex flex-wrap gap-2 mt-3 pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
