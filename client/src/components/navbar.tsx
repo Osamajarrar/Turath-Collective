@@ -13,12 +13,10 @@ import Logo from "./Logo";
 import FreeShippingProgress from "./free-shipping-progress";
 
 // The announcement bar states a shipping offer ("free shipping above X CAD")
-// that has no finalized pricing/shipping policy behind it yet. It stays hidden
-// until VITE_SHOW_ANNOUNCEMENT_BAR=true is set — setting that flag asserts the
-// announcement copy (locales *: common.json → "announcement") is true and
-// consistent with the shipping policy page.
-const SHOW_ANNOUNCEMENT_BAR =
-  import.meta.env.VITE_SHOW_ANNOUNCEMENT_BAR === "true";
+// that has no finalized pricing/shipping policy behind it yet. It is gated —
+// together with the cart-drawer progress bar — by VITE_SHOW_SHIPPING_PROMO
+// (see @/lib/flags for what enabling it asserts).
+import { SHIPPING_PROMO_ENABLED } from "@/lib/flags";
 
 // Helper to slugify product title for mock cart links
 const slugify = (str: string) =>
@@ -88,8 +86,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Banner — fixed above the nav; gated off by default (see SHOW_ANNOUNCEMENT_BAR) */}
-      {SHOW_ANNOUNCEMENT_BAR && (
+      {/* Announcement Banner — fixed above the nav; gated off by default (see SHIPPING_PROMO_ENABLED) */}
+      {SHIPPING_PROMO_ENABLED && (
         <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
           {t("announcement")}
         </div>
@@ -101,7 +99,7 @@ export default function Navbar() {
         transition={{ duration: prefersReducedMotion ? 0.1 : 0.35, ease: "easeInOut" }}
         className={cn(
           "fixed left-0 right-0 z-50 border-b transition-all duration-300",
-          SHOW_ANNOUNCEMENT_BAR ? "top-10" : "top-0",
+          SHIPPING_PROMO_ENABLED ? "top-10" : "top-0",
           isScrolled || isCartOpen || isMenuOpen
             ? "border-border bg-background/80 py-4 backdrop-blur-md"
             : "border-transparent bg-transparent py-6"
