@@ -38,10 +38,12 @@
   "product": {
     "backButton": "Back to Collection",
     "addToBag": "Add to Bag",
+    "alreadyInBag": "Already in Bag",
     "soldOut": "Sold Out",
     "buyNow": "Buy Now",
     "colorLabel": "Color:",
     "quantityLabel": "Quantity",
+    "seeShippingReturns": "See Shipping & Returns",
     "accordion": {
       "description": "Description",
       "specifications": "Specifications",
@@ -53,7 +55,12 @@
       "weight": "Weight",
       "origin": "Origin"
     },
-    "shippingReturnsText": "Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within 7–14 business days. 14-day heritage guarantee returns."
+    "shippingReturnsText": "Hand-crafted in Palestine, shipped with carbon-neutral logistics. Delivery within 7–14 business days. 14-day heritage guarantee returns.",
+    "related": {
+      "eyebrow": "The Collection",
+      "heading": "You May Also Love",
+      "subtitle": "Discover more handcrafted pieces, each carrying the heritage of Hebron."
+    }
   },
   "checkout": {
     "header": {

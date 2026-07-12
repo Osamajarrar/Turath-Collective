@@ -36,10 +36,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://us-assets.i.posthog.com", "https://*.posthog.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "https:", "data:"],
-      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com", "https://us.i.posthog.com", "https://*.posthog.com"],
+      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com", "https://us.i.posthog.com", "https://us-assets.i.posthog.com", "https://*.posthog.com"],
       frameSrc: ["'none'"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
     },

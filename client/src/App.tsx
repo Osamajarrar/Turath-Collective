@@ -8,6 +8,7 @@ import { CartProvider } from "@/context/cart-context";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ScrollToTop from "@/components/scroll-to-top";
+import CookieConsent from "@/components/cookie-consent";
 
 // Critical pages loaded eagerly for fast initial load
 import Home from "@/pages/home";
@@ -63,6 +64,7 @@ function App() {
           <Suspense fallback={null}>
             <Router />
           </Suspense>
+          <CookieConsent />
         </TooltipProvider>
       </CartProvider>
     </QueryClientProvider>

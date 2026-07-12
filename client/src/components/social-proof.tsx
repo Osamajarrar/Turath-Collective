@@ -1,3 +1,7 @@
+// PLACEHOLDER CONTENT — fake reviews / fake social posts for layout preview only.
+// Gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
+// Replace with real data before ungating. See plans/07-placeholder-gating.md.
+
 import img1 from "@/assets/social-1.png";
 import img2 from "@/assets/social-2.png";
 import img3 from "@/assets/social-3.png";
@@ -25,6 +29,12 @@ export default function SocialProof() {
   const isDraggingRef = useRef(false);
   const currentXRef = useRef(0);
 
+  // TODO: these are placeholder Instagram posts with fake usernames, for
+  // structural testing only. Replace `socialPosts` above with a real
+  // Instagram embed or real customer posts, then remove this guard. Never
+  // let this render with fake community content once ad traffic starts.
+  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+
   useEffect(() => {
     isDraggingRef.current = isDragging;
   }, [isDragging]);
@@ -47,6 +57,8 @@ export default function SocialProof() {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, []);
+
+  if (!showPlaceholder) return null;
 
   return (
     <section className="py-12 bg-background border-t border-border">
@@ -118,8 +130,7 @@ export default function SocialProof() {
               {/* Mobile username display */}
               <div className="md:hidden pt-3">
                 <p
-                  className="text-[10px] font-bold tracking-[0.2em] uppercase"
-                  style={{ color: "hsl(0 81% 13%)" }}
+                  className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary"
                 >
                   {post.username}
                 </p>

@@ -4,7 +4,7 @@
     "intro": "Some things are too important to forget.",
     "paragraph1": "Turath Collective is a Montreal-based studio born from a singular conviction. We believe the hands shaping clay in Hebron and threading needles in Palestinian villages deserve a place in the modern world. These are not artifacts of the past. They are living expressions of a culture that endures.",
     "paragraph2": "Turath — تراث — is the Arabic word for heritage. It is the invisible thread connecting generations. It is the quiet knowledge passed from artisan to apprentice, and the patterns that tell stories older than any border.",
-    "paragraph3": "We are dedicated to bringing these heritage traditions to homes around the world. Every piece we carry is handmade by masters who have inherited centuries of skill and continue to practice it with extraordinary precision.",
+    "paragraph3": "We are dedicated to bringing these heritage traditions to homes around the world. Every piece we carry is handmade by masters who have inherited generations of skill and continue to practice it with quiet precision.",
     "whatWeCarry": {
       "title": "Foundational Collections",
       "intro": "We currently focus on two foundational crafts. We chose them because they represent the profound depth and diversity of Palestinian artistic heritage.",
@@ -21,24 +21,10 @@
         "description": "In the works — stay tuned for updates on this new collection coming soon."
       }
     },
-    "collections": {
-      "hebron": {
-        "title": "Hebron Ceramics",
-        "description": "The city of Hebron has been a center of ceramic artistry for over five hundred years. The distinctive deep blues, teals, and earthy tones of this pottery emerge from natural mineral glazes and wood-fired kilns. Each piece carries the slight variations that only handwork produces. No two are identical."
-      },
-      "tatreez": {
-        "title": "Tatreez Embroidery",
-        "description": "Palestinian cross-stitch is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language. It is a map of village, season, and lineage encoded in thread. Recognized by UNESCO in 2021, Tatreez is a testament to the endurance of the human hand."
-      },
-      "glass": {
-        "title": "Glass Collection",
-        "description": "We are currently curating a collection of hand-blown glassware from artisans in Palestine."
-      }
-    },
     "commitment": {
       "title": "Our Commitment",
       "paragraph1": "We believe that exceptional craft should sustain the people who practice it. We work directly with artisan communities to ensure that the masters of these traditions are fairly compensated and properly credited.",
-      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a legacy that the world cannot afford to lose."
+      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a heritage worth keeping alive."
     },
     "authenticity": {
       "title": "A Note on Authenticity",
@@ -60,8 +46,8 @@
         "label": "Handmade"
       },
       "stat2": {
-        "value": "Curated in",
-        "label": "Montreal"
+        "value": "Montreal",
+        "label": "Curated in"
       }
     },
     "quote": "The most beautiful objects are those that invite us to be present.",
@@ -181,7 +167,7 @@
         "items": [
           {
             "question": "Where are Turath products made?",
-            "answer": "Our ceramics collection is handcrafted in Hebron, Palestine — a city with over 2,000 years of continuous pottery tradition. Each piece travels from the hands of Palestinian artisans directly to your home."
+            "answer": "Our ceramics collection is handcrafted in Hebron, Palestine — a city with a craft tradition passed down through generations. Each piece travels from the hands of Palestinian artisans directly to your home."
           },
           {
             "question": "Who are the artisans behind the pieces?",

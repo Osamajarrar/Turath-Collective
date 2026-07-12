@@ -37,7 +37,7 @@ function SingleCard({
             decoding="async"
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
             <span className="text-[10px] uppercase tracking-[0.5em] text-white/70 font-bold">
               {t("collectionCards.comingSoon")}
             </span>
@@ -46,6 +46,9 @@ function SingleCard({
               {t("collectionCards.inTheWorks")}
             </span>
           </div>
+          <span className="sr-only">
+            {category.title} — {t("collectionCards.comingSoon")}, {t("collectionCards.inTheWorks")}
+          </span>
         </div>
       ) : (
         <Link

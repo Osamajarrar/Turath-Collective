@@ -38,10 +38,12 @@
   "product": {
     "backButton": "العودة إلى المجموعة",
     "addToBag": "أضف إلى الحقيبة",
+    "alreadyInBag": "موجود في الحقيبة بالفعل",
     "soldOut": "نفد المخزون",
     "buyNow": "اشتر الآن",
     "colorLabel": "اللون:",
     "quantityLabel": "الكمية",
+    "seeShippingReturns": "عرض الشحن والمرتجعات",
     "accordion": {
       "description": "الوصف",
       "specifications": "المواصفات",
@@ -52,6 +54,11 @@
       "size": "الحجم",
       "weight": "الوزن",
       "origin": "الأصل"
+    },
+    "related": {
+      "eyebrow": "المجموعة",
+      "heading": "قد يعجبك أيضاً",
+      "subtitle": "اكتشف المزيد من القطع الحرفية اليدوية، كل واحدة تحمل تراث الخليل."
     }
   },
   "checkout": {
