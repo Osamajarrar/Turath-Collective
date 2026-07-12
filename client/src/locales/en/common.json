@@ -41,7 +41,9 @@
     "empty": "Your bag is empty.",
     "remove": "Remove",
     "increaseQty": "Increase quantity",
-    "decreaseQty": "Decrease quantity"
+    "decreaseQty": "Decrease quantity",
+    "freeShippingAway": "You're {{amount}} away from free shipping.",
+    "freeShippingReached": "Your order qualifies for free shipping."
   },
   "hero": {
     "heading": "Connect through",

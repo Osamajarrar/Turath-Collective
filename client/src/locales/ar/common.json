@@ -41,7 +41,9 @@
     "empty": "حقيبتك فارغة.",
     "remove": "إزالة",
     "increaseQty": "زيادة الكمية",
-    "decreaseQty": "تقليل الكمية"
+    "decreaseQty": "تقليل الكمية",
+    "freeShippingAway": "تبقّى {{amount}} للحصول على الشحن المجاني.",
+    "freeShippingReached": "طلبك مؤهل للشحن المجاني."
   },
   "hero": {
     "heading": "تواصل عبر",

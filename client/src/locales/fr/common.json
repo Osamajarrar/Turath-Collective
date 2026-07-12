@@ -41,7 +41,9 @@
     "empty": "Votre panier est vide.",
     "remove": "Retirer",
     "increaseQty": "Augmenter la quantité",
-    "decreaseQty": "Diminuer la quantité"
+    "decreaseQty": "Diminuer la quantité",
+    "freeShippingAway": "Il vous manque {{amount}} pour profiter de la livraison gratuite.",
+    "freeShippingReached": "Votre commande est admissible à la livraison gratuite."
   },
   "hero": {
     "heading": "Connectez-vous par le",
