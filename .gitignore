@@ -1,7 +1,7 @@
 node_modules
 dist
 .DS_Store
-# local data stores (newsletter subscribers etc. — PII, never commit)
+# local data stores (newsletter subscribers, product reviews etc. — user-submitted PII, never commit)
 data/
 server/public
 vite.config.ts.*
