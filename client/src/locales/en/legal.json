@@ -253,7 +253,7 @@
       },
       "shippingRates": {
         "title": "Shipping Rates",
-        "content": "Shipping rates are calculated at checkout based on your location, package weight, and selected service. Where a flat rate applies, it will be clearly displayed at checkout before payment. Orders of $100 CAD or more ship free within Canada."
+        "content": "Shipping rates are calculated at checkout based on your location, package weight, and selected service. Where a flat rate applies, it will be clearly displayed at checkout before payment."
       },
       "orderTracking": {
         "title": "Order Tracking",
@@ -266,14 +266,14 @@
     },
     "returnsRefunds": {
       "title": "Returns & Refunds",
-      "intro": "We want you to love what you receive. If something is not right, we are here to make it right.",
+      "intro": "We want you to love what you receive. If something is not right, we are here to make it right. Two separate policies apply: one for items that arrive damaged or defective, and one for change-of-mind returns.",
       "returnWindow": {
-        "title": "Return Window",
-        "content": "You may request a return within 14 days of the delivery date as confirmed by your tracking information."
+        "title": "Change-of-Mind Returns",
+        "content": "If a piece is not right for you, you may request a return within 14 days of the delivery date as confirmed by your tracking information. The cost of return shipping is deducted from your refund."
       },
       "eligibility": {
         "title": "Eligibility Conditions",
-        "intro": "To be eligible for a return, items must be:",
+        "intro": "To be eligible for a change-of-mind return, items must be:",
         "items": [
           "Unused and in their original condition",
           "In original packaging, with all tags and materials included",
@@ -286,16 +286,16 @@
         "content": "All items purchased at a discounted or sale price are final sale and are not eligible for return or exchange, unless the item arrived damaged or defective."
       },
       "howToInitiate": {
-        "title": "How to Initiate a Return",
-        "content": "Email us at support@turathcollective.com within your 14-day window with:\n- Your order number\n- The item(s) you wish to return\n- A brief reason for the return\n\nWe will respond within 2 business days with return instructions and a prepaid return shipping label. Return shipping is covered by Turath Collective."
+        "title": "How to Initiate a Change-of-Mind Return",
+        "content": "Before sending anything back, email us at support@turathcollective.com within your 14-day window with:\n- Your order number\n- The item(s) you wish to return\n- A brief reason for the return\n\nWe will respond within 2 business days with return instructions and a return shipping label. The item must be returned in its original packaging. The cost of return shipping is deducted from your refund."
       },
       "refundProcessing": {
         "title": "Refund Processing",
-        "content": "Refunds are issued once the returned item has been received and inspected by our team. Inspection typically takes 2–3 business days upon receipt. If the item passes inspection, your refund will be issued to your original payment method within 5–7 business days. You will receive an email confirmation once processed.\n\nIf the item does not meet return eligibility conditions upon inspection, we will notify you and return the item to you at no additional cost."
+        "content": "Once your return arrives, our team inspects it within 48 hours. If the return is approved, your refund is issued to your original payment method within [X business days — confirm with Shopify Payments docs]. You will receive an email confirmation once processed.\n\nIf the item does not meet return eligibility conditions upon inspection, we will notify you and return the item to you."
       },
       "damageDefective": {
-        "title": "Damaged or Defective Items",
-        "content": "If your piece arrives damaged or defective, email support@turathcollective.com within 14 days of delivery with photos of both the item and its packaging. We will arrange a replacement or a full refund, including shipping, at no cost to you. Do not discard the packaging before contacting us, as it may be required for a carrier claim."
+        "title": "Damaged or Defective on Arrival",
+        "content": "If your piece arrives damaged or defective, email support@turathcollective.com within 48 hours of delivery with photos of both the item and its packaging. We will arrange a replacement or a full refund, including shipping, at no cost to you. Do not discard the packaging before contacting us, as it may be required for a carrier claim."
       },
       "exchanges": {
         "title": "Exchanges",
