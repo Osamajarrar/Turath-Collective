@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { shopifyService } from "@/lib/shopify";
+import { USE_MOCK_PRODUCTS } from "@/lib/flags";
 import {
   MOCK_PRODUCTS,
   normaliseShopify,
@@ -30,7 +31,7 @@ export default function FeaturedProducts() {
   const { t } = useTranslation("common");
   const { t: tCommerce } = useTranslation("commerce");
   const prefersReducedMotion = useReducedMotion();
-  const useMock = import.meta.env.VITE_USE_MOCK_PRODUCTS === "true";
+  const useMock = USE_MOCK_PRODUCTS;
   const [isLoading, setIsLoading] = useState(!useMock);
   const [products, setProducts] = useState<DisplayProduct[]>(
     useMock ? MOCK_PRODUCTS : [],

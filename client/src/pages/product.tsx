@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
+import { USE_MOCK_PRODUCTS } from "@/lib/flags";
 import { useCart } from "@/context/cart-context";
 import { trackEvent } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -468,7 +469,7 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [liveProduct, setLiveProduct] = useState<DisplayProduct | null>(null);
   const [suggestedProducts, setSuggestedProducts] = useState<DisplayProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(() => import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [isLoading, setIsLoading] = useState(() => !USE_MOCK_PRODUCTS);
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
   const [selectedNotifyVariant, setSelectedNotifyVariant] = useState<Variation | null>(null);
 
@@ -510,7 +511,7 @@ export default function ProductPage() {
     if (!handle) return;
     let cancelled = false;
 
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       const mockProduct = MOCK_PRODUCTS.find((p) => p.handle === handle);
       if (mockProduct) setLiveProduct(mockProduct);
       const suggested = MOCK_PRODUCTS
@@ -539,7 +540,7 @@ export default function ProductPage() {
       if (!products || products.length === 0) {
         console.log("[Product] No Shopify products");
         // Only fallback to mocks if explicitly enabled
-        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+        if (USE_MOCK_PRODUCTS) {
           console.log("[Product] Using mock fallback");
           const normalized = MOCK_PRODUCTS
             .filter((p) => p.handle !== handle)
@@ -558,7 +559,7 @@ export default function ProductPage() {
       // If no suggested products after filtering, only use mocks if explicitly enabled
       if (normalized.length === 0) {
         console.log("[Product] No suggested products after filtering");
-        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+        if (USE_MOCK_PRODUCTS) {
           console.log("[Product] Using mock fallback");
           const mockFallback = MOCK_PRODUCTS
             .filter((p) => p.handle !== handle)
@@ -573,7 +574,7 @@ export default function ProductPage() {
       console.error("[Product] Error fetching Shopify products:", err);
       if (cancelled) return;
       // Only fallback to mocks if explicitly enabled
-      if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+      if (USE_MOCK_PRODUCTS) {
         const normalized = MOCK_PRODUCTS
           .filter((p) => p.handle !== handle)
           .sort(() => Math.random() - 0.5)
@@ -610,7 +611,7 @@ export default function ProductPage() {
     }
 
     // Only use mock products if explicitly enabled in env
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       return (
         MOCK_PRODUCTS.find((p) => p.handle === params?.id) ||
         MOCK_PRODUCTS.find((p) => p.id === params?.id) ||
