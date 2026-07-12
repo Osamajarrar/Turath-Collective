@@ -10,6 +10,15 @@ import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context
 import { trackEventThenNavigate } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
+import FreeShippingProgress from "./free-shipping-progress";
+
+// The announcement bar states a shipping offer ("free shipping above X CAD")
+// that has no finalized pricing/shipping policy behind it yet. It stays hidden
+// until VITE_SHOW_ANNOUNCEMENT_BAR=true is set — setting that flag asserts the
+// announcement copy (locales *: common.json → "announcement") is true and
+// consistent with the shipping policy page.
+const SHOW_ANNOUNCEMENT_BAR =
+  import.meta.env.VITE_SHOW_ANNOUNCEMENT_BAR === "true";
 
 // Helper to slugify product title for mock cart links
 const slugify = (str: string) =>
@@ -79,17 +88,20 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Banner — fixed, always visible above the nav */}
-      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
-        {t("announcement")}
-      </div>
+      {/* Announcement Banner — fixed above the nav; gated off by default (see SHOW_ANNOUNCEMENT_BAR) */}
+      {SHOW_ANNOUNCEMENT_BAR && (
+        <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
+          {t("announcement")}
+        </div>
+      )}
 
       <motion.nav
         variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: prefersReducedMotion ? 0.1 : 0.35, ease: "easeInOut" }}
         className={cn(
-          "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
+          "fixed left-0 right-0 z-50 border-b transition-all duration-300",
+          SHOW_ANNOUNCEMENT_BAR ? "top-10" : "top-0",
           isScrolled || isCartOpen || isMenuOpen
             ? "border-border bg-background/80 py-4 backdrop-blur-md"
             : "border-transparent bg-transparent py-6"
@@ -432,6 +444,15 @@ export default function Navbar() {
               </div>
 
               <div className="space-y-4 border-t border-border bg-muted/20 p-8">
+                {totalQuantity > 0 && (
+                  <FreeShippingProgress
+                    subtotal={
+                      cart
+                        ? parseFloat(cart.cost.subtotalAmount.amount)
+                        : mockSubtotal
+                    }
+                  />
+                )}
                 <div>
                   <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse mb-1">
                     <span>{t("cart.subtotal")}</span>
