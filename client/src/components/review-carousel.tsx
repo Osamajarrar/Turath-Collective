@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { SHOW_PLACEHOLDER_CONTENT } from "@/lib/flags";
 import type { PublicReview } from "@shared/schema";
 
 import img1 from "@/assets/social-1.png";
@@ -101,7 +102,7 @@ export default function ReviewCarousel({ productHandle }: { productHandle?: stri
   // Replace client/src/locales/*/common.json → reviewCarousel.reviews with real
   // customer reviews, then remove this guard. Never let this render with fake
   // testimonials once ad traffic starts.
-  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+  const showPlaceholder = SHOW_PLACEHOLDER_CONTENT;
 
   useEffect(() => {
     let cancelled = false;

@@ -12,6 +12,7 @@ import img2 from "@/assets/social-2.png";
 import img3 from "@/assets/social-3.png";
 import { motion, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { SHOW_PLACEHOLDER_CONTENT } from "@/lib/flags";
 import { useTranslation } from "react-i18next";
 import { shopifyService, SocialFeedEntry } from "@/lib/shopify";
 
@@ -126,7 +127,7 @@ export default function SocialProof() {
   // structural testing only. Replace `socialPosts` above with a real
   // Instagram embed or real customer posts, then remove this guard. Never
   // let this render with fake community content once ad traffic starts.
-  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+  const showPlaceholder = SHOW_PLACEHOLDER_CONTENT;
 
   // Load the founder-curated feed from the shop metafield.
   useEffect(() => {

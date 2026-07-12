@@ -64,6 +64,8 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 | `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN` | Server proxies Storefront GraphQL at `/api/shopify` |
 | `VITE_USE_MOCK_PRODUCTS` | `true` = local mock catalog instead of Shopify |
 | `VITE_SHOW_PLACEHOLDER_CONTENT` | Gates fake review/social components. **Must never be set in Vercel.** |
+| `VITE_SHOW_SHIPPING_PROMO` | Single gate for the announcement bar + cart free-shipping progress bar (`VITE_FREE_SHIPPING_THRESHOLD` supplies the CAD amount). Off until the shipping offer is real. |
+| `VITE_DEMO_MODE` | **Local `.env.local` ONLY — must NEVER be set in Vercel (`dev`, `test`, or `main`).** Master switch forcing every mock/placeholder flag on (mock products, fake reviews/social proof, shipping promo with placeholder $75 threshold, full site instead of coming-soon) so the founder can preview the complete experience locally. If deployed, it would show fake content to real visitors — the exact dishonesty the hard rules prohibit. See `client/src/lib/flags.ts`. |
 
 ## Gotchas
 

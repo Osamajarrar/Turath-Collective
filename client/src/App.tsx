@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ScrollToTop from "@/components/scroll-to-top";
 import CookieConsent from "@/components/cookie-consent";
+import { COMING_SOON } from "@/lib/flags";
 
 // Critical pages loaded eagerly for fast initial load
 import Home from "@/pages/home";
@@ -34,7 +35,7 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        {import.meta.env.VITE_COMING_SOON === "true" ? (
+        {COMING_SOON ? (
           <Route path="/" component={ComingSoon} />
         ) : (
           <Route path="/" component={Home} />

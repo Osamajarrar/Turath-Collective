@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
+import { USE_MOCK_PRODUCTS } from "@/lib/flags";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -361,9 +362,9 @@ export default function ShopPage() {
   const search = useSearch();
   const prefersReducedMotion = useReducedMotion();
   const [sortBy, setSortBy] = useState("newest");
-  const [isLoading, setIsLoading] = useState(import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [isLoading, setIsLoading] = useState(!USE_MOCK_PRODUCTS);
   const [products, setProducts] = useState<DisplayProduct[]>(
-    import.meta.env.VITE_USE_MOCK_PRODUCTS === "true" ? MOCK_PRODUCTS : []
+    USE_MOCK_PRODUCTS ? MOCK_PRODUCTS : []
   );
 
   const availableCategories = useMemo(() => getAvailableCategories(t), [t]);
@@ -409,7 +410,7 @@ export default function ShopPage() {
   // Fetch live Shopify data (or use mock if VITE_USE_MOCK_PRODUCTS=true)
   useEffect(() => {
     // Skip API call if using mock products
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       setIsLoading(false);
       return;
     }
