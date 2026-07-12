@@ -102,9 +102,11 @@
   },
   "newsletter": {
     "heading": "Rejoignez le Cercle du Turath",
-    "desc": "Bénéficiez d'un accès prioritaire à nos collections exclusives et découvrez les coulisses des traditions vivantes que nous importons à Montréal.",
+    "desc": "Des nouvelles occasionnelles sur les nouvelles pièces et les artisans qui les façonnent.",
     "placeholder": "Votre adresse courriel",
-    "cta": "S'abonner"
+    "cta": "S'abonner",
+    "success": "Votre courriel est bien enregistré — merci.",
+    "error": "Une erreur est survenue. Veuillez réessayer."
   },
   "comingSoon": {
     "badge": "Bientôt disponible",
