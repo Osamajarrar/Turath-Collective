@@ -475,11 +475,13 @@ export default function ProductPage() {
   const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
   const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
 
-  const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+  // Observe the CTA container (not the Add to Bag button itself) so the sticky
+  // bar still tracks scroll when the Notify Me button is rendered instead.
+  const ctaSectionRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   useEffect(() => {
-    const btn = addToCartBtnRef.current;
+    const btn = ctaSectionRef.current;
     if (!btn) return;
 
     let lastScrollY = window.scrollY;
@@ -837,7 +839,7 @@ export default function ProductPage() {
               )}
 
               {/* Quantity & CTA */}
-              <div className="space-y-4">
+              <div className="space-y-4" ref={ctaSectionRef}>
                 {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
                   <button
                     onClick={() => {
@@ -867,7 +869,6 @@ export default function ProductPage() {
                       />
                     )}
                     <button
-                      ref={addToCartBtnRef}
                       onClick={handleAddToCart}
                       disabled={isBusy || remainingInventory <= 0}
                       data-testid="button-add-to-cart"
@@ -997,15 +998,29 @@ export default function ProductPage() {
                 </span>
               </div>
 
-              {/* Right (or full-width on mobile/tablet): Add to Bag button */}
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.availableForSale || isBusy || remainingInventory <= 0}
-                className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ShoppingBag className="h-3.5 w-3.5" />
-                <span>{!product.availableForSale ? t("product.soldOut") : remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}</span>
-              </button>
+              {/* Right (or full-width on mobile/tablet): Add to Bag / Notify Me button */}
+              {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
+                <button
+                  onClick={() => {
+                    setSelectedNotifyVariant(currentVariation);
+                    setNotifyModalOpen(true);
+                  }}
+                  data-testid="button-sticky-notify-me"
+                  className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90"
+                >
+                  <Bell className="h-3.5 w-3.5" />
+                  <span>{t("shop.notifyMe.title", "Notify Me")}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isBusy || remainingInventory <= 0}
+                  className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <ShoppingBag className="h-3.5 w-3.5" />
+                  <span>{remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}</span>
+                </button>
+              )}
             </div>
           </motion.div>
         )}
