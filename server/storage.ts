@@ -43,6 +43,7 @@ export interface IStorage {
   createOrder(order: InsertOrder): Promise<Order>;
   getOrder(id: string): Promise<Order | undefined>;
   getOrdersByUser(userId: string): Promise<Order[]>;
+  listOrders(): Promise<Order[]>;
   updateOrderStatus(id: string, status: OrderStatus): Promise<Order | undefined>;
 
   // Contact messages (route deferred; table ready for future use)
@@ -71,6 +72,10 @@ class DeferredStorage implements IStorage {
   }
 
   async getOrdersByUser(_userId: string): Promise<Order[]> {
+    throw new Error("Order storage is deferred for v1 launch (orders table not provisioned)");
+  }
+
+  async listOrders(): Promise<Order[]> {
     throw new Error("Order storage is deferred for v1 launch (orders table not provisioned)");
   }
 

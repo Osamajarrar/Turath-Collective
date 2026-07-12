@@ -10,6 +10,7 @@ import { getPostHog } from "./posthog";
 import { addNewsletterSubscriber } from "./newsletter";
 import { insertReviewSchema } from "@shared/schema";
 import { addReview, getApprovedReviews, getAllApprovedReviews } from "./reviews";
+import { registerAdminRoutes } from "./admin";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -94,6 +95,17 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   });
 
   } // AUTH_ENABLED
+
+  // ── Admin (internal-only) ─────────────────────────────────────────────────
+  // DEFERRED: groundwork for an internal inventory/orders/categories view
+  // (see server/admin.ts). Requires working auth, so it can only be enabled
+  // together with AUTH_ENABLED; every admin route also checks the caller's
+  // email against the ADMIN_EMAILS env var. No public page links to it.
+  const ADMIN_ENABLED = false;
+
+  if (AUTH_ENABLED && ADMIN_ENABLED) {
+    registerAdminRoutes(app);
+  }
 
   // ── Contact ───────────────────────────────────────────────────────────────
   // DEFERRED: route disabled for launch v1. UI form remains visible.
