@@ -30,8 +30,9 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 
 ## Hard rules (never violate)
 
-1. **Never push to `main` or `preview`.** All work on new branches from `main`; every branch
-   gets its own PR into `main`; never merge your own PRs.
+1. **Never push to `test` or `main`.** Those only move when the founder promotes
+   `dev` → `test` → `main`. Working directly on `dev` — pushing to it, or merging PRs into
+   it — is fine.
 2. **No music in any video/audio content or suggestion** — firm personal/religious constraint,
    not a preference. Don't propose royalty-free/background-music workarounds.
 3. **No founder-on-camera content.**
@@ -90,6 +91,9 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 
 ## Session workflow expectations
 
+- Branch flow: `dev` → `test` → `main`. AI sessions work on `dev` — directly, or via
+  branches/PRs into `dev` when a change benefits from review; the founder reviews (and
+  modifies) on `dev`, promotes to `test` when ready, and eventually promotes `test` → `main`.
 - Branch names: `fix/…`, `feature/…`, `chore/…`, `plans/…`. Group related changes into coherent,
   reviewable PRs (not one giant PR, not forty one-liners).
 - PR descriptions: what changed, why, what reviewers should check; flag anything touching

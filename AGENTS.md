@@ -8,7 +8,8 @@ the `AGENTS.md` convention find the same instructions.
 
 Quick summary of the non-negotiables (full detail in `CLAUDE.md`):
 
-1. Never push to `main` or `preview`. New branch from `main` → PR → human merges.
+1. Never push to `test` or `main` — they only move when the founder promotes
+   `dev` → `test` → `main`. Working directly on `dev` (pushes or PR merges) is fine.
 2. No music in any content; no founder-on-camera content.
 3. Honesty framework: never fake reviews/testimonials/stats; distinguish historical objects from
    new objects made with traditional techniques; keep factual claims consistent across pages.
