@@ -2,10 +2,13 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import passport from "passport";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
 import { shopifyLimiter } from "./index.js";
 import { getPostHog } from "./posthog";
+import { insertReviewSchema } from "@shared/schema";
+import { addReview, getApprovedReviews, getAllApprovedReviews } from "./reviews";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -82,6 +85,52 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   // ── Newsletter ────────────────────────────────────────────────────────────
   // DEFERRED: DB storage removed. Connect to Mailchimp/Klaviyo when ready.
+
+  // ── Product Reviews (self-hosted groundwork) ──────────────────────────────
+  // Submissions land unapproved and are never published automatically; the
+  // public GET endpoints only return approved rows. See server/reviews.ts.
+
+  const reviewLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 5,
+    message: "Too many review submissions, please try again later",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.post("/api/reviews", reviewLimiter, async (req: Request, res: Response) => {
+    const parsed = insertReviewSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: parsed.error.errors[0]?.message ?? "Invalid review" });
+    }
+    try {
+      await addReview(parsed.data);
+      // 202: accepted for moderation, not published.
+      return res.status(202).json({ ok: true });
+    } catch (err) {
+      console.error("[Reviews] Failed to store review:", err);
+      return res.status(500).json({ message: "Failed to save review" });
+    }
+  });
+
+  app.get("/api/reviews", async (_req: Request, res: Response) => {
+    try {
+      return res.json({ reviews: await getAllApprovedReviews() });
+    } catch (err) {
+      console.error("[Reviews] Failed to read reviews:", err);
+      return res.status(500).json({ message: "Failed to load reviews" });
+    }
+  });
+
+  app.get("/api/reviews/:productHandle", async (req: Request, res: Response) => {
+    try {
+      const handle = String(req.params.productHandle ?? "");
+      return res.json({ reviews: await getApprovedReviews(handle) });
+    } catch (err) {
+      console.error("[Reviews] Failed to read reviews:", err);
+      return res.status(500).json({ message: "Failed to load reviews" });
+    }
+  });
 
   // ── Shopify Storefront proxy ──────────────────────────────────────────────
 
