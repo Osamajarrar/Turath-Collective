@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ColorSwatch } from "@/components/ColorSwatch";
+import { getSalesRanking, sortProducts } from "@/lib/product-sort";
 
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
@@ -449,33 +450,18 @@ export default function ShopPage() {
     return () => { cancelled = true; };
   }, [availableCategoryHandles]);
 
+  // Real sales data (order counts) — null until an orders backend exists.
+  // While null, the best-seller sort option below is not offered at all.
+  const salesRanking = useMemo(() => getSalesRanking(), []);
+
   const filteredAndSortedProducts = useMemo(() => {
-    let result =
+    const result =
       selectedCategory === "all"
-        ? [...visibleProducts]
+        ? visibleProducts
         : visibleProducts.filter((p) => p.category === selectedCategory);
 
-    switch (sortBy) {
-      case "price-low":
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case "best-seller":
-        result.sort(
-          (a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0),
-        );
-        break;
-      case "newest":
-      default:
-        result.sort(
-          (a, b) =>
-            new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime(),
-        );
-    }
-    return result;
-  }, [selectedCategory, sortBy, visibleProducts]);
+    return sortProducts(result, sortBy, salesRanking);
+  }, [selectedCategory, sortBy, visibleProducts, salesRanking]);
 
   const productHref = (p: DisplayProduct) => `/product/${p.handle}`;
 
@@ -534,7 +520,12 @@ export default function ShopPage() {
                 <option value="newest">{t("shop.sortOptions.newest")}</option>
                 <option value="price-low">{t("shop.sortOptions.priceLow")}</option>
                 <option value="price-high">{t("shop.sortOptions.priceHigh")}</option>
-                <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
+                {/* Only offered when real sales data backs it — offering a
+                    "best seller" order we can't actually compute would be a
+                    quiet lie. Activates via getSalesRanking(). */}
+                {salesRanking && (
+                  <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
+                )}
               </select>
             </div>
 
