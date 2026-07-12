@@ -37,7 +37,7 @@
   --color-error: hsl(0 81% 30%);
   --color-error-foreground: hsl(0 81% 95%);
   
-  --font-sans: 'Comfortaa', sans-serif;
+  --font-sans: 'Inter', sans-serif;
   --font-serif: 'Playfair Display', serif;
   
   --radius-sm: 0.125rem;
@@ -104,27 +104,27 @@
     @apply font-serif text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-[0.02em];
   }
 
-  /* Subsection headings (h3 equivalents) - Comfortaa bold for hierarchy */
+  /* Subsection headings (h3 equivalents) - Inter bold for hierarchy */
   .heading-subsection {
     @apply font-sans text-xl md:text-2xl font-bold leading-tight tracking-wide;
   }
 
-  /* Product names - Comfortaa bold to distinguish from headers */
+  /* Product names - Inter to distinguish from headers */
   .text-product-name {
     @apply font-sans text-lg md:text-lg font-normal leading-tight tracking-wide;
   }
 
-  /* Collection/Category names - Comfortaa bold for consistency */
+  /* Collection/Category names - Inter bold for consistency */
   .text-collection-name {
     @apply font-sans text-xl md:text-2xl font-bold leading-tight tracking-wide;
   }
 
-  /* Featured statistics and numbers - Comfortaa bold for prominence */
+  /* Featured statistics and numbers - serif for prominence */
   .text-featured-stat {
     @apply font-serif text-xl md:text-2xl  leading-tight tracking-wide;
   }
 
-  /* Testimonials and quotes - Comfortaa italic */
+  /* Testimonials and quotes - Inter italic */
   .text-quote {
     @apply font-sans text-base md:text-lg italic leading-relaxed tracking-[0.01em];
   }
