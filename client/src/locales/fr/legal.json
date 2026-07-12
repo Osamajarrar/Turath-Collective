@@ -253,7 +253,7 @@
       },
       "shippingRates": {
         "title": "Tarifs d'expédition",
-        "content": "Les tarifs d'expédition sont calculés à la caisse en fonction de votre localisation, du poids du colis et du service sélectionné. Lorsqu'un tarif forfaitaire s'applique, il sera clairement affiché à la caisse avant le paiement. Les commandes de 100 $ CAD ou plus sont expédiées gratuitement au Canada."
+        "content": "Les tarifs d'expédition sont calculés à la caisse en fonction de votre localisation, du poids du colis et du service sélectionné. Lorsqu'un tarif forfaitaire s'applique, il sera clairement affiché à la caisse avant le paiement."
       },
       "orderTracking": {
         "title": "Suivi de commande",
@@ -266,14 +266,14 @@
     },
     "returnsRefunds": {
       "title": "Retours et remboursements",
-      "intro": "Nous voulons que vous aimiez ce que vous recevez. Si quelque chose ne va pas, nous sommes là pour arranger les choses.",
+      "intro": "Nous voulons que vous aimiez ce que vous recevez. Si quelque chose ne va pas, nous sommes là pour arranger les choses. Deux politiques distinctes s'appliquent : une pour les articles arrivés endommagés ou défectueux, et une pour les retours par changement d'avis.",
       "returnWindow": {
-        "title": "Fenêtre de retour",
-        "content": "Vous pouvez demander un retour dans les 14 jours suivant la date de livraison confirmée par vos informations de suivi."
+        "title": "Retours par changement d'avis",
+        "content": "Si une pièce ne vous convient pas, vous pouvez demander un retour dans les 14 jours suivant la date de livraison confirmée par vos informations de suivi. Les frais d'expédition de retour sont déduits de votre remboursement."
       },
       "eligibility": {
         "title": "Conditions d'admissibilité",
-        "intro": "Pour être admissible à un retour, les articles doivent :",
+        "intro": "Pour être admissible à un retour par changement d'avis, les articles doivent :",
         "items": [
           "Être inutilisés et en condition originale",
           "Être dans l'emballage original, avec toutes les étiquettes et matériaux inclus",
@@ -286,16 +286,16 @@
         "content": "Tous les articles achetés à titre de rabais ou de prix réduit sont définitifs et ne sont pas admissibles au retour ou à l'échange, sauf si l'article est arrivé endommagé ou défectueux."
       },
       "howToInitiate": {
-        "title": "Comment initier un retour",
-        "content": "Envoyez-nous un courriel à support@turathcollective.com dans votre fenêtre de 14 jours avec :\n- Votre numéro de commande\n- Le(s) article(s) que vous souhaitez retourner\n- Une brève raison du retour\n\nNous répondrons dans les 2 jours ouvrables avec les instructions de retour et une étiquette d'expédition de retour prépayée. L'expédition de retour est couverte par Turath Collective."
+        "title": "Comment initier un retour par changement d'avis",
+        "content": "Avant de nous renvoyer quoi que ce soit, écrivez-nous à support@turathcollective.com dans votre fenêtre de 14 jours avec :\n- Votre numéro de commande\n- Le(s) article(s) que vous souhaitez retourner\n- Une brève raison du retour\n\nNous répondrons dans les 2 jours ouvrables avec les instructions de retour et une étiquette d'expédition de retour. L'article doit être retourné dans son emballage d'origine. Les frais d'expédition de retour sont déduits de votre remboursement."
       },
       "refundProcessing": {
         "title": "Traitement du remboursement",
-        "content": "Les remboursements sont émis une fois que l'article retourné a été reçu et inspecté par notre équipe. L'inspection prend généralement 2 à 3 jours ouvrables à la réception. Si l'article passe l'inspection, votre remboursement sera émis à votre méthode de paiement d'origine dans les 5 à 7 jours ouvrables. Vous recevrez un courriel de confirmation une fois traité.\n\nSi l'article ne répond pas aux conditions d'admissibilité au retour lors de l'inspection, nous vous le notifierons et vous retournerons l'article sans frais supplémentaires."
+        "content": "Dès la réception de votre retour, notre équipe l'inspecte dans les 48 heures. Si le retour est approuvé, votre remboursement est émis à votre méthode de paiement d'origine dans les [X jours ouvrables — à confirmer selon les délais de remboursement de Shopify Payments]. Vous recevrez un courriel de confirmation une fois traité.\n\nSi l'article ne répond pas aux conditions d'admissibilité au retour lors de l'inspection, nous vous le notifierons et vous retournerons l'article."
       },
       "damageDefective": {
-        "title": "Articles endommagés ou défectueux",
-        "content": "Si votre pièce arrive endommagée ou défectueuse, écrivez-nous à support@turathcollective.com dans les 14 jours suivant la livraison, avec des photos de l'article et de son emballage. Nous organiserons un remplacement ou un remboursement complet, frais d'expédition inclus, sans frais pour vous. Ne jetez pas l'emballage avant de nous contacter, car il peut être nécessaire pour une réclamation au transporteur."
+        "title": "Endommagé ou défectueux à l'arrivée",
+        "content": "Si votre pièce arrive endommagée ou défectueuse, écrivez-nous à support@turathcollective.com dans les 48 heures suivant la livraison, avec des photos de l'article et de son emballage. Nous organiserons un remplacement ou un remboursement complet, frais d'expédition inclus, sans frais pour vous. Ne jetez pas l'emballage avant de nous contacter, car il peut être nécessaire pour une réclamation au transporteur."
       },
       "exchanges": {
         "title": "Échanges",
