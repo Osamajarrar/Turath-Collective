@@ -148,6 +148,9 @@
     "inTheWorks": "In the works",
     "availableSoon": "Available Soon"
   },
+  "featuredProducts": {
+    "badge": "Featured Pieces"
+  },
   "reviewCarousel": {
     "badge": "Patron Stories",
     "heading": "Voices of the",

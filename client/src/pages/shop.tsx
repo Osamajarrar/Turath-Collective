@@ -122,7 +122,7 @@ export const ALL_PRODUCTS = MOCK_PRODUCTS;
 
 // ── Normalise a Shopify product into a display-friendly shape ──────────────
 
-interface DisplayProduct {
+export interface DisplayProduct {
   id: string;
   name: string;
   handle: string;
@@ -139,7 +139,7 @@ interface DisplayProduct {
   variations?: Variation[];
 }
 
-function normaliseShopify(p: ShopifyProduct): DisplayProduct {
+export function normaliseShopify(p: ShopifyProduct): DisplayProduct {
   const sourceCategory = p.productType || p.tags?.[0] || "";
   const normalizedCategory = sourceCategory.trim().toLowerCase();
 
@@ -217,7 +217,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 
 // ── SkeletonProductCard Component ──────────────────────────────────────────
 
-function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefersReducedMotion: boolean }) {
+export function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefersReducedMotion: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -243,7 +243,7 @@ interface ProductCardProps {
   t: any;
 }
 
-function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
+export function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
   const [, navigate] = useLocation();
   const [isHovered, setIsHovered] = useState(false);
 
