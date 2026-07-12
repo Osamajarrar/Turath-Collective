@@ -1,6 +1,11 @@
-// PLACEHOLDER CONTENT — fake reviews / fake social posts for layout preview only.
-// Gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
-// Replace with real data before ungating. See plans/07-placeholder-gating.md.
+// Renders REAL, manually curated posts from the Shopify shop metafield
+// `custom.social_feed` whenever any exist — the founder adds entries through
+// Shopify admin without a redeploy (see shopifyService.getSocialFeed).
+//
+// PLACEHOLDER CONTENT below — fake social posts for layout preview only,
+// gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
+// Real metafield entries take precedence over the placeholder regardless of
+// that flag. See plans/07-placeholder-gating.md.
 
 import img1 from "@/assets/social-1.png";
 import img2 from "@/assets/social-2.png";
@@ -8,6 +13,7 @@ import img3 from "@/assets/social-3.png";
 import { motion, useMotionValue } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { shopifyService, SocialFeedEntry } from "@/lib/shopify";
 
 const socialPosts = [
   { username: "@layla_designs", image: img1 },
@@ -21,19 +27,120 @@ const socialPosts = [
 const ITEM_WIDTH = 320;
 const TOTAL_WIDTH = ITEM_WIDTH * 72;
 
-export default function SocialProof() {
+// ── Real curated feed (from the shop metafield) ──────────────────────────────
+
+function SectionHeader() {
   const { t } = useTranslation("common");
+  return (
+    <div className="container mx-auto px-6 md:px-12 max-w-[1820px] mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
+      <div>
+        <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">
+          {t("socialProof.badge")}
+        </span>
+        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground">
+          {t("socialProof.heading")}
+        </h2>
+      </div>
+      <div className="flex items-center gap-8">
+        <a
+          href="https://www.instagram.com/turathcollective"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary"
+          aria-label="Instagram"
+        >
+          {t("socialProof.instagram")}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function RealSocialFeed({ posts }: { posts: SocialFeedEntry[] }) {
+  return (
+    <section
+      className="py-12 bg-background border-t border-border"
+      data-testid="section-real-social-feed"
+    >
+      <SectionHeader />
+      <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
+        <div className="flex flex-wrap justify-center gap-6">
+          {posts.map((post, idx) => {
+            const card = (
+              <div className="relative w-72 md:w-80">
+                <div className="aspect-[4/5] overflow-hidden group/item relative">
+                  <img
+                    src={post.imageUrl}
+                    alt={post.caption || post.handle || "Shared photo"}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-105"
+                  />
+                </div>
+                {(post.handle || post.caption) && (
+                  <div className="pt-3 space-y-1">
+                    {post.handle && (
+                      <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary">
+                        {post.handle}
+                      </p>
+                    )}
+                    {post.caption && (
+                      <p className="text-sm text-foreground/60 font-light leading-relaxed">
+                        {post.caption}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+            return post.link ? (
+              <a
+                key={idx}
+                href={post.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:opacity-90 transition-opacity"
+              >
+                {card}
+              </a>
+            ) : (
+              <div key={idx}>{card}</div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function SocialProof() {
   const repeatedPosts = Array.from({ length: 12 }, () => socialPosts).flat();
   const x = useMotionValue(0);
   const [isDragging, setIsDragging] = useState(false);
   const isDraggingRef = useRef(false);
   const currentXRef = useRef(0);
+  // null = still loading / no real content; entries = founder-curated feed
+  const [realPosts, setRealPosts] = useState<SocialFeedEntry[] | null>(null);
 
   // TODO: these are placeholder Instagram posts with fake usernames, for
   // structural testing only. Replace `socialPosts` above with a real
   // Instagram embed or real customer posts, then remove this guard. Never
   // let this render with fake community content once ad traffic starts.
   const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+
+  // Load the founder-curated feed from the shop metafield.
+  useEffect(() => {
+    let cancelled = false;
+    shopifyService
+      .getSocialFeed()
+      .then((entries) => {
+        if (!cancelled && entries) setRealPosts(entries);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     isDraggingRef.current = isDragging;
@@ -58,31 +165,17 @@ export default function SocialProof() {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
+  // Real curated content exists: show it, regardless of the placeholder flag.
+  if (realPosts && realPosts.length > 0) {
+    return <RealSocialFeed posts={realPosts} />;
+  }
+
+  // No real content: render nothing unless the dev-only placeholder gate is on.
   if (!showPlaceholder) return null;
 
   return (
     <section className="py-12 bg-background border-t border-border">
-      <div className="container mx-auto px-6 md:px-12 max-w-[1820px] mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
-        <div>
-          <span className="text-[10px] uppercase tracking-[0.4em] text-primary mb-4 block font-bold">
-            {t("socialProof.badge")}
-          </span>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground">
-            {t("socialProof.heading")}
-          </h2>
-        </div>
-        <div className="flex items-center gap-8">
-          <a
-            href="https://www.instagram.com/turathcollective"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary group-hover:text-foreground"
-            aria-label="Instagram"
-          >
-            {t("socialProof.instagram")}
-          </a>
-        </div>
-      </div>
+      <SectionHeader />
 
       <div className="relative group/carousel overflow-hidden">
         <motion.div
