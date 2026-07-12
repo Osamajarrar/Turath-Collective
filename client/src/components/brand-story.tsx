@@ -11,15 +11,24 @@ import workshop from "@/assets/workshop.png";
 
 const FALLBACK_IMAGES = [
   { url: lifestyle1, altText: "Minimalist interior lifestyle" },
-  { url: embroideryLifestyle, altText: "Embroidered textile lifestyle" },
   { url: workshop, altText: "Craft workshop setting" },
+  { url: embroideryLifestyle, altText: "Embroidered textile lifestyle" },
 ];
 
-export default function StorySection() {
+// Consolidated brand section — replaces the former Story, Values and Heritage
+// sections, which repeated the same two ideas. One section, built on the
+// brand positioning in CLAUDE.md: "History, still handmade."
+export default function BrandStory() {
   const { t } = useTranslation("pages");
   const prefersReducedMotion = useReducedMotion();
   const [carouselImages, setCarouselImages] = useState<ShopifyImage[]>(FALLBACK_IMAGES);
   const [active, setActive] = useState(0);
+
+  const pillars = t("brandStory.pillars", { returnObjects: true }) as Array<{
+    number: string;
+    title: string;
+    description: string;
+  }>;
 
   // Load carousel images from Shopify (falls back to local if unavailable)
   useEffect(() => {
@@ -52,23 +61,30 @@ export default function StorySection() {
             className="lg:col-span-5"
           >
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-8 leading-tight">
-              {t("story.mainHeading")}
+              {t("brandStory.heading")}
             </h2>
             <p className="text-lg text-foreground/70 mb-8 font-light leading-relaxed">
-              {t("story.body")}
+              {t("brandStory.body")}
             </p>
-            <div className="grid grid-cols-2 gap-8 border-t border-border pt-8">
+            <div className="grid grid-cols-2 gap-8 border-t border-border pt-8 mb-10">
               <div>
-                <span className="block text-featured-stat mb-1">{t("story.stats.stat1.value")}</span>
+                <span className="block text-featured-stat mb-1">{t("brandStory.stats.stat1.value")}</span>
                 <span className="text-xs uppercase tracking-widest text-primary font-medium">
-                  {t("story.stats.stat1.label")}
+                  {t("brandStory.stats.stat1.label")}
                 </span>
               </div>
               <div>
-               <span className="block text-featured-stat mb-1">{t('story.stats.stat2.value')}</span>
-                <span className="text-xs uppercase tracking-widest text-primary font-medium">{t('story.stats.stat2.label')}</span>
+                <span className="block text-featured-stat mb-1">{t("brandStory.stats.stat2.value")}</span>
+                <span className="text-xs uppercase tracking-widest text-primary font-medium">
+                  {t("brandStory.stats.stat2.label")}
+                </span>
               </div>
             </div>
+            <a href="/about">
+              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
+                {t("brandStory.cta")} →
+              </button>
+            </a>
           </motion.div>
 
           <motion.div
@@ -110,15 +126,28 @@ export default function StorySection() {
                 ))}
               </div>
             )}
-
-            {/* Quote box */}
-            <div className="absolute -bottom-6 -left-6 bg-background p-8 hidden md:block max-w-xs shadow-sm">
-              <p className="text-quote">{t("story.quote")}</p>
-              <span className="block text-[10px] uppercase tracking-widest mt-4 text-primary font-bold">
-                {t("story.attribution")}
-              </span>
-            </div>
           </motion.div>
+        </div>
+
+        {/* Three pillars — each says one distinct thing: how it's made,
+            where it comes from, why it's different */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mt-16 border-t border-border/40 pt-12">
+          {pillars.map((pillar, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: prefersReducedMotion ? 0 : idx * 0.1, duration: prefersReducedMotion ? 0.1 : 0.6 }}
+              className="text-center md:text-left"
+            >
+              <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mb-4 block">{pillar.number}</span>
+              <h3 className="font-serif text-2xl mb-4">{pillar.title}</h3>
+              <p className="text-sm text-foreground/60 leading-relaxed font-light">
+                {pillar.description}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

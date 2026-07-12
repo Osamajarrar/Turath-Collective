@@ -2,9 +2,7 @@ import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/hero";
 import CollectionCards from "@/components/collection-cards";
-import StorySection from "@/components/story-section";
-import Heritage from "@/components/heritage";
-import ValuesSection from "@/components/values-section";
+import BrandStory from "@/components/brand-story";
 import ReviewCarousel from "@/components/review-carousel";
 import SocialProof from "@/components/social-proof";
 import Newsletter from "@/components/newsletter";
@@ -17,9 +15,7 @@ export default function Home() {
       <Hero />
       <div className="space-y-0">
         <CollectionCards />
-        <StorySection />
-        <ValuesSection />
-        <Heritage />
+        <BrandStory />
         <ReviewCarousel />
         <SocialProof />
         <Newsletter />
