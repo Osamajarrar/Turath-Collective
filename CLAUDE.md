@@ -11,6 +11,23 @@ Turath Collective (turathcollective.com) — high-end, quiet, editorial heritage
 pomegranate). Montreal-based, Canadian market, EN/FR/AR (RTL). Headless Shopify storefront:
 React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP), Vercel deploy.
 
+## Brand positioning
+
+- **Pitch:** handcrafted objects made by real artisans, for people who want to get away from
+  mass-produced, soulless items. Starting with Palestinian ceramics and glass-blowing because
+  that's where we have the most access and knowledge, and because it helps keep those crafts alive.
+- **Tagline:** "History, still handmade." — deliberately true across both tiers of the honesty
+  framework below (old-object pieces and old-technique/new-object pieces alike). Don't let copy
+  imply an object is centuries-old when only the technique is.
+- **Model: Apple, not Gucci/LV.** Premium, not exclusive. No drop culture, no artificial
+  scarcity, no invite-only framing. If a piece genuinely becomes unavailable (supplier capacity,
+  e.g. an aging artisan), it can be marketed as "last pieces until discontinued" — only when
+  true, never as a growth tactic.
+- **Customer:** global, story-and-craftsmanship-driven — not diaspora/cause-marketing-driven.
+  Skews Western, 25–35, higher disposable income initially, but not exclusive to that group; no
+  "supporting Palestine"/donation-style messaging. This targeting holds as the brand expands to
+  other heritage crafts beyond Palestine — don't retarget per-origin.
+
 ## Hard rules (never violate)
 
 1. **Never push to `main` or `preview`.** All work on new branches from `main`; every branch

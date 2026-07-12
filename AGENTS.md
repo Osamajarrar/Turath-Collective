@@ -16,6 +16,10 @@ Quick summary of the non-negotiables (full detail in `CLAUDE.md`):
 5. `VITE_SHOW_PLACEHOLDER_CONTENT` must never be set in Vercel; `POSTHOG_API_KEY` is sensitive.
 6. Deferred-v1 scaffolding (auth, contact/newsletter backends, buyNow) is intentional — neither
    delete it nor wire it live without being asked.
+7. Positioning: premium, not exclusive ("Apple, not Gucci") — no drop culture, artificial
+   scarcity, or invite-only framing. Customer is story-and-craftsmanship-driven, not
+   diaspora/cause-driven — no "supporting Palestine"/donation-style messaging. Tagline:
+   "History, still handmade." (true for old objects and old techniques alike).
 
 Architecture reference: `replit.md` (despite the name — it's the maintained architecture doc).
 Launch state: `MVP_LAUNCH_CHECKLIST.md`. Implementation plans awaiting execution: `plans/`.
