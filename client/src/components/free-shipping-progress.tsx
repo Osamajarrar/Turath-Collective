@@ -1,21 +1,19 @@
 import { useTranslation } from "react-i18next";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_PROMO_ENABLED } from "@/lib/flags";
 
 // Free-shipping progress indicator for the cart drawer.
 // There is no finalized free-shipping policy yet, so this renders nothing
-// until VITE_FREE_SHIPPING_THRESHOLD is set to a real CAD amount. Setting the
-// env var asserts the policy is real and must match the shipping policy page
-// and the announcement bar copy. No amount is hardcoded here.
-const rawThreshold = import.meta.env.VITE_FREE_SHIPPING_THRESHOLD;
-const THRESHOLD = rawThreshold ? Number(rawThreshold) : NaN;
-const ENABLED = Number.isFinite(THRESHOLD) && THRESHOLD > 0;
+// until VITE_SHOW_SHIPPING_PROMO=true and VITE_FREE_SHIPPING_THRESHOLD hold a
+// real CAD amount (see @/lib/flags — the same gate controls the announcement
+// bar). No amount is hardcoded here.
 
 export default function FreeShippingProgress({ subtotal }: { subtotal: number }) {
   const { t } = useTranslation();
 
-  if (!ENABLED || subtotal <= 0) return null;
+  if (!SHIPPING_PROMO_ENABLED || subtotal <= 0) return null;
 
-  const remaining = Math.max(0, THRESHOLD - subtotal);
-  const pct = Math.min(100, (subtotal / THRESHOLD) * 100);
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const pct = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   return (
     <div data-testid="free-shipping-progress">
