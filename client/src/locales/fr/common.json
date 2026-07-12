@@ -16,6 +16,13 @@
     "comingSoon": "Bientôt disponible"
   },
   "announcement": "Livraison gratuite pour les commandes supérieures à 100 CAD",
+  "consent": {
+    "label": "Consentement aux témoins",
+    "message": "Nous utilisons des données analytiques pour comprendre comment les visiteurs utilisent le site. Rien n'est suivi tant que vous n'avez pas choisi.",
+    "accept": "Accepter l'analyse",
+    "decline": "Essentiels seulement",
+    "privacyLink": "Consulter notre politique de confidentialité."
+  },
   "lang": {
     "label": "Langue",
     "region": "Région et Langue",
@@ -53,10 +60,9 @@
     "phone": "Téléphone",
     "wholesale": "Vente en gros et Presse",
     "wholesaleDesc": "Vous souhaitez collaborer ou présenter nos artisans ? Nous serions ravis de vous entendre.",
-    "addressDetails": "1234 Heritage Way, Plateau Mont-Royal\nMontréal, QC H2X 3Y4, Canada",
-    "phoneNumber": "+1 (514) 555-0123",
-    "emailAddress": "hello@turathcollective.com",
-    "partnerEmail": "partnerships@turathcollective.com",
+    "emailCtaTitle": "Écrivez-nous directement",
+    "emailCtaBody": "Écrivez-nous à support@turathcollective.com — nous lisons tout.",
+    "emailCtaButton": "Nous écrire",
     "placeholderName": "Layla Sami",
     "placeholderEmail": "layla@exemple.com",
     "placeholderSubject": "Renseignements sur les céramiques",

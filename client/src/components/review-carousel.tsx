@@ -1,3 +1,7 @@
+// PLACEHOLDER CONTENT — fake reviews / fake social posts for layout preview only.
+// Gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
+// Replace with real data before ungating. See plans/07-placeholder-gating.md.
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -18,15 +22,23 @@ export default function ReviewCarousel() {
   const images = [img1, img2, img3];
   const [active, setActive] = useState(0);
 
+  // TODO: these reviews are placeholder/fake data for structural testing only.
+  // Replace client/src/locales/*/common.json → reviewCarousel.reviews with real
+  // customer reviews, then remove this guard. Never let this render with fake
+  // testimonials once ad traffic starts.
+  const showPlaceholder = import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
+
   useEffect(() => {
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % reviews.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [reviews.length]);
+
+  if (!showPlaceholder) return null;
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="order-2 lg:order-1 relative h-[500px] overflow-hidden rounded-2xl">
@@ -78,6 +90,7 @@ export default function ReviewCarousel() {
                 <button
                   key={idx}
                   onClick={() => setActive(idx)}
+                  aria-label={`Go to review ${idx + 1}`}
                   className={`h-1 transition-all duration-500 ${active === idx ? "w-12 bg-primary" : "w-6 bg-primary/10"}`}
                 />
               ))}

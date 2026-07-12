@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useRoute } from "wouter";
+import { useRoute, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/context/cart-context";
+import { trackEvent } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // Mock assets
@@ -674,17 +675,24 @@ export default function ProductPage() {
         currencyCode: product.currencyCode,
         imageUrl: imageUrl || undefined,
       });
-      setQuantity(1);
+      trackEvent("add_to_cart", {
+        product_name: product.name,
+        variant: currentVariation.color,
+        price: currentVariation.price,
+        currency: product.currencyCode,
+        quantity,
+      });
       return;
     }
-    await addItem(currentVariation.variantId, quantity);
-    setQuantity(1);
-  };
 
-  const handleBuyNow = async () => {
-    if (!currentVariation.variantId || currentVariation.variantId.startsWith("mock-")) return;
-    const url = await shopifyService.buyNow(currentVariation.variantId, quantity);
-    if (url) window.location.href = url;
+    await addItem(currentVariation.variantId, quantity);
+    trackEvent("add_to_cart", {
+      product_name: product.name,
+      variant: currentVariation.color,
+      price: currentVariation.price,
+      currency: product.currencyCode,
+      quantity,
+    });
   };
 
   return (
@@ -772,7 +780,7 @@ export default function ProductPage() {
                   </div>
                 )}
                 {product.isBestSeller && (
-                  <div className="badge-product w-fit">Top Rated</div>
+                  <div className="badge-product w-fit">{t("shop.badges.bestSeller")}</div>
                 )}
               </div>
 
@@ -866,7 +874,7 @@ export default function ProductPage() {
                       className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ShoppingBag className="h-4 w-4" />
-                      {remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}
+                      {remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}
                     </button>
                   </>
                 )}
@@ -909,8 +917,10 @@ export default function ProductPage() {
                 </Accordion>
                 <Accordion title="Care" duration={accordionDuration}>
                   <p>
-                    Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
-                    Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
+                    Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.{" "}
+                    <Link href="/shipping" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                      {t("product.seeShippingReturns")}
+                    </Link>
                   </p>
                 </Accordion>
               </div>
@@ -948,13 +958,13 @@ export default function ProductPage() {
           {/* Centered header */}
           <div className="mb-12 md:mb-16 text-center">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/70 mb-3">
-              The Collection
+              {t("product.related.eyebrow")}
             </p>
             <h2 className="font-serif text-3xl md:text-4xl leading-tight text-foreground">
-              You May Also Love
+              {t("product.related.heading")}
             </h2>
             <p className="mt-3 text-sm text-foreground/60 italic max-w-md mx-auto">
-              Discover more handcrafted pieces, each carrying the heritage of Hebron.
+              {t("product.related.subtitle")}
             </p>
           </div>
 
@@ -994,7 +1004,7 @@ export default function ProductPage() {
                 className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
-                <span>{!product.availableForSale ? "Sold Out" : remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}</span>
+                <span>{!product.availableForSale ? t("product.soldOut") : remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}</span>
               </button>
             </div>
           </motion.div>

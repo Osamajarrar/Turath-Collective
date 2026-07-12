@@ -16,6 +16,13 @@
     "comingSoon": "قريباً"
   },
   "announcement": "شحن مجاني للطلبات التي تتجاوز 100 دولار كندي",
+  "consent": {
+    "label": "الموافقة على ملفات تعريف الارتباط",
+    "message": "نستخدم أدوات التحليل لفهم كيفية استخدام الزوار للموقع. لا يتم تتبّع أي شيء إلى أن تختار.",
+    "accept": "قبول التحليلات",
+    "decline": "الضروري فقط",
+    "privacyLink": "اطّلع على سياسة الخصوصية."
+  },
   "lang": {
     "label": "اللغة",
     "region": "المنطقة واللغة",
@@ -53,10 +60,9 @@
     "phone": "الهاتف",
     "wholesale": "البيع بالجملة والإعلام",
     "wholesaleDesc": "هل تهتم بالشراكة معنا أو إبراز حرفيينا؟ يسعدنا سماعك.",
-    "addressDetails": "1234 Heritage Way، بلاتو مون-رويال\nمونتريال، كيبيك H2X 3Y4، كندا",
-    "phoneNumber": "+1 (514) 555-0123",
-    "emailAddress": "hello@turathcollective.com",
-    "partnerEmail": "partnerships@turathcollective.com",
+    "emailCtaTitle": "راسلنا مباشرةً",
+    "emailCtaBody": "راسلنا على support@turathcollective.com — نقرأ كل رسالة.",
+    "emailCtaButton": "راسلنا",
     "placeholderName": "ليلى سامي",
     "placeholderEmail": "layla@example.com",
     "placeholderSubject": "استفسار عن الخزف",

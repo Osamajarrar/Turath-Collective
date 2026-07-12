@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -35,7 +35,7 @@ export default function Hero() {
           transition={{ duration: prefersReducedMotion ? 0.1 : 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
-          <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-black" data-testid="text-hero-heading">
+          <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-foreground" data-testid="text-hero-heading">
             {t("hero.heading")} <br />
             <span className="italic font-light">{t("hero.headingItalic")}</span>
           </h1>
@@ -50,12 +50,6 @@ export default function Hero() {
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />
               </button>
             </Link>
-            {/* <button className="flex items-center gap-4 group" data-testid="button-watch-story">
-              <div className="w-14 h-14 rounded-full border border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all backdrop-blur-sm">
-                <Play className="w-3 h-3 fill-current ml-0.5 text-black group-hover:text-white" />
-              </div>
-              <span className="uppercase tracking-[0.3em] text-[10px] font-bold text-black">{t("hero.watchStory")}</span>
-            </button> */}
           </div>
         </motion.div>
       </div>

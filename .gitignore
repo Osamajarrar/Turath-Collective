@@ -5,6 +5,9 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .env.local
+**/lighthouse-report*.json
+baseline-report.json
+# design-sync (staged scripts, build output, machine state)
 .ds-sync/
 ds-bundle/
 .design-sync/.cache/

@@ -92,7 +92,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "effectiveDate": "Effective date: April 2025 · Last updated: April 2025",
+    "effectiveDate": "Effective date: April 2025 · Last updated: July 2026",
     "intro": "This Privacy Policy describes how Collectif Turath, doing business as Turath Collective (turathcollective.com), collects, uses, discloses, and protects your personal information.\n\nIt is written in compliance with Quebec's Act Respecting the Protection of Personal Information in the Private Sector (Law 25 / Bill 64, as amended) and Canada's Personal Information Protection and Electronic Documents Act (PIPEDA).\n\nFor questions or concerns regarding your personal information, contact our Privacy Officer at: support@turathcollective.com",
     "sections": {
       "section1": {
@@ -145,6 +145,10 @@
         "number": "4",
         "title": "Disclosure to Third Parties",
         "intro": "We do not sell your personal information. We may share it with the following third parties strictly as necessary to operate our business:",
+        "tableHeaders": {
+          "party": "Third Party",
+          "purpose": "Purpose"
+        },
         "thirdParties": [
           {
             "name": "Payment processor (Shopify Payments)",
@@ -157,10 +161,6 @@
           {
             "name": "Email service provider (Resend)",
             "purpose": "Transactional emails"
-          },
-          {
-            "name": "Marketing platform (Mailchimp)",
-            "purpose": "Newsletter delivery (subscribers only)"
           },
           {
             "name": "Website hosting (Vercel)",
@@ -206,7 +206,7 @@
       "section9": {
         "number": "9",
         "title": "Children's Privacy",
-        "content": "Our website is not directed at children under the age of 14. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us and we will delete it promptly."
+        "content": "Our website is intended for a general audience and we do not knowingly collect personal information from minors."
       },
       "section10": {
         "number": "10",
@@ -222,7 +222,7 @@
   },
   "shipping": {
     "title": "Shipping & Returns",
-    "lastUpdated": "Last updated: April 2025",
+    "lastUpdated": "Last updated: July 2026",
     "shipping": {
       "title": "Shipping",
       "whereWeShip": {
@@ -235,6 +235,10 @@
       },
       "deliveryEstimates": {
         "title": "Delivery Estimates",
+        "tableHeaders": {
+          "service": "Service",
+          "estimate": "Estimated Delivery"
+        },
         "items": [
           {
             "service": "Standard Shipping",
@@ -245,11 +249,11 @@
             "estimate": "2–4 business days from shipment"
           }
         ],
-        "note": "Additional note: Delivery estimates begin from the date of shipment confirmation, not the order date. Remote areas (Nunavut, Northwest Territories, Yukon, and some rural regions) may experience longer delivery windows."
+        "note": "Delivery estimates begin from the date of shipment confirmation, not the order date. Remote areas (Nunavut, Northwest Territories, Yukon, and some rural regions) may experience longer delivery windows."
       },
       "shippingRates": {
         "title": "Shipping Rates",
-        "content": "Shipping rates are calculated at checkout based on your location, package weight, and selected service. Where a flat rate applies, it will be clearly displayed at checkout before payment."
+        "content": "Shipping rates are calculated at checkout based on your location, package weight, and selected service. Where a flat rate applies, it will be clearly displayed at checkout before payment. Orders of $100 CAD or more ship free within Canada."
       },
       "orderTracking": {
         "title": "Order Tracking",
@@ -291,7 +295,7 @@
       },
       "damageDefective": {
         "title": "Damaged or Defective Items",
-        "content": "If your order arrives damaged — whether from transit or a product defect — please contact us at support@turathcollective.com within 48 hours of delivery with your order number and clear photographs of the damage and packaging. We will arrange a replacement or full refund at no cost to you. Do not discard the packaging before contacting us, as it may be required for a carrier claim."
+        "content": "If your piece arrives damaged or defective, email support@turathcollective.com within 14 days of delivery with photos of both the item and its packaging. We will arrange a replacement or a full refund, including shipping, at no cost to you. Do not discard the packaging before contacting us, as it may be required for a carrier claim."
       },
       "exchanges": {
         "title": "Exchanges",

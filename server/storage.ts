@@ -1,11 +1,28 @@
-import { eq } from "drizzle-orm";
-import { db } from "./db";
-// Deferred v1: auth & contact features use Shopify instead
-// import {
-//   users, contactMessages,
-//   type User, type InsertUser,
-//   type ContactMessage, type InsertContact,
-// } from "@shared/schema";
+// Deferred v1: auth & contact features use Shopify instead.
+// The users/contactMessages tables in @shared/schema are commented out, so the
+// Drizzle implementation is stubbed until they're re-enabled. To restore:
+// uncomment the tables in @shared/schema, then reinstate the Drizzle version
+// of this file (see git history: DrizzleStorage).
+
+export interface User {
+  id: string;
+  email: string;
+  passwordHash: string | null;
+  firstName: string | null;
+  lastName: string | null;
+}
+
+export type InsertUser = Omit<User, "id">;
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export type InsertContact = Omit<ContactMessage, "id">;
 
 export interface IStorage {
   // User auth (backend kept; UI deferred to future launch)
@@ -17,26 +34,22 @@ export interface IStorage {
   createContactMessage(msg: InsertContact): Promise<ContactMessage>;
 }
 
-export class DrizzleStorage implements IStorage {
-  async getUser(id: string) {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+class DeferredStorage implements IStorage {
+  async getUser(_id: string): Promise<User | undefined> {
+    throw new Error("User storage is deferred for v1 launch (users table not provisioned)");
   }
 
-  async getUserByEmail(email: string) {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+  async getUserByEmail(_email: string): Promise<User | undefined> {
+    throw new Error("User storage is deferred for v1 launch (users table not provisioned)");
   }
 
-  async createUser(data: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(data).returning();
-    return user;
+  async createUser(_user: InsertUser): Promise<User> {
+    throw new Error("User storage is deferred for v1 launch (users table not provisioned)");
   }
 
-  async createContactMessage(data: InsertContact): Promise<ContactMessage> {
-    const [msg] = await db.insert(contactMessages).values(data).returning();
-    return msg;
+  async createContactMessage(_msg: InsertContact): Promise<ContactMessage> {
+    throw new Error("Contact storage is deferred for v1 launch (contact_messages table not provisioned)");
   }
 }
 
-export const storage = new DrizzleStorage();
+export const storage = new DeferredStorage();

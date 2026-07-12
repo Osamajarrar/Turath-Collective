@@ -16,6 +16,13 @@
     "comingSoon": "Coming Soon"
   },
   "announcement": "Free shipping on orders above 100 CAD",
+  "consent": {
+    "label": "Cookie consent",
+    "message": "We use analytics to understand how visitors use the site. Nothing is tracked until you choose.",
+    "accept": "Accept analytics",
+    "decline": "Essential only",
+    "privacyLink": "Read our privacy policy."
+  },
   "lang": {
     "label": "Language",
     "region": "Region & Language",
@@ -53,10 +60,9 @@
     "phone": "Phone",
     "wholesale": "Wholesale & Press",
     "wholesaleDesc": "Interested in partnering with us or featuring our artisans? We'd love to hear from you.",
-    "addressDetails": "1234 Heritage Way, Plateau Mont-Royal\nMontreal, QC H2X 3Y4, Canada",
-    "phoneNumber": "+1 (514) 555-0123",
-    "emailAddress": "hello@turathcollective.com",
-    "partnerEmail": "partnerships@turathcollective.com",
+    "emailCtaTitle": "Write to us directly",
+    "emailCtaBody": "Write to us at support@turathcollective.com — we read everything.",
+    "emailCtaButton": "Email us",
     "placeholderName": "Layla Sami",
     "placeholderEmail": "layla@example.com",
     "placeholderSubject": "Inquiry about Ceramics",
