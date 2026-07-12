@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { getVisibleCategories, Category } from "@/lib/collections";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import MobileCarousel from "@/components/mobile-carousel";
 
 function SingleCard({
   category,
@@ -144,18 +145,33 @@ export default function CollectionCards() {
             </div>
           </>
         ) : (
-          <div
-            className={`grid gap-10 ${getGridClass(categories.length)}`}
-          >
-            {categories.map((category, idx) => (
-              <SingleCard
-                key={category.title}
-                category={category}
-                idx={idx}
-                t={t}
-              />
-            ))}
-          </div>
+          <>
+            {/* MOBILE: swipeable carousel with next-card peek (same pattern
+                as featured products); desktop grid below is unchanged */}
+            <MobileCarousel className="md:hidden">
+              {categories.map((category, idx) => (
+                <SingleCard
+                  key={category.title}
+                  category={category}
+                  idx={idx}
+                  t={t}
+                />
+              ))}
+            </MobileCarousel>
+
+            <div
+              className={`hidden md:grid gap-10 ${getGridClass(categories.length)}`}
+            >
+              {categories.map((category, idx) => (
+                <SingleCard
+                  key={category.title}
+                  category={category}
+                  idx={idx}
+                  t={t}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>
