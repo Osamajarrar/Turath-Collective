@@ -11,6 +11,7 @@ import {
   type DisplayProduct,
 } from "@/pages/shop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import MobileCarousel from "@/components/mobile-carousel";
 
 // The catalog currently has a single real product; this section is built to
 // render one product today and scale as more are added (no fixed count).
@@ -67,6 +68,14 @@ export default function FeaturedProducts() {
         ? "mx-auto grid max-w-3xl grid-cols-1 gap-10 sm:grid-cols-2"
         : "grid grid-cols-2 gap-5 md:gap-6 lg:grid-cols-4";
 
+  // With multiple products, mobile swaps the stacked grid for a swipeable
+  // carousel, so from md up the grid takes over (same column counts as
+  // gridClass at those widths). Desktop layout is unchanged.
+  const desktopGridClass =
+    featured.length === 2
+      ? "hidden md:grid mx-auto max-w-3xl grid-cols-2 gap-10"
+      : "hidden md:grid grid-cols-2 gap-6 lg:grid-cols-4";
+
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
@@ -81,29 +90,56 @@ export default function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className={gridClass}>
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, idx) => (
-                <SkeletonProductCard
-                  key={idx}
+        {isLoading ? (
+          <div className={gridClass}>
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <SkeletonProductCard
+                key={idx}
+                idx={idx}
+                prefersReducedMotion={prefersReducedMotion}
+              />
+            ))}
+          </div>
+        ) : featured.length === 1 ? (
+          <div className={gridClass}>
+            <div className="w-full max-w-sm">
+              <ProductCard
+                product={featured[0]}
+                idx={0}
+                prefersReducedMotion={prefersReducedMotion}
+                t={tCommerce}
+              />
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* MOBILE: swipeable carousel with next-card peek */}
+            <MobileCarousel className="md:hidden">
+              {featured.map((product, idx) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
                   idx={idx}
                   prefersReducedMotion={prefersReducedMotion}
+                  t={tCommerce}
                 />
-              ))
-            : featured.map((product, idx) => (
-                <div
-                  key={product.id}
-                  className={featured.length === 1 ? "w-full max-w-sm" : undefined}
-                >
-                  <ProductCard
-                    product={product}
-                    idx={idx}
-                    prefersReducedMotion={prefersReducedMotion}
-                    t={tCommerce}
-                  />
-                </div>
               ))}
-        </div>
+            </MobileCarousel>
+
+            {/* DESKTOP: grid, unchanged from before */}
+            <div className={desktopGridClass}>
+              {featured.map((product, idx) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  idx={idx}
+                  prefersReducedMotion={prefersReducedMotion}
+                  t={tCommerce}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
