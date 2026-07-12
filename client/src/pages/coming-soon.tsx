@@ -5,8 +5,9 @@ import { Instagram, ArrowRight, Check } from "lucide-react";
 import { applyRtl } from "@/lib/i18n";
 import brandVideo from "@/assets/brand-video.mp4";
 
-// Newsletter form is UI-only for launch v1.
-// Connect to Mailchimp / Klaviyo when ready by replacing the handleSubscribe stub.
+// Newsletter form submits to /api/newsletter, which stores the email locally
+// (see server/newsletter.ts). No provider is connected yet; success is shown
+// only after the server confirms the email was stored.
 
 const LANGUAGES = ["en", "fr", "ar"] as const;
 
@@ -31,10 +32,19 @@ export default function ComingSoon() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return setFieldError(t("comingSoon.errorInvalid"));
     setFieldError("");
     setIsSubmitting(true);
-    // Stub: replace with Mailchimp/Klaviyo API call when ready
-    await new Promise((r) => setTimeout(r, 700));
-    setIsSubmitting(false);
-    setDone(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+      });
+      if (!res.ok) throw new Error(`newsletter signup failed: ${res.status}`);
+      setDone(true);
+    } catch {
+      setFieldError(t("comingSoon.errorServer"));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (

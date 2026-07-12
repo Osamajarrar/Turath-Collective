@@ -100,9 +100,11 @@
   },
   "newsletter": {
     "heading": "Join the Turath Circle",
-    "desc": "Get early access to our curated drops and exclusive updates on the living traditions we bring to Montreal.",
+    "desc": "Occasional notes on new pieces and the artisans behind them.",
     "placeholder": "Your email address",
-    "cta": "Subscribe"
+    "cta": "Subscribe",
+    "success": "You're on the list — thank you.",
+    "error": "Something went wrong. Please try again."
   },
   "comingSoon": {
     "badge": "Coming Soon",

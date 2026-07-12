@@ -2,10 +2,12 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import passport from "passport";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
 import { shopifyLimiter } from "./index.js";
 import { getPostHog } from "./posthog";
+import { addNewsletterSubscriber } from "./newsletter";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -81,7 +83,36 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Re-enable by restoring this route and wiring sendContactEmail / storage.
 
   // ── Newsletter ────────────────────────────────────────────────────────────
-  // DEFERRED: DB storage removed. Connect to Mailchimp/Klaviyo when ready.
+  // Groundwork only: validates and stores the email locally (see
+  // server/newsletter.ts). Swap the storage call for the chosen provider's
+  // API when the founder picks one. Success is only reported after the email
+  // is actually persisted — no fake success states.
+
+  const newsletterLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 5,
+    message: "Too many signup attempts, please try again later",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  const newsletterSchema = z.object({ email: z.string().email().max(254) });
+
+  app.post("/api/newsletter", newsletterLimiter, async (req: Request, res: Response) => {
+    const parsed = newsletterSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: "Please enter a valid email address" });
+    }
+    try {
+      // Deduplicated internally; respond identically either way so the
+      // endpoint can't be used to probe whether an email is subscribed.
+      await addNewsletterSubscriber(parsed.data.email);
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("[Newsletter] Failed to store subscriber:", err);
+      return res.status(500).json({ message: "Failed to save subscription" });
+    }
+  });
 
   // ── Shopify Storefront proxy ──────────────────────────────────────────────
 
