@@ -32,3 +32,28 @@ import { z } from "zod";
 // ── Newsletter Subscribers ────────────────────────────────────────────────────
 // REMOVED: DB storage deferred. Newsletter form UI remains; connect to
 // Mailchimp / Klaviyo when ready. Table will be dropped on next db:push.
+
+// ── Product Reviews (self-hosted groundwork) ─────────────────────────────────
+// Reviews are stored server-side (file-backed for now — see server/reviews.ts)
+// and require founder approval before appearing publicly: `approved` defaults
+// to false and only approved reviews are ever returned by the public API.
+// When the Postgres DB is provisioned, replace the file store with a Drizzle
+// table using these same fields.
+
+export const insertReviewSchema = z.object({
+  productHandle: z.string().trim().min(1).max(200),
+  name: z.string().trim().min(1).max(100),
+  rating: z.number().int().min(1).max(5),
+  text: z.string().trim().min(1).max(2000),
+});
+
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+
+export interface ProductReview extends InsertReview {
+  id: string;
+  submittedAt: string;
+  approved: boolean;
+}
+
+/** Shape returned by the public API (never includes unapproved rows). */
+export type PublicReview = Omit<ProductReview, "approved">;

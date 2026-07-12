@@ -31,15 +31,9 @@
       "description": "We do not carry mass-produced imitations. Every product is sourced directly and verified for craftsmanship. If it carries the Turath Collective name, it is an authentic original."
     }
   },
-  "heritage": {
-    "title": "The Spirit of Turath",
-    "subtitle": "Our Mission",
-    "paragraph1": "Turath is more than history; it is a living rhythm. From our Montreal studio, we seek out master workshops where time slows down and the soul of the craft is preserved in every detail. We honor the human signature. Those slight variations in texture and the organic flow of a line are the true marks of authenticity in a world of mass production.",
-    "cta": "Read Our Story"
-  },
-  "story": {
-    "mainHeading": "Connecting Earth & Home",
-    "body": "Every piece carries a story of patience. We seek out master workshops that practice slow, intentional craftsmanship, bringing objects into your space that honor the quiet moments of your day.",
+  "brandStory": {
+    "heading": "History, still handmade.",
+    "body": "Every piece we carry is made by hand, by artisans practicing crafts their communities have passed down for generations. Not nostalgia, and not a donation — real skill, still at work today.",
     "stats": {
       "stat1": {
         "value": "100%",
@@ -50,28 +44,24 @@
         "label": "Curated in"
       }
     },
-    "quote": "The most beautiful objects are those that invite us to be present.",
-    "attribution": "— Our Philosophy"
-  },
-  "values": {
-    "title": "Our Values",
-    "items": [
+    "pillars": [
       {
         "number": "01",
-        "title": "The Curator’s Eye",
-        "description": "Honoring the hands that keep ancient traditions alive."
+        "title": "Made by hand",
+        "description": "Each object is shaped by one artisan at a time. The small variations are the signature of a maker's hand, not flaws."
       },
       {
         "number": "02",
-        "title": "The Art of the Pause",
-        "description": "Intentional objects for your most quiet, daily rituals."
+        "title": "Rooted in history",
+        "description": "The techniques behind our pieces pass from artisan to apprentice, generation after generation — living crafts, still practiced today."
       },
       {
         "number": "03",
-        "title": "Earth, Fire, & Nothing Else",
-        "description": "Pure materials. Non-toxic glazes. Sourced with integrity."
+        "title": "Against the mass-produced",
+        "description": "A quiet alternative to identical, disposable objects: pieces with a story, made to last and to be lived with."
       }
-    ]
+    ],
+    "cta": "Read Our Story"
   },
   "care": {
     "title": "Artisan Care Guide",

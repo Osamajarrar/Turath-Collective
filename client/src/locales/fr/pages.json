@@ -27,15 +27,9 @@
       "description": "Nous ne proposons pas d'imitations de masse. Chaque produit est sourcé directement et vérifié pour son artisanat. S'il porte le nom de Turath Collective, c'est la vraie chose."
     }
   },
-  "heritage": {
-    "title": "L'Esprit du Turath",
-    "subtitle": "Notre Mission",
-    "paragraph1": "Le Turath est plus qu'une histoire ; c'est un rythme vivant. Depuis notre studio à Montréal, nous recherchons des ateliers de maîtres où le temps ralentit et l'âme de l'artisanat est préservée. Nous honorons la signature humaine. Ces légères variations de texture et de ligne sont le véritable gage d'authenticité face à la production de masse.",
-    "cta": "Lire notre histoire"
-  },
-  "story": {
-    "mainHeading": "Relier la Terre et la Maison",
-    "body": "Chaque pièce porte une histoire de patience. Nous recherchons des ateliers de maîtres qui pratiquent un artisanat lent et intentionnel, apportant dans votre espace des objets qui honorent vos moments de quiétude.",
+  "brandStory": {
+    "heading": "L'histoire, toujours faite main.",
+    "body": "Chaque pièce que nous proposons est faite à la main, par des artisans qui pratiquent des savoir-faire transmis de génération en génération. Ni nostalgie, ni charité — un savoir-faire réel, toujours à l'œuvre aujourd'hui.",
     "stats": {
       "stat1": {
         "value": "100%",
@@ -46,28 +40,24 @@
         "label": "Sélectionné à"
       }
     },
-    "quote": "Les plus beaux objets sont ceux qui nous invitent à être présents.",
-    "attribution": "— Notre Philosophie"
-  },
-  "values": {
-    "title": "Nos valeurs",
-    "items": [
+    "pillars": [
       {
         "number": "01",
-        "title": "L'Œil du Curateur",
-        "description": "Honorer les mains qui font vivre les traditions ancestrales."
+        "title": "Fait main",
+        "description": "Chaque objet est façonné par un artisan, une pièce à la fois. Les légères variations sont la signature d'une main, non des défauts."
       },
       {
         "number": "02",
-        "title": "L'Art de la Pause",
-        "description": "Des objets intentionnels pour vos rituels quotidiens les plus calmes."
+        "title": "Enraciné dans l'histoire",
+        "description": "Les techniques derrière nos pièces se transmettent d'artisan à apprenti, génération après génération — des métiers vivants, toujours pratiqués aujourd'hui."
       },
       {
         "number": "03",
-        "title": "La Terre, le Feu, et rien d'autre",
-        "description": "Matières pures. Glaçures non toxiques. Sourcées avec intégrité."
+        "title": "Face à la production de masse",
+        "description": "Une alternative discrète aux objets identiques et jetables : des pièces qui portent une histoire, faites pour durer et pour être vécues."
       }
-    ]
+    ],
+    "cta": "Lire notre histoire"
   },
   "care": {
     "title": "Guide d'entretien artisanal",

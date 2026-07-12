@@ -41,14 +41,16 @@
     "empty": "Your bag is empty.",
     "remove": "Remove",
     "increaseQty": "Increase quantity",
-    "decreaseQty": "Decrease quantity"
+    "decreaseQty": "Decrease quantity",
+    "freeShippingAway": "You're {{amount}} away from free shipping.",
+    "freeShippingReached": "Your order qualifies for free shipping."
   },
   "hero": {
     "heading": "Connect through",
     "headingItalic": "Heritage",
     "cta": "Shop Heritage",
     "watchStory": "Watch Our Story",
-    "craftedIn": "Crafted in Hebron"
+    "imageAlt": "A handcrafted ceramic cup on a linen cloth in warm morning light"
   },
   "contact": {
     "badge": "Get in Touch",
@@ -100,9 +102,11 @@
   },
   "newsletter": {
     "heading": "Join the Turath Circle",
-    "desc": "Get early access to our curated drops and exclusive updates on the living traditions we bring to Montreal.",
+    "desc": "Occasional notes on new pieces and the artisans behind them.",
     "placeholder": "Your email address",
-    "cta": "Subscribe"
+    "cta": "Subscribe",
+    "success": "You're on the list — thank you.",
+    "error": "Something went wrong. Please try again."
   },
   "comingSoon": {
     "badge": "Coming Soon",
@@ -145,6 +149,9 @@
     "comingSoon": "Coming Soon",
     "inTheWorks": "In the works",
     "availableSoon": "Available Soon"
+  },
+  "featuredProducts": {
+    "badge": "Featured Pieces"
   },
   "reviewCarousel": {
     "badge": "Patron Stories",

@@ -2,10 +2,14 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import passport from "passport";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage";
 import { hashPassword } from "./auth";
 import { shopifyLimiter } from "./index.js";
 import { getPostHog } from "./posthog";
+import { addNewsletterSubscriber } from "./newsletter";
+import { insertReviewSchema } from "@shared/schema";
+import { addReview, getApprovedReviews, getAllApprovedReviews } from "./reviews";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -81,7 +85,82 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Re-enable by restoring this route and wiring sendContactEmail / storage.
 
   // ── Newsletter ────────────────────────────────────────────────────────────
-  // DEFERRED: DB storage removed. Connect to Mailchimp/Klaviyo when ready.
+  // Groundwork only: validates and stores the email locally (see
+  // server/newsletter.ts). Swap the storage call for the chosen provider's
+  // API when the founder picks one. Success is only reported after the email
+  // is actually persisted — no fake success states.
+
+  const newsletterLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 5,
+    message: "Too many signup attempts, please try again later",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  const newsletterSchema = z.object({ email: z.string().email().max(254) });
+
+  app.post("/api/newsletter", newsletterLimiter, async (req: Request, res: Response) => {
+    const parsed = newsletterSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: "Please enter a valid email address" });
+    }
+    try {
+      // Deduplicated internally; respond identically either way so the
+      // endpoint can't be used to probe whether an email is subscribed.
+      await addNewsletterSubscriber(parsed.data.email);
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("[Newsletter] Failed to store subscriber:", err);
+      return res.status(500).json({ message: "Failed to save subscription" });
+    }
+  });
+
+  // ── Product Reviews (self-hosted groundwork) ──────────────────────────────
+  // Submissions land unapproved and are never published automatically; the
+  // public GET endpoints only return approved rows. See server/reviews.ts.
+
+  const reviewLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 5,
+    message: "Too many review submissions, please try again later",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.post("/api/reviews", reviewLimiter, async (req: Request, res: Response) => {
+    const parsed = insertReviewSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: parsed.error.errors[0]?.message ?? "Invalid review" });
+    }
+    try {
+      await addReview(parsed.data);
+      // 202: accepted for moderation, not published.
+      return res.status(202).json({ ok: true });
+    } catch (err) {
+      console.error("[Reviews] Failed to store review:", err);
+      return res.status(500).json({ message: "Failed to save review" });
+    }
+  });
+
+  app.get("/api/reviews", async (_req: Request, res: Response) => {
+    try {
+      return res.json({ reviews: await getAllApprovedReviews() });
+    } catch (err) {
+      console.error("[Reviews] Failed to read reviews:", err);
+      return res.status(500).json({ message: "Failed to load reviews" });
+    }
+  });
+
+  app.get("/api/reviews/:productHandle", async (req: Request, res: Response) => {
+    try {
+      const handle = String(req.params.productHandle ?? "");
+      return res.json({ reviews: await getApprovedReviews(handle) });
+    } catch (err) {
+      console.error("[Reviews] Failed to read reviews:", err);
+      return res.status(500).json({ message: "Failed to load reviews" });
+    }
+  });
 
   // ── Shopify Storefront proxy ──────────────────────────────────────────────
 

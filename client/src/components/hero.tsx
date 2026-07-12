@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import brandVideo from "@/assets/brand-video.mp4";
+import heroImage from "@/assets/hero-morning.png";
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -11,20 +11,16 @@ export default function Hero() {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Video with Gradient Overlays */}
+      {/* Background Image with Gradient Overlays */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-black/10 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 z-10" />
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
+        <img
+          src={heroImage}
+          alt={t("hero.imageAlt")}
           className="w-full h-full object-cover opacity-90"
-          src={brandVideo}
-          width={1920}
-          height={1080}
+          width={1024}
+          height={1024}
         />
       </div>
 
@@ -54,17 +50,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Aesthetic Accents */}
-      <div className="absolute bottom-12 left-12 hidden lg:block z-20 rtl:left-auto rtl:right-12">
-        <p className="text-[10px] uppercase tracking-[0.5em] text-white/40 font-bold vertical-text">{t("hero.craftedIn")}</p>
-      </div>
-
-      <style>{`
-        .vertical-text {
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
-        }
-      `}</style>
     </section>
   );
 }
