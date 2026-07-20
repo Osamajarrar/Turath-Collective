@@ -50,6 +50,8 @@
     "headingItalic": "Patrimoine",
     "cta": "Découvrir",
     "watchStory": "Voir notre histoire",
+    "kicker": "Fait à la main en Palestine",
+    "subheading": "Des céramiques de Hébron et du verre soufflé à la main, façonnés par des artisans selon des techniques transmises de génération en génération.",
     "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin"
   },
   "contact": {
@@ -146,7 +148,8 @@
     "availableSoon": "Disponible bientôt"
   },
   "featuredProducts": {
-    "badge": "Pièces en vedette"
+    "badge": "Pièces en vedette",
+    "heading": "Quelques pièces pour commencer"
   },
   "reviewCarousel": {
     "badge": "Histoires des mécènes",

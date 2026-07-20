@@ -79,12 +79,17 @@ export default function FeaturedProducts() {
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
-        <div className="flex items-center justify-between mb-10">
-          <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold">
-            {t("featuredProducts.badge")}
-          </span>
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold mb-4 block">
+              {t("featuredProducts.badge")}
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground">
+              {t("featuredProducts.heading")}
+            </h2>
+          </div>
           <Link href="/shop">
-            <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
+            <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary whitespace-nowrap">
               {t("collectionCards.shopAll")} →
             </button>
           </Link>

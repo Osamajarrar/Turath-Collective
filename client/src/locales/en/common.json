@@ -50,6 +50,8 @@
     "headingItalic": "Heritage",
     "cta": "Shop Heritage",
     "watchStory": "Watch Our Story",
+    "kicker": "Handmade in Palestine",
+    "subheading": "Ceramics from Hebron and hand-blown glass, shaped by artisans using techniques passed down through generations.",
     "imageAlt": "A handcrafted ceramic cup on a linen cloth in warm morning light"
   },
   "contact": {
@@ -151,7 +153,8 @@
     "availableSoon": "Available Soon"
   },
   "featuredProducts": {
-    "badge": "Featured Pieces"
+    "badge": "Featured Pieces",
+    "heading": "A few pieces to start with"
   },
   "reviewCarousel": {
     "badge": "Patron Stories",

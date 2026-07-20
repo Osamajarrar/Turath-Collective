@@ -16,8 +16,8 @@ export default function Home() {
       <Hero />
       <div className="space-y-0">
         <FeaturedProducts />
-        <CollectionCards />
         <BrandStory />
+        <CollectionCards />
         <ReviewCarousel />
         <SocialProof />
         <Newsletter />
