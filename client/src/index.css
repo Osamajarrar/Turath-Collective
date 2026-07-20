@@ -4,8 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: hsl(36, 20%, 95%); /* #f5f3f0 - Cream/Sand */
-  --color-background-secondary: hsl(36, 20%, 90%); /* Slightly darker cream for depth */
+  --color-background: hsl(34, 26%, 95%); /* Warmed cream/sand (golden-hour variant) */
+  --color-background-secondary: hsl(34, 26%, 90%); /* Slightly darker cream for depth */
   --color-foreground: hsl(0 0% 10%);   /* #1A1A1A - Deep Charcoal */
   
   --color-card: hsl(36, 20%, 95%);
@@ -22,7 +22,7 @@
   
   --color-badge-bg: hsl(36, 18%, 85%); /* Darker cream for badges */
   
-  --color-muted: hsl(40 10% 90%);
+  --color-muted: hsl(34 24% 89%); /* Warmed to golden sand, matches new background hue */
   --color-muted-foreground: hsl(0 0% 40%);
   
   --color-accent: hsl(40 10% 94%);

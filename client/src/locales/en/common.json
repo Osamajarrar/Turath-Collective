@@ -49,8 +49,16 @@
     "heading": "Connect through",
     "headingItalic": "Heritage",
     "cta": "Shop Heritage",
+    "secondaryCta": "Our Story",
     "watchStory": "Watch Our Story",
     "imageAlt": "A handcrafted ceramic cup on a linen cloth in warm morning light"
+  },
+  "craftBand": {
+    "kicker": "The Craft",
+    "quote": "Clay hand-thrown in Hebron. Glass mouth-blown by artisans in Palestine. Every piece carries the hand that made it."
+  },
+  "closingCta": {
+    "heading": "Begin with the collection."
   },
   "contact": {
     "badge": "Get in Touch",

@@ -49,8 +49,16 @@
     "heading": "Connectez-vous par le",
     "headingItalic": "Patrimoine",
     "cta": "Découvrir",
+    "secondaryCta": "Notre histoire",
     "watchStory": "Voir notre histoire",
     "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin"
+  },
+  "craftBand": {
+    "kicker": "Le savoir-faire",
+    "quote": "L'argile façonnée à la main à Hébron. Le verre soufflé à la bouche par des artisans en Palestine. Chaque pièce porte la main qui l'a façonnée."
+  },
+  "closingCta": {
+    "heading": "Commencez avec la collection."
   },
   "contact": {
     "badge": "Nous contacter",
