@@ -73,7 +73,7 @@ export default function Newsletter() {
                 type="submit"
                 data-testid="button-newsletter-subscribe"
                 disabled={status === "submitting"}
-                className="group bg-primary text-white px-8 py-3 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold whitespace-nowrap disabled:opacity-60"
+                className="group bg-primary text-primary-foreground px-9 py-4 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold whitespace-nowrap disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {t("newsletter.cta")}
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300 rtl:rotate-180 rtl:group-hover:-translate-x-1" />

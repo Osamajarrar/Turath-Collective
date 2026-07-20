@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useEffect, useState } from "react";
 import { shopifyService, ShopifyImage } from "@/lib/shopify";
+import ArrowLink from "@/components/ArrowLink";
 
 // Fallback images for carousel (local assets)
 import lifestyle1 from "@/assets/lifestyle-1.png";
@@ -50,7 +51,7 @@ export default function BrandStory() {
   }, [carouselImages.length]);
 
   return (
-    <section className="py-12 bg-muted">
+    <section className="py-10 bg-muted">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <motion.div
@@ -60,13 +61,13 @@ export default function BrandStory() {
             transition={{ duration: prefersReducedMotion ? 0.1 : 0.6 }}
             className="lg:col-span-5"
           >
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl mb-8 leading-tight">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-6 leading-tight max-w-md">
               {t("brandStory.heading")}
             </h2>
-            <p className="text-lg text-foreground/70 mb-8 font-light leading-relaxed">
+            <p className="text-base text-foreground/70 mb-6 font-light leading-relaxed max-w-md">
               {t("brandStory.body")}
             </p>
-            <div className="grid grid-cols-2 gap-8 border-t border-border pt-8 mb-10">
+            <div className="grid grid-cols-2 gap-8 border-t border-border pt-6 mb-8 max-w-md">
               <div>
                 <span className="block text-featured-stat mb-1">{t("brandStory.stats.stat1.value")}</span>
                 <span className="text-xs uppercase tracking-widest text-primary font-medium">
@@ -80,11 +81,7 @@ export default function BrandStory() {
                 </span>
               </div>
             </div>
-            <a href="/about">
-              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
-                {t("brandStory.cta")} →
-              </button>
-            </a>
+            <ArrowLink href="/about">{t("brandStory.cta")}</ArrowLink>
           </motion.div>
 
           <motion.div
@@ -131,7 +128,7 @@ export default function BrandStory() {
 
         {/* Three pillars — each says one distinct thing: how it's made,
             where it comes from, why it's different */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mt-16 border-t border-border/40 pt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10 border-t border-border/40 pt-8">
           {pillars.map((pillar, idx) => (
             <motion.div
               key={idx}

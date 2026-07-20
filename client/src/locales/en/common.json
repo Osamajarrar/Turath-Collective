@@ -151,7 +151,22 @@
     "availableSoon": "Available Soon"
   },
   "featuredProducts": {
-    "badge": "Featured Pieces"
+    "badge": "Featured Pieces",
+    "viewAll": "View All Pieces"
+  },
+  "valuesStrip": {
+    "handmade": {
+      "label": "Handmade",
+      "description": "Every piece is made by hand by working artisans."
+    },
+    "heritageCraft": {
+      "label": "Heritage Craft",
+      "description": "Techniques from Hebron and Jaba', still practiced today."
+    },
+    "smallBatches": {
+      "label": "Small Batches",
+      "description": "Made in small quantities, each piece slightly unique."
+    }
   },
   "reviewCarousel": {
     "badge": "Patron Stories",

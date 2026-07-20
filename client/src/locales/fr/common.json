@@ -146,7 +146,22 @@
     "availableSoon": "Disponible bientôt"
   },
   "featuredProducts": {
-    "badge": "Pièces en vedette"
+    "badge": "Pièces en vedette",
+    "viewAll": "Voir toutes les pièces"
+  },
+  "valuesStrip": {
+    "handmade": {
+      "label": "Fait à la main",
+      "description": "Chaque pièce est façonnée à la main par des artisans en activité."
+    },
+    "heritageCraft": {
+      "label": "Artisanat patrimonial",
+      "description": "Des techniques d'Hébron et de Jaba', toujours pratiquées aujourd'hui."
+    },
+    "smallBatches": {
+      "label": "Petites séries",
+      "description": "Produites en petites quantités, chaque pièce est légèrement unique."
+    }
   },
   "reviewCarousel": {
     "badge": "Histoires des mécènes",

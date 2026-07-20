@@ -10,7 +10,7 @@ export default function Hero() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-[70vh] md:h-[65vh] w-full overflow-hidden">
       {/* Background Image with Gradient Overlays */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-black/10 z-10" />
@@ -29,9 +29,9 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: prefersReducedMotion ? 0.1 : 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-4xl"
+          className="max-w-3xl"
         >
-          <h1 className="font-serif text-6xl md:text-8xl lg:text-[10rem] leading-[0.9] mb-12 text-foreground" data-testid="text-hero-heading">
+          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-[0.95] mb-8 text-foreground" data-testid="text-hero-heading">
             {t("hero.heading")} <br />
             <span className="italic font-light">{t("hero.headingItalic")}</span>
           </h1>
@@ -40,10 +40,10 @@ export default function Hero() {
             <Link href="/shop">
               <button
                 data-testid="button-hero-cta"
-                className="group bg-primary text-white px-14 py-6 flex items-center gap-4 hover:bg-primary/95 transition-all duration-500 shadow-xl shadow-primary/10"
+                className="group bg-primary text-primary-foreground px-10 py-5 flex items-center gap-4 hover:bg-primary/85 transition-all duration-500 shadow-xl shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <span className="uppercase tracking-[0.3em] text-[10px] font-bold">{t("hero.cta")}</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />
+                <span className="uppercase tracking-[0.25em] text-xs font-bold">{t("hero.cta")}</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-2 transition-transform duration-500 rtl:rotate-180 rtl:group-hover:-translate-x-2 rtl:group-hover:translate-x-0" />
               </button>
             </Link>
           </div>

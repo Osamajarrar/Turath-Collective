@@ -12,6 +12,7 @@ import {
 } from "@/pages/shop";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import MobileCarousel from "@/components/mobile-carousel";
+import ArrowLink from "@/components/ArrowLink";
 
 // The catalog currently has a single real product; this section is built to
 // render one product today and scale as more are added (no fixed count).
@@ -77,14 +78,14 @@ export default function FeaturedProducts() {
       : "hidden md:grid grid-cols-2 gap-6 lg:grid-cols-4";
 
   return (
-    <section className="py-12 bg-background">
+    <section className="pt-6 pb-12 md:pt-8 bg-background">
       <div className="container mx-auto px-6 md:px-12 max-w-[1820px]">
         <div className="flex items-center justify-between mb-10">
           <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold">
             {t("featuredProducts.badge")}
           </span>
           <Link href="/shop">
-            <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
+            <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               {t("collectionCards.shopAll")} →
             </button>
           </Link>
@@ -139,6 +140,14 @@ export default function FeaturedProducts() {
               ))}
             </div>
           </>
+        )}
+
+        {!isLoading && featured.length > 0 && (
+          <div className="mt-10 flex justify-center md:mt-12">
+            <ArrowLink href="/shop">
+              {t("featuredProducts.viewAll")}
+            </ArrowLink>
+          </div>
         )}
       </div>
     </section>

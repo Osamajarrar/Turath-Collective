@@ -121,7 +121,7 @@ export default function CollectionCards() {
           </span>
           {!isSingle && (
             <Link href="/shop">
-              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary">
+              <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                 {t("collectionCards.shopAll")} →
               </button>
             </Link>

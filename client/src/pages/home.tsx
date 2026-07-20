@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/hero";
+import ValuesStrip from "@/components/values-strip";
 import FeaturedProducts from "@/components/featured-products";
 import CollectionCards from "@/components/collection-cards";
 import BrandStory from "@/components/brand-story";
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <PageLayout noStyling>
       <Hero />
+      <ValuesStrip />
       <div className="space-y-0">
         <FeaturedProducts />
         <CollectionCards />
