@@ -216,3 +216,38 @@
     }
   }
 }
+
+/* ── Design-variant preview: Golden Hour Immersive ────────────────────────────
+ * The design/warm-immersive branch proposed warming the site palette — cream
+ * hsl(36 20% 95%) → hsl(34 26% 95%), with muted warmed to match. That was a
+ * global change to the @theme block above, which would have repainted every
+ * other variant and made comparison at /design meaningless.
+ *
+ * Because @theme inline substitutes token values literally rather than
+ * emitting var() references, overriding the CSS custom properties on a wrapper
+ * does nothing. So the shift is previewed by overriding the specific utilities
+ * beneath .variant-warm-immersive instead. Only that variant's page carries
+ * the class.
+ *
+ * This block is preview scaffolding. If the warmer palette is chosen, change
+ * the tokens in @theme at the top of this file and delete everything here.
+ * ─────────────────────────────────────────────────────────────────────────── */
+.variant-warm-immersive {
+  background-color: hsl(34 26% 95%);
+}
+
+.variant-warm-immersive .bg-background {
+  background-color: hsl(34 26% 95%);
+}
+
+.variant-warm-immersive .bg-background-secondary {
+  background-color: hsl(34 26% 90%);
+}
+
+.variant-warm-immersive .bg-card {
+  background-color: hsl(34 26% 95%);
+}
+
+.variant-warm-immersive .bg-muted {
+  background-color: hsl(34 24% 89%);
+}

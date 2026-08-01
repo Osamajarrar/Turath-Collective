@@ -43,7 +43,7 @@ export default function Newsletter() {
             className="flex items-center justify-center gap-3 py-4 border border-border text-foreground/80"
           >
             <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary">
-              <Check className="h-3 w-3 text-white" />
+              <Check className="h-3 w-3 text-primary-foreground" />
             </span>
             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
               {t("newsletter.success")}
@@ -67,13 +67,13 @@ export default function Newsletter() {
                 placeholder={t("newsletter.placeholder")}
                 data-testid="input-newsletter-email"
                 disabled={status === "submitting"}
-                className="flex-1 bg-transparent border-b border-border py-3 px-2 focus:outline-none focus:border-primary transition-colors rounded-none placeholder:text-muted-foreground/50 font-sans disabled:opacity-60"
+                className="flex-1 min-h-[44px] bg-transparent border-b border-border py-3 px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus:border-primary transition-colors rounded-none placeholder:text-muted-foreground/50 font-sans disabled:opacity-60"
               />
               <button
                 type="submit"
                 data-testid="button-newsletter-subscribe"
                 disabled={status === "submitting"}
-                className="group bg-primary text-white px-8 py-3 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold whitespace-nowrap disabled:opacity-60"
+                className="group min-h-[44px] bg-primary text-primary-foreground px-9 py-3 rounded-none flex items-center justify-center gap-2 hover:bg-primary/85 transition-all duration-300 shadow-lg shadow-primary/10 uppercase tracking-[0.3em] text-[10px] font-bold whitespace-nowrap disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {t("newsletter.cta")}
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300 rtl:rotate-180 rtl:group-hover:-translate-x-1" />

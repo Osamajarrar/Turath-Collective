@@ -23,6 +23,13 @@ import arCommerce from "../locales/ar/commerce.json";
 import arLegal from "../locales/ar/legal.json";
 import arErrors from "../locales/ar/errors.json";
 
+// Homepage design-variant preview namespaces (/design). Preview-only — see
+// client/src/design-variants/locales.ts. Remove with the rest of the gallery.
+import {
+  designVariantResources,
+  designVariantNamespaces,
+} from "../design-variants/locales";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -34,6 +41,7 @@ i18n
         commerce: enCommerce,
         legal: enLegal,
         errors: enErrors,
+        ...designVariantResources.en,
       },
       fr: {
         common: frCommon,
@@ -41,6 +49,7 @@ i18n
         commerce: frCommerce,
         legal: frLegal,
         errors: frErrors,
+        ...designVariantResources.fr,
       },
       ar: {
         common: arCommon,
@@ -48,11 +57,12 @@ i18n
         commerce: arCommerce,
         legal: arLegal,
         errors: arErrors,
+        ...designVariantResources.ar,
       },
     },
     fallbackLng: "en",
     fallbackNS: "common",
-    ns: ["common", "pages", "commerce", "legal", "errors"],
+    ns: ["common", "pages", "commerce", "legal", "errors", ...designVariantNamespaces],
     defaultNS: "common",
     supportedLngs: ["en", "fr", "ar"],
     detection: {

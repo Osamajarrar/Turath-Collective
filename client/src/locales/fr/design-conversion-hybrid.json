@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "kicker": "Fait à la main en Palestine",
+    "subheading": "Des céramiques de Hébron et du verre soufflé à la main, façonnés par des artisans selon des techniques transmises de génération en génération."
+  },
+  "craftBand": {
+    "kicker": "L'histoire, toujours faite main.",
+    "quote": "Chaque pièce est faite à la main, par des artisans qui pratiquent des savoir-faire transmis de génération en génération — un savoir-faire réel, toujours à l'œuvre aujourd'hui."
+  },
+  "closingCta": {
+    "heading": "Commencez avec la collection."
+  },
+  "featuredProducts": {
+    "heading": "Quelques pièces pour commencer",
+    "viewAll": "Voir toutes les pièces"
+  },
+  "valuesStrip": {
+    "handmade": {
+      "label": "Fait à la main",
+      "description": "Chaque pièce est façonnée à la main par des artisans en activité."
+    },
+    "heritageCraft": {
+      "label": "Artisanat patrimonial",
+      "description": "Des techniques d'Hébron et de Jaba', toujours pratiquées aujourd'hui."
+    },
+    "smallBatches": {
+      "label": "Petites séries",
+      "description": "Produites en petites quantités, chaque pièce est légèrement unique."
+    }
+  }
+}

@@ -30,6 +30,12 @@ const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 // Auth pages (login, signup, forgot-password) removed for launch v1.
 // Shopify handles customer accounts. Re-add imports + routes when needed.
 
+// Homepage design-variant previews (/design). Internal only: noindexed, not
+// linked from the navbar or footer, and lazy-loaded so none of it reaches the
+// main bundle. See client/src/design-variants/README.md.
+const DesignGallery = lazy(() => import("@/design-variants/gallery"));
+const DesignVariantPage = lazy(() => import("@/design-variants/VariantPage"));
+
 function Router() {
   return (
     <>
@@ -50,6 +56,9 @@ function Router() {
         <Route path="/faq" component={FAQ} />
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/terms" component={TermsAndConditions} />
+        {/* Design-variant previews — internal, remove with the gallery */}
+        <Route path="/design" component={DesignGallery} />
+        <Route path="/design/:variant" component={DesignVariantPage} />
         <Route component={NotFound} />
       </Switch>
     </>
