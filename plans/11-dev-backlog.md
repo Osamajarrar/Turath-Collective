@@ -361,3 +361,85 @@ heading, so the line has exactly one home. That's a coherent alternative, just a
 - Cookieless pre-consent analytics, option B (branch 4) — founder's call, grey zone.
 - Whether to remove the Shopify storefront password — gates any move to real checkout. Decide
   after ad results, per plan 09.
+
+---
+
+# What actually shipped — session of 2026-08-01
+
+All branches below are built, tested and committed locally. **Nothing is pushed and no PR is
+open.** Verify: `npm test` (159 tests), `npm run check`, `npm run build`.
+
+## Merge order
+
+The branches are a **stack** — each is cut from the previous one, so merge them in this order:
+
+```
+1. fix/remove-unreal-data
+2. chore/vitest
+3. feature/analytics-consent
+4. chore/sentry
+5. feature/resend-contact
+6. feature/checkout-intent
+7. feature/cloudflare-migration
+```
+
+`fix/about-craft-count` is **independent** (cut from `dev`) and can merge at any point.
+
+Stacking was not the original plan. It happened because the work turned out to be genuinely
+dependent: the collections test needs branch 1's fix, the consent tests need branch 3's harness,
+Sentry must sit inside branch 4's consent gate, and the checkout dialog needs branch 6's Resend
+wiring. Each branch passes `npm run check` and `npm test` on its own.
+
+## Branches 2, 7 and 9 were not implemented
+
+Per the founder: the logo SVG, the email templates and the design decision are manual work.
+Branch 7's *code-level* CASL blocker was still fixed in branch 6 — `sendNewsletterWelcome`
+promised "exclusive offers" with no unsubscribe link and now carries an explicit do-not-call
+warning listing what it needs first.
+
+## Where the plan was wrong
+
+Worth knowing, because the plan was written before reading the current tree:
+
+- **Most of plan 06/07 was already done on `dev`.** The "Top Rated" badge, the contradictory
+  shipping sentence, the hardcoded "Add to Bag" strings, the orphaned `about.collections.*` keys
+  and the `stat2` inversion were all already fixed. Branch 1 is therefore much smaller than
+  planned, and is mostly about the catalogue.
+- **Plan 03 (consent) was already fully implemented.** Blocked-by-default PostHog, Consent Mode
+  v2, the localStorage decision mirrored to a cookie for the Shopify pixel — all present and
+  correct. Branch 4 only changed the presentation and fixed a real compliance defect (Accept was
+  filled, Decline was outlined).
+- **The contact form did not exist.** Plan 09 said the route was "merely commented out"; in fact
+  the whole form had been replaced by a `mailto:` link, so branch 6 rebuilt it.
+- **Enabling the Express route would not have worked in production.** Vercel never runs
+  `server/routes.ts`. Both new endpoints therefore also exist as `api/*.ts`, sharing one handler.
+
+## Defects found by verification, not by review
+
+- The i18n parity test found French missing 5 glass keys — French visitors saw English fallback
+  text. Arabic is 296 keys behind but unreachable (its switcher entry is commented out), so that
+  debt is baselined in `test/ar-parity-baseline.json` rather than hidden or machine-translated.
+- The contact honeypot was validated to `max(0)`, which rejected bots at the schema and made the
+  silent-discard branch unreachable.
+- `server/email.ts` fell back to console-logging whenever `RESEND_API_KEY` was absent — including
+  in production, where the form would report "message received" while the message went nowhere.
+- Sentry was first added to `script-src` instead of `connect-src`; the two directives share a
+  substring. Caught by the CSP test.
+- On Cloudflare: deep links 404'd, then 500'd, and `/api/newsletter` had never been added to the
+  Worker. All three only appeared when the Worker was actually run.
+
+## Still open for the founder
+
+1. **Navbar tagline** — recommendation is to remove it; see item 8 above. Not implemented (the
+   SVG is manual).
+2. **The Hebron "2,000 years" figure** in the live FAQ — still unverified. Needs a human.
+3. **Contact reply time** — no window is promised anywhere now. Add one only if it will be met,
+   and change the email template *and* the page copy together.
+4. **Admin recipient mismatch** — `server/email.ts` sends to `collectiveturath@gmail.com` while
+   the page advertises `support@turathcollective.com`.
+5. **Cookieless pre-consent analytics** (branch 4 option B) — specified, deliberately not built.
+6. **New env vars** — `RESEND_API_KEY`, `RESEND_NOTIFY_AUDIENCE_ID`,
+   `RESEND_NEWSLETTER_AUDIENCE_ID`, `VITE_SENTRY_DSN`. And `VITE_REAL_CHECKOUT` must stay unset
+   until the Shopify storefront password is gone.
+7. **Cloudflare cutover** (plan 10 phase 5) — DNS, secrets and build-env vars. Not done: it is
+   irreversible and needs the founder's account. Vercel remains live and deployable.

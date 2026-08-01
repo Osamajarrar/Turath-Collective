@@ -19,3 +19,9 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# Cloudflare Worker local secrets — same rule as .env.local, never commit
+.dev.vars
+
+# Wrangler local dev state (miniflare cache/traces) — machine-local
+.wrangler/
