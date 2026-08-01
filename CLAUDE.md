@@ -76,6 +76,25 @@ founder points DNS at Cloudflare (plan 10 phase 5).
 | `VITE_SHOW_SHIPPING_PROMO` | Single gate for the announcement bar + cart free-shipping progress bar (`VITE_FREE_SHIPPING_THRESHOLD` supplies the CAD amount). Off until the shipping offer is real. |
 | `VITE_DEMO_MODE` | **Local `.env.local` ONLY — must NEVER be set in Vercel (`dev`, `test`, or `main`).** Master switch forcing every mock/placeholder flag on (mock products, fake reviews/social proof, shipping promo with placeholder $75 threshold, full site instead of coming-soon) so the founder can preview the complete experience locally. If deployed, it would show fake content to real visitors — the exact dishonesty the hard rules prohibit. See `client/src/lib/flags.ts`. |
 
+## Build-it-right rule (founder's standing instruction)
+
+No future data migrations or structural rework. The distinction that matters is
+**expensive-to-reverse vs cheap-to-reverse**, not hardcoded vs dynamic — see
+[`plans/12-reversibility.md`](plans/12-reversibility.md) for the full list and the two
+live violations.
+
+- Get right *now*: analytics event names (history can't be backfilled), consent records,
+  URL/slug structure, DB dialect, where content physically lives, and which system owns
+  each fact.
+- Keep simple: components, layout, styling, copy, page composition. **Don't pre-build
+  flexibility** — speculative abstraction is rework with extra steps.
+- **Never ship a heuristic where a real field belongs.** `name.includes("bowl") →
+  ceramics` works on today's data and silently miscategorises the first item that
+  breaks the pattern. Add the field instead.
+- **Anything category-shaped iterates the category list** — never name a category in
+  JSX. That's what left a Tatreez care guide up after embroidery was hidden everywhere
+  else.
+
 ## Gotchas
 
 - **`VITE_*` vars are baked at build time** — changing one in Vercel requires a fresh build, not

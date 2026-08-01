@@ -15,6 +15,7 @@ can execute it or a stronger model is needed.
 | [07](07-placeholder-gating.md) | Placeholder review/social-proof gating | Verified safe; small consolidation suggested | Cheap/fast model |
 | [10](10-cloudflare-migration.md) | Move hosting Vercel → Cloudflare Workers + D1 | Fully specified, not started | Stronger model (CSP/routing); phases 1 & 5–6 cheap |
 | [09](09-mvp-demand-test.md) | MVP demand test: checkout intent, Resend, Sentry, tests | Fully specified, not started; copy decisions open | Stronger model (copy + CASL consent); tests cheap |
+| [12](12-reversibility.md) | What must be decided correctly now vs left simple; two live violations | Standing reference | — |
 | [11](11-dev-backlog.md) | Dev backlog: the founder's item list → one branch each, ordered | Sequenced, not started | Per branch — see its table |
 
 Architecture decisions and their rationale — including alternatives rejected — live in
