@@ -139,7 +139,8 @@
     "general": {
       "title": "Conseils généraux",
       "paragraph1": "Chaque pièce proposée par Turath Collective est faite à la main. Les variations mineures de couleur, texture, taille et motif ne sont pas des imperfections — elles sont la preuve de l'habileté humaine derrière chaque objet. Ces variations sont ce qui distingue le véritable artisanat de la production de masse.",
-      "paragraph2": "Si vous êtes jamais incertain sur la façon d'entretenir une pièce spécifique, contactez-nous à support@turathcollective.com et nous vous conseillerons directement."
+      "paragraph2": "Si vous êtes jamais incertain sur la façon d'entretenir une pièce spécifique, contactez-nous à support@turathcollective.com et nous vous conseillerons directement.",
+      "unsure": "Si vous avez le moindre doute sur l'entretien d'une pièce, écrivez-nous à"
     }
   },
   "contact": {

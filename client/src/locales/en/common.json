@@ -81,7 +81,8 @@
     "errorDesc": "Please try again or email us directly.",
     "checkFaq": "Looking for quick answers?",
     "viewFaq": "Check our FAQ",
-    "honeypot": "Company"
+    "honeypot": "Company",
+    "orEmail": "Prefer your own mail client? Write to us at"
   },
   "footer": {
     "tagline": "Elevating the everyday through heritage craftsmanship. Based in Montreal, we exist to preserve and share the living traditions of master artisans.",

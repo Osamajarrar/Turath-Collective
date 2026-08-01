@@ -193,29 +193,27 @@ export default function ContactPage() {
             )}
           </motion.div>
 
-          {/* Email CTA — kept as a fallback for anyone who would rather use
-              their own mail client, or if the form ever fails. */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="max-w-xl mx-auto bg-background p-10 md:p-12 border border-border/50 text-center"
+          {/* One quiet line, not a second competing panel. Two equally-weighted
+              CTAs asking for the same thing makes the visitor choose a channel
+              before they've written anything — and every message that arrives
+              by mailto skips the form's validation and confirmation email.
+              The address stays available for anyone who prefers their own mail
+              client; it just isn't a rival call to action. */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mx-auto max-w-xl text-center text-sm font-light text-muted-foreground"
           >
-            <Mail className="w-6 h-6 text-primary mx-auto mb-6" />
-            <h2 className="font-serif text-2xl md:text-3xl mb-4">
-              {t("contact.emailCtaTitle")}
-            </h2>
-            <p className="text-muted-foreground font-light leading-relaxed mb-8">
-              {t("contact.emailCtaBody")}
-            </p>
+            {t("contact.orEmail")}{" "}
             <a
               href={`mailto:${SUPPORT_EMAIL}`}
               data-testid="link-contact-email"
-              className="inline-block bg-primary py-5 px-10 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-primary/90"
+              className="text-foreground underline underline-offset-4 transition-colors hover:text-primary"
             >
-              {t("contact.emailCtaButton")}
+              {SUPPORT_EMAIL}
             </a>
-          </motion.div>
+          </motion.p>
         </div>
       </div>
     </PageLayout>

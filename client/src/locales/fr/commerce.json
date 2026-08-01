@@ -103,11 +103,11 @@
     "currency": "CAD"
   },
   "checkoutIntent": {
-    "title": "Ces pièces sont encore en cours de fabrication",
+    "title": "Rejoignez la première collection",
     "body": "Nous ne prenons pas encore de commandes. Laissez votre courriel et nous vous préviendrons en premier lorsque cette pièce sera prête.",
     "emailLabel": "Adresse courriel",
     "emailPlaceholder": "vous@exemple.com",
-    "newsletter": "Envoyez-moi aussi des nouvelles occasionnelles sur les nouvelles collections.",
+    "newsletter": "Envoyez-moi aussi, à l'occasion, des nouvelles des nouvelles pièces et des artisans qui les façonnent.",
     "submit": "Prévenez-moi en premier",
     "submitting": "Enregistrement…",
     "successTitle": "Nous avons votre adresse",

@@ -139,7 +139,8 @@
     "general": {
       "title": "General Guidance",
       "paragraph1": "Every piece carried by Turath Collective is made by hand. Minor variations in colour, texture, size, and pattern are not imperfections — they are evidence of the human skill behind each object. These variations are what distinguish genuine craft from mass production.",
-      "paragraph2": "If you are ever unsure how to care for a specific piece, reach out to us at support@turathcollective.com and we will advise you directly."
+      "paragraph2": "If you are ever unsure how to care for a specific piece, reach out to us at support@turathcollective.com and we will advise you directly.",
+      "unsure": "If you are ever unsure how to care for a specific piece, reach out to us at"
     }
   },
   "contact": {

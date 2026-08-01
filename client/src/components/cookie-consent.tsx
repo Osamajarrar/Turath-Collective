@@ -42,17 +42,21 @@ export default function CookieConsent() {
   const prefersReducedMotion = useReducedMotion();
   const [visible, setVisible] = useState<boolean>(() => getConsent() === null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const firstButtonRef = useRef<HTMLButtonElement>(null);
+  const acceptButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Hide if a decision is made elsewhere (e.g. another tab / component).
     return onConsentChange(() => setVisible(false));
   }, []);
 
-  // Move focus into the dialog so keyboard and screen-reader users land on the
-  // choice instead of continuing to tab through the page behind it.
+  // Focus Accept. This is the ONE lean toward consent that survives the
+  // equal-weight requirement: the buttons remain visually identical, so
+  // neither is emphasised, but Accept is where the keyboard lands and is
+  // therefore the path of least resistance. Colour-weighting Accept instead
+  // (filled primary vs outlined Decline) is the pattern regulators actually
+  // cite — see the class string below, which both buttons deliberately share.
   useEffect(() => {
-    if (visible) firstButtonRef.current?.focus();
+    if (visible) acceptButtonRef.current?.focus();
   }, [visible]);
 
   // Focus trap. Without it, Tab walks out of the dialog into page content the
@@ -144,7 +148,6 @@ export default function CookieConsent() {
 
             <div className="flex gap-3">
               <button
-                ref={firstButtonRef}
                 type="button"
                 onClick={() => decide(false)}
                 className={buttonClass}
@@ -153,6 +156,7 @@ export default function CookieConsent() {
                 {t("consent.decline")}
               </button>
               <button
+                ref={acceptButtonRef}
                 type="button"
                 onClick={() => decide(true)}
                 className={buttonClass}

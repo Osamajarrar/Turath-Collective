@@ -81,7 +81,8 @@
     "errorDesc": "Veuillez réessayer ou nous écrire directement.",
     "checkFaq": "Vous cherchez des réponses rapides?",
     "viewFaq": "Consultez nos FAQ",
-    "honeypot": "Entreprise"
+    "honeypot": "Entreprise",
+    "orEmail": "Vous préférez votre propre messagerie ? Écrivez-nous à"
   },
   "footer": {
     "tagline": "Sublimer le quotidien par l'artisanat patrimonial. Basés à Montréal, nous existons pour préserver et partager les traditions vivantes de maîtres artisans.",
