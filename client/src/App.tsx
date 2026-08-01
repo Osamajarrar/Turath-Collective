@@ -36,6 +36,11 @@ const TermsAndConditions = lazy(() => import("@/pages/TermsAndConditions"));
 const DesignGallery = lazy(() => import("@/design-variants/gallery"));
 const DesignVariantPage = lazy(() => import("@/design-variants/VariantPage"));
 
+// Shop-filtering previews (/shop-filters). Same rules as above: internal,
+// noindexed, unlinked, lazy-loaded. See client/src/shop-variants/README.md.
+const ShopFilterGallery = lazy(() => import("@/shop-variants/gallery"));
+const ShopVariantPage = lazy(() => import("@/shop-variants/VariantPage"));
+
 function Router() {
   return (
     <>
@@ -59,6 +64,9 @@ function Router() {
         {/* Design-variant previews — internal, remove with the gallery */}
         <Route path="/design" component={DesignGallery} />
         <Route path="/design/:variant" component={DesignVariantPage} />
+        {/* Shop-filtering previews — internal, remove with the gallery */}
+        <Route path="/shop-filters" component={ShopFilterGallery} />
+        <Route path="/shop-filters/:variant" component={ShopVariantPage} />
         <Route component={NotFound} />
       </Switch>
     </>

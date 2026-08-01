@@ -17,6 +17,13 @@ export default defineConfig({
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),
     },
   },
+  // Mirrors vite.config.ts. Without it, importing any component whose module
+  // graph reaches a *.module.css file makes Vite run the project's PostCSS,
+  // and Tailwind v4 errors out because it expects @tailwindcss/postcss. Tests
+  // never assert on styling, so no PostCSS plugins are wanted here.
+  css: {
+    postcss: { plugins: [] },
+  },
   test: {
     environment: "jsdom",
     globals: true,
