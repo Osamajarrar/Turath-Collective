@@ -12,7 +12,16 @@ const posthog = vi.hoisted(() => ({
 
 vi.mock("posthog-js", () => ({ default: posthog }));
 
-import { getConsent, setConsent, onConsentChange, syncConsentCookie } from "./consent";
+import {
+  getConsent,
+  setConsent,
+  setCategoryConsent,
+  hasConsent,
+  hasDecidedAll,
+  undecidedCategories,
+  onConsentChange,
+  syncConsentCookie,
+} from "./consent";
 import { initAnalytics, isAnalyticsInitialized } from "./analytics";
 
 const STORAGE_KEY = "turath-consent";
@@ -53,8 +62,9 @@ describe("setConsent — analytics propagation", () => {
   it("records a timestamp with the decision (Law 25 proof of consent)", () => {
     setConsent(true);
     const record = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
-    expect(record.status).toBe("granted");
-    expect(Number.isNaN(Date.parse(record.timestamp))).toBe(false);
+    // v2 shape — see the category-keyed block below for why.
+    expect(record.categories.analytics).toBe(true);
+    expect(Number.isNaN(Date.parse(record.decidedAt))).toBe(false);
   });
 
   it("grants gtag analytics_storage only on accept", () => {
@@ -143,5 +153,72 @@ describe("initAnalytics — blocked by default", () => {
     );
     initAnalytics();
     expect(posthog.init).not.toHaveBeenCalled();
+  });
+});
+
+describe("category-keyed record (v2)", () => {
+  it("stores a category map, not a single flag", () => {
+    setConsent(true);
+    const record = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+    expect(record.version).toBe(2);
+    expect(record.categories).toEqual({ analytics: true });
+    expect(Number.isNaN(Date.parse(record.decidedAt))).toBe(false);
+  });
+
+  it("hasConsent answers per category", () => {
+    setConsent(true);
+    expect(hasConsent("analytics")).toBe(true);
+    // Never consented to, because it does not exist yet — must NOT inherit
+    // the analytics answer, or adding a pixel later would fire without consent.
+    expect(hasConsent("marketing")).toBe(false);
+  });
+
+  it("upgrades a v1 record in place, so nobody is re-prompted", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ status: "granted", timestamp: "2026-01-01T00:00:00.000Z" }),
+    );
+    expect(getConsent()).toBe("granted");
+    expect(hasConsent("analytics")).toBe(true);
+    expect(hasDecidedAll()).toBe(true);
+    expect(undecidedCategories()).toEqual([]);
+  });
+
+  it("upgrades a v1 denial without turning it into consent", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ status: "denied", timestamp: "2026-01-01T00:00:00.000Z" }),
+    );
+    expect(hasConsent("analytics")).toBe(false);
+    expect(hasDecidedAll()).toBe(true);
+  });
+
+  it("treats an unanswered category as undecided, not as refused", () => {
+    // The distinction that makes adding a category cheap: a missing entry
+    // re-prompts for that category alone rather than for everything.
+    setCategoryConsent({ marketing: true });
+    expect(hasDecidedAll()).toBe(false);
+    expect(undecidedCategories()).toContain("analytics");
+  });
+
+  it("merges a new answer with previous ones instead of replacing them", () => {
+    setConsent(true);
+    setCategoryConsent({ marketing: false });
+    expect(hasConsent("analytics")).toBe(true);
+    expect(hasConsent("marketing")).toBe(false);
+  });
+
+  it("keeps the cookie in the v1 shape the Shopify pixel reads", () => {
+    // The checkout pixel parses granted|denied. Changing that format would
+    // break it silently for no benefit.
+    setConsent(true);
+    expect(document.cookie).toContain("turath-consent=granted");
+  });
+
+  it("fails closed on a corrupt v2 record", () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 2, categories: "nope" }));
+    expect(getConsent()).toBeNull();
+    expect(hasConsent("analytics")).toBe(false);
+    expect(hasDecidedAll()).toBe(false);
   });
 });

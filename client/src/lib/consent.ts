@@ -6,8 +6,16 @@
  * "granted" (accept analytics) or "denied" (essential only). We persist the
  * decision in localStorage and only re-prompt when no decision exists.
  *
- * Storage shape (key `turath-consent`):
- *   { "status": "granted" | "denied", "timestamp": "<ISO string>" }
+ * Storage shape (key `turath-consent`), v2 — CATEGORY-KEYED:
+ *   { "version": 2, "decidedAt": "<ISO>", "categories": { "analytics": true } }
+ *
+ * The record is per-category even though only one non-essential category is
+ * live today, because a consent record is a legal artefact that cannot be
+ * reconstructed later: with a single granted/denied flag, adding a marketing
+ * pixel would mean re-prompting every visitor. See lib/consent-categories.ts
+ * for the registry and for how to add a category. v1 records
+ * (`{status, timestamp}`) are read and upgraded in place, so this change
+ * re-prompts nobody.
  *
  * The decision is ALSO mirrored into a plain cookie (`turath-consent=granted|denied`,
  * domain `.turathcollective.com`) because localStorage does not cross subdomains:
@@ -22,6 +30,10 @@
 import posthog from "posthog-js";
 import { enableAnalytics, isAnalyticsInitialized } from "./analytics";
 import { enableMonitoring, disableMonitoring } from "./monitoring";
+import {
+  type ConsentCategory,
+  ACTIVE_CATEGORY_IDS,
+} from "./consent-categories";
 
 const STORAGE_KEY = "turath-consent";
 const CONSENT_COOKIE = "turath-consent";
@@ -37,7 +49,26 @@ declare global {
   }
 }
 
+/**
+ * Stored decision, v2 — category-keyed.
+ *
+ * v1 was `{ status: "granted" | "denied", timestamp }`, which could only ever
+ * answer one question. Records in that shape are still read and upgraded in
+ * place (see readRecord), so nobody is re-prompted by this change.
+ *
+ * `categories` holds an entry per category the visitor has actually answered.
+ * A category MISSING from the map has not been decided — that is different
+ * from `false`, and it is what lets a newly added category re-prompt only for
+ * itself instead of invalidating the whole decision.
+ */
 type ConsentRecord = {
+  version: 2;
+  decidedAt: string;
+  categories: Partial<Record<ConsentCategory, boolean>>;
+};
+
+/** v1 shape, still on disk for anyone who decided before this change. */
+type LegacyConsentRecord = {
   status: ConsentStatus;
   timestamp: string;
 };
@@ -90,17 +121,73 @@ export function syncConsentCookie(): void {
  * silently assuming consent.
  */
 export function getConsent(): ConsentStatus | null {
+  const record = readRecord();
+  if (!record) return null;
+  // Back-compat for every existing caller: "granted" means analytics is on.
+  return record.categories.analytics ? "granted" : "denied";
+}
+
+/**
+ * Read the stored record, upgrading a v1 decision to the v2 shape.
+ *
+ * Returns null for "no decision", corrupt storage, or an unusable shape —
+ * always failing toward re-prompting rather than assuming consent.
+ */
+function readRecord(): ConsentRecord | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<ConsentRecord>;
-    if (parsed.status === "granted" || parsed.status === "denied") {
-      return parsed.status;
+    const parsed = JSON.parse(raw) as Partial<ConsentRecord & LegacyConsentRecord>;
+
+    if (parsed.version === 2 && parsed.categories && typeof parsed.categories === "object") {
+      return {
+        version: 2,
+        decidedAt: parsed.decidedAt ?? new Date().toISOString(),
+        categories: parsed.categories,
+      };
     }
+
+    // v1 -> v2. The single flag was always about analytics, so it maps
+    // cleanly and the visitor keeps the decision they already made.
+    if (parsed.status === "granted" || parsed.status === "denied") {
+      return {
+        version: 2,
+        decidedAt: parsed.timestamp ?? new Date().toISOString(),
+        categories: { analytics: parsed.status === "granted" },
+      };
+    }
+
     return null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Has this visitor agreed to a specific category?
+ *
+ * This is what a tracker should gate on — never `getConsent() === "granted"`,
+ * which conflates every category into one answer.
+ */
+export function hasConsent(category: ConsentCategory): boolean {
+  return readRecord()?.categories[category] === true;
+}
+
+/**
+ * True when every ACTIVE category has an answer. False means the dialog should
+ * show — including the case where a NEW category was added after the visitor
+ * decided, so they are asked about that one alone rather than all over again.
+ */
+export function hasDecidedAll(): boolean {
+  const record = readRecord();
+  if (!record) return false;
+  return ACTIVE_CATEGORY_IDS.every((id) => typeof record.categories[id] === "boolean");
+}
+
+/** Categories still awaiting an answer from this visitor. */
+export function undecidedCategories(): ConsentCategory[] {
+  const record = readRecord();
+  return ACTIVE_CATEGORY_IDS.filter((id) => typeof record?.categories[id] !== "boolean");
 }
 
 /**
@@ -115,17 +202,40 @@ export function getConsent(): ConsentStatus | null {
  *   can throw or create storage, defeating the "block by default" guarantee.
  */
 export function setConsent(granted: boolean): void {
+  setCategoryConsent(Object.fromEntries(ACTIVE_CATEGORY_IDS.map((id) => [id, granted])));
+}
+
+/**
+ * Record a per-category decision. This is the real entry point; setConsent()
+ * is the all-or-nothing convenience wrapper the two-button dialog uses.
+ *
+ * MERGES with any previous answer rather than replacing it, so answering a
+ * newly added category does not silently discard an earlier decision about
+ * another one.
+ */
+export function setCategoryConsent(
+  choices: Partial<Record<ConsentCategory, boolean>>,
+): void {
+  const previous = readRecord();
   const record: ConsentRecord = {
-    status: granted ? "granted" : "denied",
-    timestamp: new Date().toISOString(),
+    version: 2,
+    decidedAt: new Date().toISOString(),
+    categories: { ...previous?.categories, ...choices },
   };
+
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
   } catch {
     // Storage unavailable (private mode). We still apply the choice for this
     // session below; it just won't persist across reloads.
   }
-  writeConsentCookie(record.status);
+
+  const granted = record.categories.analytics === true;
+  // The cookie deliberately stays the v1 granted/denied shape: it exists only
+  // for the Shopify checkout pixel (docs/shopify-checkout-pixel.md), which
+  // cares about analytics and nothing else. Changing its format would break
+  // that pixel for no benefit.
+  writeConsentCookie(granted ? "granted" : "denied");
 
   if (granted) {
     enableAnalytics();
@@ -148,7 +258,7 @@ export function setConsent(granted: boolean): void {
     }
   }
 
-  notify(record.status);
+  notify(granted ? "granted" : "denied");
 }
 
 // ── Subscriber mechanism ──────────────────────────────────────────────────

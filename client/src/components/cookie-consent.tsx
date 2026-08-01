@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { getConsent, setConsent, onConsentChange } from "@/lib/consent";
+import { hasDecidedAll, setConsent, onConsentChange } from "@/lib/consent";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
@@ -40,7 +40,10 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 export default function CookieConsent() {
   const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
-  const [visible, setVisible] = useState<boolean>(() => getConsent() === null);
+  // hasDecidedAll, not "is there any decision": when a NEW consent category is
+  // added later, a visitor who already answered the old ones is re-prompted
+  // about that category alone rather than not at all.
+  const [visible, setVisible] = useState<boolean>(() => !hasDecidedAll());
   const dialogRef = useRef<HTMLDivElement>(null);
   const acceptButtonRef = useRef<HTMLButtonElement>(null);
 

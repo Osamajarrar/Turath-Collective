@@ -72,7 +72,9 @@ describe("consent dialog — Law 25 equal-weight requirement", () => {
     await user.click(screen.getByTestId("button-consent-decline"));
 
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(JSON.parse(localStorage.getItem("turath-consent")!).status).toBe("denied");
+    expect(JSON.parse(localStorage.getItem("turath-consent")!).categories.analytics).toBe(
+      false,
+    );
   });
 });
 
