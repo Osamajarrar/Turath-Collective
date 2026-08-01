@@ -21,6 +21,7 @@
  */
 import posthog from "posthog-js";
 import { enableAnalytics, isAnalyticsInitialized } from "./analytics";
+import { enableMonitoring, disableMonitoring } from "./monitoring";
 
 const STORAGE_KEY = "turath-consent";
 const CONSENT_COOKIE = "turath-consent";
@@ -128,10 +129,14 @@ export function setConsent(granted: boolean): void {
 
   if (granted) {
     enableAnalytics();
+    // Sentry is in the same consent scope as analytics — it attaches a session
+    // identifier and URL/breadcrumb data. It starts here and nowhere else.
+    enableMonitoring();
     if (typeof window.gtag === "function") {
       window.gtag("consent", "update", { analytics_storage: "granted" });
     }
   } else {
+    disableMonitoring();
     if (typeof window.gtag === "function") {
       window.gtag("consent", "update", { analytics_storage: "denied" });
     }

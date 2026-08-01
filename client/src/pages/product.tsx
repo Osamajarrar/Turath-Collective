@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
-import { USE_MOCK_PRODUCTS } from "@/lib/flags";
+import { USE_MOCK_PRODUCTS, NOTIFY_ME_ENABLED } from "@/lib/flags";
 import { useCart } from "@/context/cart-context";
 import { trackEvent } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -304,9 +304,14 @@ function NotifyMeModal({ isOpen, onClose, product, variant, t }: NotifyMeModalPr
 
     setIsSubmitting(true);
     try {
-      // Simulate API call - replace with actual endpoint
+      // ⚠ STUB — there is no endpoint behind this yet. The modal is unreachable
+      // while NOTIFY_ME_ENABLED is false, which is the only reason showing a
+      // success message here is not a lie. Do NOT enable the flag until this
+      // POSTs to a real capture route AND records the CASL consent basis
+      // (see plan 11 branch 8); `optIn` is the newsletter consent, which is a
+      // separate consent from "tell me when this is available".
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Notify me request:", { email, productHandle: product.handle, variantId: variant.variantId, optIn });
+      void optIn;
       setSubmitted(true);
       setTimeout(() => {
         setEmail("");
@@ -856,17 +861,28 @@ export default function ProductPage() {
               {/* Quantity & CTA */}
               <div className="space-y-4" ref={ctaSectionRef}>
                 {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
-                  <button
-                    onClick={() => {
-                      setSelectedNotifyVariant(currentVariation);
-                      setNotifyModalOpen(true);
-                    }}
-                    data-testid="button-notify-me"
-                    className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90"
-                  >
-                    <Bell className="h-4 w-4" />
-                    {t("shop.notifyMe.title", "Notify Me")}
-                  </button>
+                  NOTIFY_ME_ENABLED ? (
+                    <button
+                      onClick={() => {
+                        setSelectedNotifyVariant(currentVariation);
+                        setNotifyModalOpen(true);
+                      }}
+                      data-testid="button-notify-me"
+                      className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90"
+                    >
+                      <Bell className="h-4 w-4" />
+                      {t("shop.notifyMe.title", "Notify Me")}
+                    </button>
+                  ) : (
+                    /* No capture backend yet — state the fact instead of
+                       collecting an email we would silently discard. */
+                    <div
+                      data-testid="text-unavailable"
+                      className="w-full border border-border py-3 px-6 text-center text-sm font-medium uppercase tracking-widest text-muted-foreground"
+                    >
+                      {t("shop.badges.outOfStock")}
+                    </div>
+                  )
                 ) : (
                   <>
                     {product.quantityStyle === "sets" ? (
@@ -1015,17 +1031,26 @@ export default function ProductPage() {
 
               {/* Right (or full-width on mobile/tablet): Add to Bag / Notify Me button */}
               {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
-                <button
-                  onClick={() => {
-                    setSelectedNotifyVariant(currentVariation);
-                    setNotifyModalOpen(true);
-                  }}
-                  data-testid="button-sticky-notify-me"
-                  className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90"
-                >
-                  <Bell className="h-3.5 w-3.5" />
-                  <span>{t("shop.notifyMe.title", "Notify Me")}</span>
-                </button>
+                NOTIFY_ME_ENABLED ? (
+                  <button
+                    onClick={() => {
+                      setSelectedNotifyVariant(currentVariation);
+                      setNotifyModalOpen(true);
+                    }}
+                    data-testid="button-sticky-notify-me"
+                    className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90"
+                  >
+                    <Bell className="h-3.5 w-3.5" />
+                    <span>{t("shop.notifyMe.title", "Notify Me")}</span>
+                  </button>
+                ) : (
+                  <span
+                    data-testid="text-sticky-unavailable"
+                    className="md:px-32 flex items-center justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-primary-foreground/70"
+                  >
+                    {t("shop.badges.outOfStock")}
+                  </span>
+                )
               ) : (
                 <button
                   onClick={handleAddToCart}

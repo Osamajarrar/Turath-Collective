@@ -101,5 +101,20 @@
     "agreement": "En complétant votre commande, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
     "footer": "© 2026 Turath Collective. Tous droits réservés.",
     "currency": "CAD"
+  },
+  "checkoutIntent": {
+    "title": "Ces pièces sont encore en cours de fabrication",
+    "body": "Nous ne prenons pas encore de commandes. Laissez votre courriel et nous vous préviendrons en premier lorsque cette pièce sera prête.",
+    "emailLabel": "Adresse courriel",
+    "emailPlaceholder": "vous@exemple.com",
+    "newsletter": "Envoyez-moi aussi des nouvelles occasionnelles sur les nouvelles collections.",
+    "submit": "Prévenez-moi en premier",
+    "submitting": "Enregistrement…",
+    "successTitle": "Nous avons votre adresse",
+    "successBody": "Nous vous écrirons lorsque cette pièce sera prête. Votre panier est toujours là.",
+    "errorTitle": "Nous n'avons pas pu enregistrer votre adresse",
+    "errorBody": "Veuillez réessayer ou nous écrire à support@turathcollective.com.",
+    "close": "Fermer",
+    "cartKept": "Aucun montant n'a été prélevé et votre panier est inchangé."
   }
 }

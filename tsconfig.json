@@ -1,11 +1,21 @@
 {
-  "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
-  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+  // Tests are typechecked too. The previous config excluded `**/*.test.ts` but
+  // not `**/*.test.tsx`, so component tests were checked and plain ones were
+  // not — a split that hid errors in whichever half you weren't looking at.
+  // api/ is not listed, but api/shopify.ts is now typechecked anyway: the
+  // proxy test imports it, which pulls it into the program. That is the first
+  // time the proxy that actually runs in production has been typechecked, and
+  // it is why @vercel/node is a devDependency.
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "test/**/*"],
+  "exclude": ["node_modules", "build", "dist"],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
     "noEmit": true,
     "module": "ESNext",
+    // Was unset, so tsc defaulted to ES5 and rejected iterating a Set/Map.
+    // Everything here runs in modern browsers or Node 20+.
+    "target": "ES2022",
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
@@ -13,7 +23,11 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
-    "types": ["node", "vite/client"],
+    "resolveJsonModule": true,
+    // @testing-library/jest-dom registers toBeInTheDocument/toHaveAttribute
+    // on vitest's Assertion type; without it those matchers work at runtime
+    // but fail `npm run check`.
+    "types": ["node", "vite/client", "@testing-library/jest-dom"],
     "paths": {
       "@/*": ["./client/src/*"],
       "@shared/*": ["./shared/*"]

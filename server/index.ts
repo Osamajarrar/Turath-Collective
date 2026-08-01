@@ -18,7 +18,6 @@ import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import { setupAuth } from "./auth";
 import { shutdownPostHog } from "./posthog";
 
 const app = express();
@@ -60,6 +59,12 @@ app.use(helmet({
         "https://us.i.posthog.com",
         "https://us-assets.i.posthog.com",
         "https://*.posthog.com",
+        // Sentry error reports are POSTed to <org>.ingest.sentry.io. Without
+        // this the SDK initialises and then every report is blocked by CSP —
+        // silently, with an empty dashboard that looks like "no errors".
+        "https://*.ingest.sentry.io",
+        "https://*.ingest.de.sentry.io",
+        "https://*.ingest.us.sentry.io",
       ],
       frameSrc: ["'none'"],
       frameAncestors: ["'none'"],
@@ -101,8 +106,9 @@ export const shopifyLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Setup sessions + passport (must come before routes)
-setupAuth(app);
+// Sessions and passport are gone. Shopify's Customer Account API owns
+// accounts, and express-session needs per-request server memory that Cloudflare
+// Workers does not have. See DECISIONS.md §4 and plan 10 phase 6b.
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

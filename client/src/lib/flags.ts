@@ -29,6 +29,32 @@ export const USE_MOCK_PRODUCTS =
 export const SHOW_PLACEHOLDER_CONTENT =
   DEMO_MODE || import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
 
+// ── Checkout: intent capture vs real checkout ────────────────────────────────
+// The store cannot take money today — the Shopify dev store still has a
+// storefront password, so every checkout click dead-ends on
+// checkout.turathcollective.com/password. Until that is removed, clicking
+// checkout opens the intent dialog instead of navigating: it explains the
+// pieces are still being made and captures an email to notify the visitor.
+//
+// Set VITE_REAL_CHECKOUT=true ONLY once the storefront password is gone and
+// checkout genuinely works end to end. Flipping it early sends real customers
+// to a password wall.
+export const REAL_CHECKOUT_ENABLED =
+  import.meta.env.VITE_REAL_CHECKOUT === "true";
+
+// ── Notify-me (back-in-stock) capture ────────────────────────────────────────
+// The out-of-stock "Notify Me" control collects an email and then does nothing
+// with it — the submit handler only logged to the console, so a customer who
+// used it believed they had subscribed when no record existed anywhere. That
+// is the same honesty problem as fake reviews, so the control is off until a
+// real backend exists.
+//
+// Turn this on in the branch that wires the capture to Resend (plan 11 branch
+// 8), together with the CASL consent split — "tell me when this is available"
+// and "sign me up for the newsletter" are two separate consents.
+export const NOTIFY_ME_ENABLED =
+  import.meta.env.VITE_NOTIFY_ME_ENABLED === "true";
+
 // ── Coming-soon gate ──────────────────────────────────────────────────────────
 // VITE_COMING_SOON=true swaps the homepage for the coming-soon page. Demo mode
 // forces the full site so the real homepage is what gets reviewed.

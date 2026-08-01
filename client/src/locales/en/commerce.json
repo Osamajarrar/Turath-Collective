@@ -101,5 +101,20 @@
     "agreement": "By completing your order, you agree to our Terms of Service and Privacy Policy.",
     "footer": "© 2026 Turath Collective. All Rights Reserved.",
     "currency": "CAD"
+  },
+  "checkoutIntent": {
+    "title": "These pieces are still being made",
+    "body": "We are not taking orders yet. Leave your email and we will tell you first when this piece is ready.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "newsletter": "Also send me occasional news about new collections.",
+    "submit": "Tell me first",
+    "submitting": "Saving…",
+    "successTitle": "We have your address",
+    "successBody": "We will write to you when this piece is ready. Your cart is still here.",
+    "errorTitle": "We could not save your address",
+    "errorBody": "Please try again, or email us at support@turathcollective.com.",
+    "close": "Close",
+    "cartKept": "Nothing has been charged and your cart is unchanged."
   }
 }

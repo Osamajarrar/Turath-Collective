@@ -480,6 +480,15 @@ export const shopifyService = {
   },
 
   /** Convenience: create a cart with one item and return the checkout URL. */
+  /**
+   * ⚠ UNUSED and must stay that way for now. Verified 2026-08-01: nothing in
+   * client/src calls this.
+   *
+   * It returns a Shopify checkoutUrl, and while the storefront password is in
+   * place that URL leads to a password wall. Any caller added here would
+   * bypass the checkout-intent dialog and re-create the dead end that plan 11
+   * branch 8 removed. Do not wire it up until REAL_CHECKOUT_ENABLED is true.
+   */
   async buyNow(variantId: string, quantity = 1): Promise<string | null> {
     const cart = await this.createCart([{ merchandiseId: variantId, quantity }]);
     return cart?.checkoutUrl ?? null;

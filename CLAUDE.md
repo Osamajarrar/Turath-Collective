@@ -9,7 +9,9 @@ Operating guide for AI coding sessions in this repo. Architecture details live i
 Turath Collective (turathcollective.com) — high-end, quiet, editorial heritage homeware brand
 (Palestinian handcrafts: Hebron ceramics, Phoenician glass, a signature hand-blown glass
 pomegranate). Montreal-based, Canadian market, EN/FR/AR (RTL). Headless Shopify storefront:
-React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP), Vercel deploy.
+React + TypeScript + Vite + Tailwind client, Hono Worker on Cloudflare (Shopify proxy, forms, CSP).
+Migration from Vercel is code-complete but NOT cut over — Vercel is still the live deploy until the
+founder points DNS at Cloudflare (plan 10 phase 5).
 
 ## Brand positioning
 
@@ -61,8 +63,14 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 |---|---|
 | `VITE_GA_MEASUREMENT_ID` | GA4; injected at **build time** by `vite.config.ts` into index.html |
 | `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST` | Client PostHog (not sensitive) |
+| `VITE_SENTRY_DSN` | Client Sentry (not sensitive). Unset = monitoring off, which is the normal local state. Sentry is inside the consent scope — it starts only after the visitor accepts, never before. Its ingest origin must be in **both** CSP copies (`server/index.ts` and `vercel.json`); `test/csp-sync.test.ts` enforces that they match |
 | `POSTHOG_API_KEY` | **Sensitive** — server-side PostHog |
 | `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN` | Server proxies Storefront GraphQL at `/api/shopify` |
+| `RESEND_API_KEY` | **Sensitive** — server-side. Powers the contact form, checkout-intent capture and newsletter. Unset locally = emails are logged, not sent; in production it now throws rather than faking delivery |
+| `RESEND_NOTIFY_AUDIENCE_ID` | Resend audience for "tell me when this piece is available". A **separate CASL consent** from the newsletter — never merge the two |
+| `RESEND_NEWSLETTER_AUDIENCE_ID` | Resend audience for the newsletter consent |
+| `VITE_REAL_CHECKOUT` | Unset = clicking checkout opens the intent dialog instead of navigating. Set to `true` **only** once the Shopify storefront password is removed and checkout genuinely works, or real customers hit a password wall |
+| `VITE_NOTIFY_ME_ENABLED` | Unset = out-of-stock variants show "Out of Stock" instead of collecting an email nothing stores. Only enable once the capture has a real backend |
 | `VITE_USE_MOCK_PRODUCTS` | `true` = local mock catalog instead of Shopify |
 | `VITE_SHOW_PLACEHOLDER_CONTENT` | Gates fake review/social components. **Must never be set in Vercel.** |
 | `VITE_SHOW_SHIPPING_PROMO` | Single gate for the announcement bar + cart free-shipping progress bar (`VITE_FREE_SHIPPING_THRESHOLD` supplies the CAD amount). Off until the shipping offer is real. |
@@ -76,17 +84,33 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
   test flows will land on `checkout.turathcollective.com/password`. Expected.
 - **PostHog captures may silently not fire** even when its scripts load — see
   `plans/01-posthog-capture-debug.md` and `MVP_LAUNCH_CHECKLIST.md` §13a before debugging code.
-- **CSP lives in `server/index.ts` (helmet)** — new third-party scripts/domains fail silently in
-  the browser until added to `scriptSrc`/`connectSrc`.
-- `npm run dev` = Express + Vite middleware on **port 5000**; `npm run check` = typecheck (keep
-  it passing — it was broken for a while and regressions hide there); `npm run build` before
-  assuming a Vite-config change works.
-- Deferred-v1 scaffolding is intentional — auth routes behind `AUTH_ENABLED=false`
-  (`server/routes.ts`), stubbed `server/storage.ts`, commented tables in `shared/schema.ts`,
-  unrouted auth pages, `shopifyService.buyNow`. Don't "clean up" what a checklist or comment
-  marks as deferred; don't wire it live either.
-- Contact form + newsletter UI are **not connected to any backend** (routes disabled). Don't
-  write copy promising responses/subscriptions until they are.
+- **CSP lives in `worker/security-headers.ts` — one source of truth.** `client/public/_headers` is
+  GENERATED from it (`npm run headers`, also run by `npm run build`); never hand-edit it. New
+  third-party scripts/domains fail **silently** in the browser until added to `script-src`/
+  `connect-src`. `test/csp-sync.test.ts` asserts the generated policy still matches the one
+  `vercel.json` serves, so the two environments cannot diverge before cutover.
+- `npm run dev` = Express + Vite middleware on **port 5000** — local only. `server/` no longer
+  ships anywhere; every route there delegates to the same shared handler the Worker uses, so the
+  two cannot diverge. `npm run dev:worker` = `wrangler dev`, the real production runtime — use it
+  to check headers, the SPA fallback and API behaviour. `npm run check` = typecheck (keep it
+  passing — regressions hide there); `npm test` = vitest; `npm run build` before assuming a
+  Vite-config change works.
+- The self-hosted auth stack (`server/auth.ts`, `server/storage.ts`, `server/admin.ts`, passport,
+  express-session), the unrouted auth/checkout/admin pages, and the file-backed JSON stores are
+  **deleted** (plan 10 phases 6b–6c). Shopify's Customer Account API owns accounts. Still deferred
+  and intentional: the commented tables in `shared/schema.ts` (now **D1/SQLite** dialect, no
+  database provisioned) and `shopifyService.buyNow` (unused — wiring it would bypass the
+  checkout-intent dialog and land users on the storefront password page). Don't "clean up" what a
+  comment marks as deferred; don't wire it live either.
+- **Contact form is live** (`/api/contact` → Resend). Needs `RESEND_API_KEY`: without it
+  `server/email.ts` logs instead of sending, so the form reports success while nothing is
+  delivered. The endpoint exists twice — `api/contact.ts` (production) and the Express route
+  (local) — sharing `server/contact-handler.ts`. No reply-time is promised anywhere; if you add
+  one it must be a window the founder will actually honour, in the email template *and* the
+  page's success copy.
+- Newsletter UI is still **not connected to any backend**. Don't write copy promising
+  subscriptions until it is. `sendNewsletterWelcome` must not be called before it has a working
+  unsubscribe (CASL) — see the warning above it in `server/email.ts`.
 - Windows dev machine: watch CRLF warnings; don't commit `.env.local`.
 
 ## Session workflow expectations

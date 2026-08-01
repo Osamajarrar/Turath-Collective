@@ -18,7 +18,7 @@
   "announcement": "Livraison gratuite pour les commandes supérieures à 100 CAD",
   "consent": {
     "label": "Consentement aux témoins",
-    "message": "Nous utilisons des données analytiques pour comprendre comment les visiteurs utilisent le site. Rien n'est suivi tant que vous n'avez pas choisi.",
+    "message": "Nous utilisons des données analytiques et une surveillance des erreurs pour comprendre comment les visiteurs utilisent le site et pour détecter les problèmes. Rien n'est suivi tant que vous n'avez pas choisi.",
     "accept": "Accepter l'analyse",
     "decline": "Essentiels seulement",
     "privacyLink": "Consulter notre politique de confidentialité."
@@ -76,11 +76,12 @@
     "formSend": "Envoyer le message",
     "formSending": "Envoi en cours...",
     "successTitle": "Message reçu",
-    "successDesc": "Merci de nous avoir contactés. Nous vous répondrons dans 1 à 2 jours ouvrables.",
+    "successDesc": "Merci de nous avoir contactés. Nous lisons chaque message et vous répondrons dès que possible.",
     "errorTitle": "Une erreur est survenue",
     "errorDesc": "Veuillez réessayer ou nous écrire directement.",
     "checkFaq": "Vous cherchez des réponses rapides?",
-    "viewFaq": "Consultez nos FAQ"
+    "viewFaq": "Consultez nos FAQ",
+    "honeypot": "Entreprise"
   },
   "footer": {
     "tagline": "Sublimer le quotidien par l'artisanat patrimonial. Basés à Montréal, nous existons pour préserver et partager les traditions vivantes de maîtres artisans.",
@@ -136,6 +137,11 @@
       "title": "Broderie",
       "description": "Motifs Tatreez centenaires, brodés à la main sur les plus beaux tissus locaux.",
       "cta": "ACHETER LA BRODERIE"
+    },
+    "glass": {
+      "title": "Verre",
+      "description": "Verrerie soufflée à la bouche par des artisans en Palestine.",
+      "cta": "ACHETER LE VERRE"
     }
   },
   "collectionCards": {
