@@ -9,6 +9,10 @@ vite.config.ts.*
 .env.local
 **/lighthouse-report*.json
 baseline-report.json
+# agent worktrees + machine-local Claude settings (never shared)
+.claude/worktrees/
+.claude/settings.local.json
+
 # design-sync (staged scripts, build output, machine state)
 .ds-sync/
 ds-bundle/
