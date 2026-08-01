@@ -104,3 +104,28 @@ describe("contact — failure handling", () => {
     expect(JSON.stringify(result.body)).not.toContain("sk_live_secret");
   });
 });
+
+describe("contact — production must not fake delivery", () => {
+  it("returns 502 in production when RESEND_API_KEY is missing", async () => {
+    // Uses the REAL email module: the point is that getClient() throws in
+    // production rather than falling back to console logging, which would
+    // make the form report success while the message went nowhere.
+    vi.resetModules();
+    vi.doUnmock("../server/email");
+
+    const prevEnv = process.env.NODE_ENV;
+    const prevKey = process.env.RESEND_API_KEY;
+    process.env.NODE_ENV = "production";
+    delete process.env.RESEND_API_KEY;
+
+    try {
+      const { handleContactSubmission: real } = await import("../server/contact-handler");
+      const result = await real(valid);
+      expect(result.status).toBe(502);
+      expect(result.body.ok).toBeUndefined();
+    } finally {
+      process.env.NODE_ENV = prevEnv;
+      if (prevKey !== undefined) process.env.RESEND_API_KEY = prevKey;
+    }
+  });
+});

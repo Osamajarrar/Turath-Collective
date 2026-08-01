@@ -7,16 +7,17 @@ import { useTranslation } from "react-i18next";
 import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
-import { trackEventThenNavigate } from "@/lib/analytics";
+import { trackEvent, trackEventThenNavigate } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
 import FreeShippingProgress from "./free-shipping-progress";
+import CheckoutIntentDialog from "./checkout-intent-dialog";
 
 // The announcement bar states a shipping offer ("free shipping above X CAD")
 // that has no finalized pricing/shipping policy behind it yet. It is gated —
 // together with the cart-drawer progress bar — by VITE_SHOW_SHIPPING_PROMO
 // (see @/lib/flags for what enabling it asserts).
-import { SHIPPING_PROMO_ENABLED } from "@/lib/flags";
+import { SHIPPING_PROMO_ENABLED, REAL_CHECKOUT_ENABLED } from "@/lib/flags";
 
 // Helper to slugify product title for mock cart links
 const slugify = (str: string) =>
@@ -45,6 +46,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [intentOpen, setIntentOpen] = useState(false);
   const { scrollY } = useScroll();
 
   const mockSubtotal = mockLines.reduce(
@@ -460,17 +462,39 @@ export default function Navbar() {
                 </div>
                 <button
                   type="button"
-                  disabled={isBusy || !cart?.checkoutUrl || totalQuantity === 0}
+                  // With intent capture, a Shopify checkoutUrl is NOT required
+                  // to click checkout — mock/session carts must reach the
+                  // dialog too, or the demand test misses them entirely.
+                  disabled={
+                    isBusy ||
+                    totalQuantity === 0 ||
+                    (REAL_CHECKOUT_ENABLED && !cart?.checkoutUrl)
+                  }
                   onClick={() => {
+                    const currency = cart?.cost.subtotalAmount.currencyCode ?? "CAD";
+                    const value = cart
+                      ? parseFloat(cart.cost.subtotalAmount.amount)
+                      : mockSubtotal;
+
+                    if (!REAL_CHECKOUT_ENABLED) {
+                      // Intercept — do NOT navigate. Shopify's checkoutUrl
+                      // still leads to the storefront password page, which is
+                      // both a dead end and a leak that the store isn't live.
+                      trackEvent("checkout_intent", {
+                        cart_value: value,
+                        currency,
+                        num_items: totalQuantity,
+                        locale: i18n.language,
+                      });
+                      setIntentOpen(true);
+                      return;
+                    }
+
                     if (!cart?.checkoutUrl) return;
                     const { checkoutUrl } = cart;
                     trackEventThenNavigate(
                       "begin_checkout",
-                      {
-                        currency: cart.cost.subtotalAmount.currencyCode,
-                        value: parseFloat(cart.cost.subtotalAmount.amount),
-                        num_items: totalQuantity,
-                      },
+                      { currency, value, num_items: totalQuantity },
                       () => {
                         window.location.href = checkoutUrl;
                       },
@@ -486,6 +510,19 @@ export default function Navbar() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Checkout-intent capture. Opens instead of navigating while the store
+          cannot take money (REAL_CHECKOUT_ENABLED). The cart is deliberately
+          left open and untouched behind it — nothing is cleared. */}
+      <CheckoutIntentDialog
+        open={intentOpen}
+        onClose={() => setIntentOpen(false)}
+        context={{
+          cartValue: cart ? parseFloat(cart.cost.subtotalAmount.amount) : mockSubtotal,
+          currency: cart?.cost.subtotalAmount.currencyCode ?? "CAD",
+          numItems: totalQuantity,
+        }}
+      />
     </>
   );
 }

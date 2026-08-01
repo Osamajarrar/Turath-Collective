@@ -12,6 +12,7 @@ import { insertReviewSchema } from "@shared/schema";
 import { addReview, getApprovedReviews, getAllApprovedReviews } from "./reviews";
 import { registerAdminRoutes } from "./admin";
 import { handleContactSubmission } from "./contact-handler";
+import { handleReserveSubmission } from "./reserve-handler";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -125,6 +126,22 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   app.post("/api/contact", contactLimiter, async (req: Request, res: Response) => {
     const result = await handleContactSubmission(req.body);
+    return res.status(result.status).json(result.body);
+  });
+
+  // ── Checkout-intent capture ───────────────────────────────────────────────
+  // Local/Node host only; production is api/reserve.ts. Shares
+  // server/reserve-handler.ts with it, including the CASL two-consent split.
+  const reserveLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    message: "Too many attempts. Please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.post("/api/reserve", reserveLimiter, async (req: Request, res: Response) => {
+    const result = await handleReserveSubmission(req.body);
     return res.status(result.status).json(result.body);
   });
 

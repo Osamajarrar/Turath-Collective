@@ -29,6 +29,19 @@ export const USE_MOCK_PRODUCTS =
 export const SHOW_PLACEHOLDER_CONTENT =
   DEMO_MODE || import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";
 
+// ── Checkout: intent capture vs real checkout ────────────────────────────────
+// The store cannot take money today — the Shopify dev store still has a
+// storefront password, so every checkout click dead-ends on
+// checkout.turathcollective.com/password. Until that is removed, clicking
+// checkout opens the intent dialog instead of navigating: it explains the
+// pieces are still being made and captures an email to notify the visitor.
+//
+// Set VITE_REAL_CHECKOUT=true ONLY once the storefront password is gone and
+// checkout genuinely works end to end. Flipping it early sends real customers
+// to a password wall.
+export const REAL_CHECKOUT_ENABLED =
+  import.meta.env.VITE_REAL_CHECKOUT === "true";
+
 // ── Notify-me (back-in-stock) capture ────────────────────────────────────────
 // The out-of-stock "Notify Me" control collects an email and then does nothing
 // with it — the submit handler only logged to the console, so a customer who

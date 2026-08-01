@@ -25,7 +25,18 @@ function escapeHtml(value: string): string {
 
 function getClient() {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return null;
+  if (!key) {
+    // In production a missing key is NOT a "log it instead" situation: the
+    // contact form would tell a visitor "message received" while the message
+    // went nowhere. Fail loudly so the caller returns an error instead of a
+    // false success. Locally, logging is the intended developer experience.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "RESEND_API_KEY is not set. Refusing to report a delivered email that was never sent.",
+      );
+    }
+    return null;
+  }
   return new Resend(key);
 }
 
