@@ -77,7 +77,12 @@ export async function sendContactConfirmation(to: string, name: string) {
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:primary">Thank you, ${escapeHtml(name)}</h2>
-        <p>We've received your message and will get back to you within 1–2 business days.</p>
+        <!-- This previously promised a reply "within 1–2 business days". That
+             is a commitment nobody has agreed to keep, and CLAUDE.md hard rule
+             4 requires any stated number to be true. Restore a specific window
+             only when the founder will actually honour it, and make the
+             contact page's success message say the same thing. -->
+        <p>We've received your message and will reply as soon as we can.</p>
         <p style="color:#888;font-size:12px;margin-top:40px">Turath Collective · Montreal, QC · turathcollective.com</p>
       </div>
     `,
@@ -87,6 +92,24 @@ export async function sendContactConfirmation(to: string, name: string) {
   return { success: true };
 }
 
+/**
+ * ⚠ NOT SAFE TO CALL YET — CASL.
+ *
+ * Nothing calls this today, which is the only reason it has not caused a
+ * problem. As written it is a commercial electronic message with NO
+ * unsubscribe mechanism, which CASL requires (with real penalties), and it
+ * promised "exclusive offers" nobody has consented to receive.
+ *
+ * The "exclusive offers" line is removed below. Before anything calls this:
+ *   1. send it through a Resend Audience so managed unsubscribe + suppression
+ *      apply, rather than a bare emails.send();
+ *   2. include the sender's physical mailing address;
+ *   3. confirm the recipient consented to the NEWSLETTER specifically — a
+ *      "tell me when this piece is available" address is a different consent
+ *      and does not authorise this message.
+ *
+ * See plan 11 branch 7 (email templates).
+ */
 export async function sendNewsletterWelcome(to: string) {
   const client = getClient();
 
@@ -103,7 +126,7 @@ export async function sendNewsletterWelcome(to: string) {
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:primary">Welcome to the Collective</h2>
         <p>You're now part of a community that celebrates Palestinian heritage craftsmanship.</p>
-        <p>Expect early access to new collections, artisan stories, and exclusive offers.</p>
+        <p>We'll write when there's something worth sharing — new collections and the stories behind them.</p>
         <p style="color:#888;font-size:12px;margin-top:40px">Turath Collective · Montreal, QC · turathcollective.com</p>
       </div>
     `,

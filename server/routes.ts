@@ -11,6 +11,7 @@ import { addNewsletterSubscriber } from "./newsletter";
 import { insertReviewSchema } from "@shared/schema";
 import { addReview, getApprovedReviews, getAllApprovedReviews } from "./reviews";
 import { registerAdminRoutes } from "./admin";
+import { handleContactSubmission } from "./contact-handler";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -108,8 +109,24 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   }
 
   // ── Contact ───────────────────────────────────────────────────────────────
-  // DEFERRED: route disabled for launch v1. UI form remains visible.
-  // Re-enable by restoring this route and wiring sendContactEmail / storage.
+  // Local/Node host only. In production this endpoint is api/contact.ts (a
+  // Vercel Function); Vercel never runs this file. Both share the validation
+  // and delivery in server/contact-handler.ts so they cannot drift.
+  //
+  // The limit is tighter than the other routes because this one sends email:
+  // abuse costs money and sender reputation, not just CPU.
+  const contactLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    message: "Too many messages from this address. Please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  app.post("/api/contact", contactLimiter, async (req: Request, res: Response) => {
+    const result = await handleContactSubmission(req.body);
+    return res.status(result.status).json(result.body);
+  });
 
   // ── Newsletter ────────────────────────────────────────────────────────────
   // Groundwork only: validates and stores the email locally (see

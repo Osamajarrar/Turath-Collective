@@ -64,6 +64,7 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 | `VITE_SENTRY_DSN` | Client Sentry (not sensitive). Unset = monitoring off, which is the normal local state. Sentry is inside the consent scope — it starts only after the visitor accepts, never before. Its ingest origin must be in **both** CSP copies (`server/index.ts` and `vercel.json`); `test/csp-sync.test.ts` enforces that they match |
 | `POSTHOG_API_KEY` | **Sensitive** — server-side PostHog |
 | `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN` | Server proxies Storefront GraphQL at `/api/shopify` |
+| `RESEND_API_KEY` | **Sensitive** — server-side. Powers the contact form. **Unset = emails are logged, not sent**, while the form still reports success, so this must be set in production |
 | `VITE_USE_MOCK_PRODUCTS` | `true` = local mock catalog instead of Shopify |
 | `VITE_SHOW_PLACEHOLDER_CONTENT` | Gates fake review/social components. **Must never be set in Vercel.** |
 | `VITE_SHOW_SHIPPING_PROMO` | Single gate for the announcement bar + cart free-shipping progress bar (`VITE_FREE_SHIPPING_THRESHOLD` supplies the CAD amount). Off until the shipping offer is real. |
@@ -86,8 +87,15 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
   (`server/routes.ts`), stubbed `server/storage.ts`, commented tables in `shared/schema.ts`,
   unrouted auth pages, `shopifyService.buyNow`. Don't "clean up" what a checklist or comment
   marks as deferred; don't wire it live either.
-- Contact form + newsletter UI are **not connected to any backend** (routes disabled). Don't
-  write copy promising responses/subscriptions until they are.
+- **Contact form is live** (`/api/contact` → Resend). Needs `RESEND_API_KEY`: without it
+  `server/email.ts` logs instead of sending, so the form reports success while nothing is
+  delivered. The endpoint exists twice — `api/contact.ts` (production) and the Express route
+  (local) — sharing `server/contact-handler.ts`. No reply-time is promised anywhere; if you add
+  one it must be a window the founder will actually honour, in the email template *and* the
+  page's success copy.
+- Newsletter UI is still **not connected to any backend**. Don't write copy promising
+  subscriptions until it is. `sendNewsletterWelcome` must not be called before it has a working
+  unsubscribe (CASL) — see the warning above it in `server/email.ts`.
 - Windows dev machine: watch CRLF warnings; don't commit `.env.local`.
 
 ## Session workflow expectations

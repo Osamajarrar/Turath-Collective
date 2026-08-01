@@ -76,11 +76,12 @@
     "formSend": "Envoyer le message",
     "formSending": "Envoi en cours...",
     "successTitle": "Message reçu",
-    "successDesc": "Merci de nous avoir contactés. Nous vous répondrons dans 1 à 2 jours ouvrables.",
+    "successDesc": "Merci de nous avoir contactés. Nous lisons chaque message et vous répondrons dès que possible.",
     "errorTitle": "Une erreur est survenue",
     "errorDesc": "Veuillez réessayer ou nous écrire directement.",
     "checkFaq": "Vous cherchez des réponses rapides?",
-    "viewFaq": "Consultez nos FAQ"
+    "viewFaq": "Consultez nos FAQ",
+    "honeypot": "Entreprise"
   },
   "footer": {
     "tagline": "Sublimer le quotidien par l'artisanat patrimonial. Basés à Montréal, nous existons pour préserver et partager les traditions vivantes de maîtres artisans.",
