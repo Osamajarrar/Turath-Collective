@@ -48,7 +48,7 @@ export default function ContactPage() {
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
-          <header className="mb-20 text-center">
+          <header className="mb-8 text-center">
             <motion.span
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

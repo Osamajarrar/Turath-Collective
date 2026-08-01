@@ -1,8 +1,14 @@
 # Shop filtering variants (`/shop-filters`)
 
-Five ways the shop could group its products, behind their own routes so they
-can be opened and compared before one is committed to. **The real shop is
-untouched** — `client/src/pages/shop.tsx` still filters by craft.
+Four ways to group the catalogue, behind their own routes so they can be
+compared before one is committed to.
+
+This is a **site-wide taxonomy, not a shop-page filter**: the same grouping
+drives the landing page collection cards, the navbar menu, the about page and
+the care page — they all read `lib/collections.ts`. So each preview shows BOTH
+surfaces, landing cards first and then the shop. Choosing a grouping for the
+shop while the homepage kept saying "Ceramics" would be two taxonomies for one
+catalogue. **The real pages are untouched.**
 
 Same pattern and same rules as [`../design-variants/`](../design-variants/README.md).
 
@@ -10,11 +16,10 @@ Same pattern and same rules as [`../design-variants/`](../design-variants/README
 
 | Route | Grouping |
 |---|---|
-| `/shop-filters` | The menu — all five, with the case for and against each |
+| `/shop-filters` | The menu — all four, with the case for and against each |
 | `/shop-filters/material` | By craft (Ceramics / Glass) — what the shop does today |
 | `/shop-filters/use` | By where it lives (For the Table / For the Room) |
 | `/shop-filters/none` | No filter bar at all, sort only |
-| `/shop-filters/price` | Price bands |
 | `/shop-filters/availability` | Available now / still being made |
 
 A floating **Variants** button sits bottom-right for flicking between them —
@@ -22,7 +27,7 @@ the only way to judge grouping is to compare at the same scroll position.
 
 ## How isolation works
 
-**One preview component, five strategies.** `ShopPreview.tsx` is rendered with
+**One preview component, four strategies.** `ShopPreview.tsx` is rendered with
 a different `FilterStrategy` from `strategies.ts`. It is deliberately *not* a
 copy of `shop.tsx`: duplicating that page would mean maintaining two of it,
 and the question here is the grouping, not the product card.

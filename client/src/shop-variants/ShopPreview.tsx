@@ -47,6 +47,70 @@ export default function ShopPreview({ strategy }: { strategy: FilterStrategy }) 
   return (
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
+        {/* ── Landing page, same taxonomy ──────────────────────────────────
+            The grouping is site-wide, not a shop-page filter: the homepage
+            collection cards, the navbar menu, the about page and the care page
+            all read it too. Showing only the shop would hide half the
+            consequence of the choice. */}
+        <section className="mb-20 border-b border-border pb-16">
+          <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+            On the landing page
+          </p>
+
+          {groups.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-2">
+              {groups.map((group) => {
+                const first = products.find(group.test);
+                const count = products.filter(group.test).length;
+                return (
+                  <div key={group.key} className="group">
+                    <div className="mb-5 aspect-[16/10] overflow-hidden rounded-[2rem] bg-muted/30">
+                      {first && (
+                        <img
+                          src={first.image}
+                          alt=""
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
+                    <h2 className="mb-2 font-serif text-3xl text-foreground">{group.label}</h2>
+                    <p className="text-sm font-light text-muted-foreground">
+                      {count} {count === 1 ? "piece" : "pieces"}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div>
+              <p className="mb-6 font-light leading-relaxed text-muted-foreground">
+                No collection cards. The homepage shows featured pieces directly — hero
+                straight to product, with no category step in between.
+              </p>
+              <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
+                {products.slice(0, 4).map((product) => (
+                  <div key={product.id}>
+                    <div className="mb-3 aspect-square overflow-hidden bg-muted/30">
+                      <img
+                        src={product.image}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <p className="font-serif text-sm text-foreground">{product.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+          On the shop page
+        </p>
+
         <header className="mb-12">
           <h1 className="mb-6 font-serif text-5xl md:text-6xl">Shop</h1>
 
@@ -102,7 +166,7 @@ export default function ShopPreview({ strategy }: { strategy: FilterStrategy }) 
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: idx * 0.04 }}
               >
-                <Link href={`/product/${product.handle}`} className="group block">
+                <Link href={`/product/${product.handle}`} className="group block" data-testid="preview-product">
                   <div className="mb-4 aspect-square overflow-hidden bg-muted/30">
                     <img
                       src={product.image}

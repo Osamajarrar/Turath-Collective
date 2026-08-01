@@ -3,7 +3,13 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("wouter", () => ({
-  Link: ({ children, href }: any) => <a href={href}>{children}</a>,
+  // Spread the rest: the real Link forwards data-testid and className, and a
+  // mock that silently drops props makes tests fail for the wrong reason.
+  Link: ({ children, href, ...rest }: any) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
   useRoute: () => [true, { variant: "material" }],
 }));
 
@@ -46,16 +52,9 @@ describe("filter strategies", () => {
     expect(resolveGroups(strategy("none"), liveProducts)).toEqual([]);
   });
 
-  it("price bands do not overlap and cover every product", () => {
-    for (const product of liveProducts) {
-      const matches = strategy("price").groups!(liveProducts).filter((g) => g.test(product));
-      expect(matches, `${product.name} at $${product.price} matched ${matches.length} bands`)
-        .toHaveLength(1);
-    }
-  });
 });
 
-describe("ShopPreview", () => {
+describe("ShopPreview — landing page and shop share one taxonomy", () => {
   it("hides categories that are hidden in the real catalogue", () => {
     // Embroidery is not sold; a preview showing it would be judging a shop we
     // do not have.
@@ -63,31 +62,43 @@ describe("ShopPreview", () => {
     expect(screen.queryByText(/embroidery/i)).not.toBeInTheDocument();
   });
 
-  it("renders a filter bar for a grouping strategy", () => {
-    render(<ShopPreview strategy={strategy("price")} />);
-    expect(screen.getByRole("button", { name: "All" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Under \$50/ })).toBeInTheDocument();
+  it("shows the landing-page section as well as the shop", () => {
+    // The grouping drives homepage collection cards too. A preview of only the
+    // shop would hide half the consequence of the choice.
+    render(<ShopPreview strategy={strategy("availability")} />);
+    expect(screen.getByText(/on the landing page/i)).toBeInTheDocument();
+    expect(screen.getByText(/on the shop page/i)).toBeInTheDocument();
   });
 
-  it("renders NO filter bar, and a count instead, for 'no filters'", () => {
+  it("renders one landing card per group, with the same labels as the filters", () => {
+    render(<ShopPreview strategy={strategy("availability")} />);
+    for (const group of resolveGroups(strategy("availability"), liveProducts)) {
+      // Label appears twice: once as a landing card heading, once as a filter.
+      expect(screen.getAllByText(group.label).length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("'no filters' removes the collection cards AND the filter bar", () => {
     render(<ShopPreview strategy={strategy("none")} />);
     expect(screen.queryByRole("button", { name: "All" })).not.toBeInTheDocument();
-    expect(screen.getByText(/pieces?$/)).toBeInTheDocument();
+    expect(screen.getByText(/no collection cards/i)).toBeInTheDocument();
   });
 
-  it("actually filters the grid when a group is chosen", async () => {
-    const user = userEvent.setup();
-    render(<ShopPreview strategy={strategy("price")} />);
+  it("renders a filter bar for a grouping strategy", () => {
+    render(<ShopPreview strategy={strategy("availability")} />);
+    expect(screen.getByRole("button", { name: "All" })).toBeInTheDocument();
+  });
 
-    const before = screen.getAllByRole("heading", { level: 2 }).length;
-    await user.click(screen.getByRole("button", { name: /Under \$50/ }));
-    const after = screen.getAllByRole("heading", { level: 2 }).length;
+  it("actually filters the shop grid when a group is chosen", async () => {
+    const user = userEvent.setup();
+    render(<ShopPreview strategy={strategy("availability")} />);
+
+    const before = screen.getAllByTestId("preview-product").length;
+    await user.click(screen.getByRole("button", { name: /Available Now/ }));
+    const after = screen.getAllByTestId("preview-product").length;
 
     expect(after).toBeLessThanOrEqual(before);
-    // Everything still shown must genuinely be under $50.
-    for (const price of screen.getAllByText(/^\$\d+\.\d\d CAD$/)) {
-      expect(Number(price.textContent!.replace(/[^\d.]/g, ""))).toBeLessThan(50);
-    }
+    expect(after).toBeGreaterThan(0);
   });
 
   it("sorts by price ascending when asked", async () => {
@@ -96,8 +107,8 @@ describe("ShopPreview", () => {
 
     await user.selectOptions(screen.getByRole("combobox"), "price-low");
     const prices = screen
-      .getAllByText(/^\$\d+\.\d\d CAD$/)
-      .map((el) => Number(el.textContent!.replace(/[^\d.]/g, "")));
+      .getAllByTestId("preview-product")
+      .map((el) => Number(el.textContent!.match(/\$(\d+\.\d\d)/)![1]));
 
     expect([...prices]).toEqual([...prices].sort((a, b) => a - b));
   });

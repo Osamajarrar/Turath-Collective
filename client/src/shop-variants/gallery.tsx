@@ -22,14 +22,16 @@ export default function ShopFilterGallery() {
           </p>
           <h1 className="mb-6 font-serif text-5xl">Shop filtering</h1>
           <p className="mb-4 font-light leading-relaxed text-muted-foreground">
-            Five ways to group the shop. Each opens a working preview using the
-            same catalogue and the same sort function as the real shop, so the
-            only thing that differs between them is the grouping itself.
+            Four ways to group the catalogue. This is a{" "}
+            <strong className="font-medium text-foreground">site-wide taxonomy</strong>, not a
+            shop-page filter — the same grouping drives the landing page&rsquo;s collection
+            cards, the navbar menu, the about page and the care page. So each preview shows
+            both surfaces: the landing cards first, then the shop.
           </p>
           <p className="mb-12 font-light leading-relaxed text-muted-foreground">
-            The real shop is untouched — it still filters by craft. Judge these
-            on a phone as well as a desktop: a filter bar costs far more of the
-            screen there, which is where most ad traffic will land.
+            The real pages are untouched. Judge these on a phone as well as a desktop: a
+            filter bar costs far more of the screen there, which is where most ad traffic
+            will land.
           </p>
 
           <div className="space-y-10">
@@ -61,6 +63,12 @@ export default function ShopFilterGallery() {
                       Against —{" "}
                     </dt>
                     <dd className="inline text-muted-foreground">{strategy.against}</dd>
+                  </div>
+                  <div>
+                    <dt className="inline text-[10px] font-bold uppercase tracking-[0.2em] text-foreground">
+                      Landing page —{" "}
+                    </dt>
+                    <dd className="inline text-muted-foreground">{strategy.landing}</dd>
                   </div>
                 </dl>
               </div>
