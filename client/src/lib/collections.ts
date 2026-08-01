@@ -38,9 +38,26 @@ type VisibilityFlags = {
   hidden: boolean;
 };
 
+// Single source of truth for which crafts the site advertises.
+//
+//   hidden:     the category does not appear anywhere — no nav link, no
+//               collection card, no shop filter. Use this when we do not sell
+//               the craft and have not committed to selling it.
+//   comingSoon: the category is shown, visibly marked as not yet purchasable.
+//               Use this ONLY when the pieces genuinely exist and are on the
+//               way — it is a promise to the customer.
+//
+// Honesty rule (CLAUDE.md #4): a category that is neither hidden nor
+// comingSoon asserts "you can buy this today". Do not flip a flag to false
+// until that is true.
 const categoryVisibility: Record<string, VisibilityFlags> = {
   ceramics: { comingSoon: false, hidden: false },
-  embroidery: { comingSoon: false, hidden: false },
+  // Tatreez/embroidery is NOT part of the catalogue — we do not source it and
+  // have not committed to it. It was previously advertised as a live,
+  // shoppable collection ("SHOP EMBROIDERY", linking to an empty shop filter).
+  // The copy and imagery are kept so the category can be switched back on in
+  // one line if we ever do carry it.
+  embroidery: { comingSoon: false, hidden: true },
   glass: { comingSoon: true, hidden: false },
 };
 
@@ -119,8 +136,15 @@ export const getAvailableCollections = (t: (key: string) => any): Collection[] =
     .flatMap(cat => cat.collections)
     .filter(col => !col.hidden && !col.comingSoon);
 
-// Fallback categories for when translations aren't available yet
-// DEPRECATED: Use allCategories(t) instead. This is kept for backward compatibility only.
+// Fallback categories for when translations aren't available yet.
+//
+// DEPRECATED: use allCategories(t) instead. Nothing imports this today —
+// verified 2026-08-01; shop.tsx builds its own list from
+// getAvailableCategories.
+//
+// ⚠ It does NOT read categoryVisibility above, so its flags must be kept in
+// sync by hand or it will re-advertise a craft we do not sell. That is exactly
+// what happened with embroidery. Prefer deleting this block over reviving it.
 export const allCategoriesData: Category[] = [
   {
     comingSoon: false,
@@ -142,8 +166,9 @@ export const allCategoriesData: Category[] = [
     ],
   },
   {
+    // Not sold — mirrors categoryVisibility.embroidery above.
     comingSoon: false,
-    hidden: false,
+    hidden: true,
     title: "Embroidery",
     description: "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
     image: embroideryCard,
@@ -151,7 +176,7 @@ export const allCategoriesData: Category[] = [
     collections: [
       {
         comingSoon: false,
-        hidden: false,
+        hidden: true,
         title: "Embroidery",
         description: "Centuries-old Tatreez patterns, hand-stitched on the finest local linens.",
         cta: "SHOP EMBROIDERY",
