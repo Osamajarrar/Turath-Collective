@@ -60,6 +60,12 @@ app.use(helmet({
         "https://us.i.posthog.com",
         "https://us-assets.i.posthog.com",
         "https://*.posthog.com",
+        // Sentry error reports are POSTed to <org>.ingest.sentry.io. Without
+        // this the SDK initialises and then every report is blocked by CSP —
+        // silently, with an empty dashboard that looks like "no errors".
+        "https://*.ingest.sentry.io",
+        "https://*.ingest.de.sentry.io",
+        "https://*.ingest.us.sentry.io",
       ],
       frameSrc: ["'none'"],
       frameAncestors: ["'none'"],

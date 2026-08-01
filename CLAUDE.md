@@ -61,6 +61,7 @@ React + TypeScript + Vite + Tailwind client, Express server (Shopify proxy + CSP
 |---|---|
 | `VITE_GA_MEASUREMENT_ID` | GA4; injected at **build time** by `vite.config.ts` into index.html |
 | `VITE_POSTHOG_KEY` / `VITE_POSTHOG_HOST` | Client PostHog (not sensitive) |
+| `VITE_SENTRY_DSN` | Client Sentry (not sensitive). Unset = monitoring off, which is the normal local state. Sentry is inside the consent scope — it starts only after the visitor accepts, never before. Its ingest origin must be in **both** CSP copies (`server/index.ts` and `vercel.json`); `test/csp-sync.test.ts` enforces that they match |
 | `POSTHOG_API_KEY` | **Sensitive** — server-side PostHog |
 | `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN` | Server proxies Storefront GraphQL at `/api/shopify` |
 | `VITE_USE_MOCK_PRODUCTS` | `true` = local mock catalog instead of Shopify |
