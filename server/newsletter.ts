@@ -9,8 +9,8 @@
 // long-lived Node host, but going live requires a persistent store (DB or
 // the chosen provider's API). Flagged in the PR that added this.
 
-import { promises as fs } from "fs";
 import path from "path";
+import { readJsonFile, withStoreLock, writeJsonAtomic } from "./json-store";
 
 // data/ is gitignored — subscriber emails are PII and must never be committed.
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -21,23 +21,18 @@ interface Subscriber {
   subscribedAt: string;
 }
 
-async function readSubscribers(): Promise<Subscriber[]> {
-  try {
-    return JSON.parse(await fs.readFile(SUBSCRIBERS_FILE, "utf8"));
-  } catch {
-    return [];
-  }
-}
-
 /** Store an email (deduplicated, lowercased). Returns whether it was new. */
 export async function addNewsletterSubscriber(email: string): Promise<{ added: boolean }> {
   const normalized = email.trim().toLowerCase();
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const subscribers = await readSubscribers();
-  if (subscribers.some((s) => s.email === normalized)) {
-    return { added: false };
-  }
-  subscribers.push({ email: normalized, subscribedAt: new Date().toISOString() });
-  await fs.writeFile(SUBSCRIBERS_FILE, JSON.stringify(subscribers, null, 2));
-  return { added: true };
+  // Locked: two simultaneous signups would otherwise both read the old list
+  // and the second write would drop the first subscriber.
+  return withStoreLock(SUBSCRIBERS_FILE, async () => {
+    const subscribers = await readJsonFile<Subscriber[]>(SUBSCRIBERS_FILE, []);
+    if (subscribers.some((s) => s.email === normalized)) {
+      return { added: false };
+    }
+    subscribers.push({ email: normalized, subscribedAt: new Date().toISOString() });
+    await writeJsonAtomic(SUBSCRIBERS_FILE, subscribers);
+    return { added: true };
+  });
 }

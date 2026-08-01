@@ -11,21 +11,17 @@
 // long-lived Node host. Going live requires a persistent store (the DB in
 // shared/schema.ts once provisioned).
 
-import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import type { InsertReview, ProductReview, PublicReview } from "@shared/schema";
+import { readJsonFile, withStoreLock, writeJsonAtomic } from "./json-store";
 
 // data/ is gitignored — reviewer names are user-submitted content/PII.
 const DATA_DIR = path.join(process.cwd(), "data");
 const REVIEWS_FILE = path.join(DATA_DIR, "product-reviews.json");
 
 async function readReviews(): Promise<ProductReview[]> {
-  try {
-    return JSON.parse(await fs.readFile(REVIEWS_FILE, "utf8"));
-  } catch {
-    return [];
-  }
+  return readJsonFile<ProductReview[]>(REVIEWS_FILE, []);
 }
 
 function toPublic(review: ProductReview): PublicReview {
@@ -35,17 +31,25 @@ function toPublic(review: ProductReview): PublicReview {
 
 /** Store a new review; always unapproved until the founder approves it. */
 export async function addReview(input: InsertReview): Promise<{ id: string }> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  const reviews = await readReviews();
-  const review: ProductReview = {
-    ...input,
-    id: randomUUID(),
-    submittedAt: new Date().toISOString(),
-    approved: false,
-  };
-  reviews.push(review);
-  await fs.writeFile(REVIEWS_FILE, JSON.stringify(reviews, null, 2));
-  return { id: review.id };
+  // Locked so concurrent submissions can't clobber each other's rows.
+  return withStoreLock(REVIEWS_FILE, async () => {
+    const reviews = await readReviews();
+    const review: ProductReview = {
+      // Listed explicitly rather than spread. Zod already strips unknown keys,
+      // so this is belt-and-braces: it keeps a caller-supplied `approved: true`
+      // from ever self-publishing a review if that schema is loosened later.
+      productHandle: input.productHandle,
+      name: input.name,
+      rating: input.rating,
+      text: input.text,
+      id: randomUUID(),
+      submittedAt: new Date().toISOString(),
+      approved: false,
+    };
+    reviews.push(review);
+    await writeJsonAtomic(REVIEWS_FILE, reviews);
+    return { id: review.id };
+  });
 }
 
 /** Approved reviews for one product (public). */

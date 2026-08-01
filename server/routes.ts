@@ -191,7 +191,27 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   // ── Shopify Storefront proxy ──────────────────────────────────────────────
 
+  // Mirrors the hardening in api/shopify.ts (the proxy that runs on Vercel) —
+  // keep the two in sync. The endpoint is unauthenticated, so the request is
+  // validated and rebuilt rather than relayed as-is.
+  const graphqlRequestSchema = z.object({
+    query: z.string().min(1).max(20_000),
+    variables: z.record(z.unknown()).optional(),
+    operationName: z.string().max(200).optional(),
+  });
+
   app.post("/api/shopify", shopifyLimiter, async (req: Request, res: Response) => {
+    const parsed = graphqlRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ message: "Expected a GraphQL request body" });
+    }
+    const { query, variables, operationName } = parsed.data;
+
+    // Don't let the proxy hand out the store's full schema.
+    if (/\b__schema\b|\b__type\b/.test(query)) {
+      return res.status(400).json({ message: "Introspection is not supported" });
+    }
+
     const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
     const domain = process.env.SHOPIFY_STORE_DOMAIN;
 
@@ -209,14 +229,16 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
           "Content-Type": "application/json",
           "X-Shopify-Storefront-Access-Token": token,
         },
-        body: JSON.stringify(req.body),
+        body: JSON.stringify({ query, variables, operationName }),
+        signal: AbortSignal.timeout(10_000),
       });
 
       const data = await shopifyRes.json();
       return res.status(shopifyRes.status).json(data);
     } catch (err) {
       console.error("[Shopify proxy] Error:", err);
-      return res.status(502).json({ message: "Failed to reach Shopify" });
+      const timedOut = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
+      return res.status(timedOut ? 504 : 502).json({ message: "Failed to reach Shopify" });
     }
   });
 

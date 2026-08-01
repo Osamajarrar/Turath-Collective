@@ -20,9 +20,9 @@
 // store is a bookkeeping overlay for crafts-supply planning until a decision
 // is made on whether admin should proxy the Shopify Admin API instead.
 
-import { promises as fs } from "fs";
 import path from "path";
 import type { Express, Request, Response, NextFunction } from "express";
+import { readJsonFile, withStoreLock, writeJsonAtomic } from "./json-store";
 import { z } from "zod";
 import { ORDER_STATUSES } from "@shared/schema";
 import { storage } from "./storage";
@@ -43,18 +43,8 @@ type InventoryStore = Record<string, InventoryEntry>;
 /** productHandle → category handle (e.g. "ceramics"). */
 type CategoryStore = Record<string, string>;
 
-async function readJson<T>(file: string, fallback: T): Promise<T> {
-  try {
-    return JSON.parse(await fs.readFile(file, "utf8"));
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(file: string, value: unknown): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(file, JSON.stringify(value, null, 2));
-}
+const readJson = readJsonFile;
+const writeJson = writeJsonAtomic;
 
 // ── Admin gate ──────────────────────────────────────────────────────────────
 
@@ -94,10 +84,13 @@ export function registerAdminRoutes(app: Express) {
     if (!sku.success || !body.success) {
       return res.status(400).json({ message: "Expected a SKU and a non-negative integer quantity" });
     }
-    const inventory = await readJson<InventoryStore>(INVENTORY_FILE, {});
-    inventory[sku.data] = { quantity: body.data.quantity, updatedAt: new Date().toISOString() };
-    await writeJson(INVENTORY_FILE, inventory);
-    return res.json({ sku: sku.data, ...inventory[sku.data] });
+    const entry = await withStoreLock(INVENTORY_FILE, async () => {
+      const inventory = await readJson<InventoryStore>(INVENTORY_FILE, {});
+      inventory[sku.data] = { quantity: body.data.quantity, updatedAt: new Date().toISOString() };
+      await writeJson(INVENTORY_FILE, inventory);
+      return inventory[sku.data];
+    });
+    return res.json({ sku: sku.data, ...entry });
   });
 
   // Category assignment per product handle
@@ -111,9 +104,11 @@ export function registerAdminRoutes(app: Express) {
     if (!handle.success || !body.success) {
       return res.status(400).json({ message: "Expected a product handle and a category" });
     }
-    const categories = await readJson<CategoryStore>(CATEGORIES_FILE, {});
-    categories[handle.data] = body.data.category;
-    await writeJson(CATEGORIES_FILE, categories);
+    await withStoreLock(CATEGORIES_FILE, async () => {
+      const categories = await readJson<CategoryStore>(CATEGORIES_FILE, {});
+      categories[handle.data] = body.data.category;
+      await writeJson(CATEGORIES_FILE, categories);
+    });
     return res.json({ productHandle: handle.data, category: body.data.category });
   });
 

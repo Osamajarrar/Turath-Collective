@@ -19,17 +19,37 @@ declare global {
 }
 
 export function setupAuth(app: Express) {
-  const PgSession = connectPgSimple(session);
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
   const sessionSecret = process.env.SESSION_SECRET;
   if (!sessionSecret && process.env.NODE_ENV === "production") {
     throw new Error("SESSION_SECRET environment variable must be set in production");
   }
 
+  // Auth is deferred (AUTH_ENABLED=false in routes.ts) and the DB is not
+  // provisioned, so DATABASE_URL is normally unset. Only build the Postgres
+  // session store when there is actually a DSN — otherwise pg opens a pool
+  // against an undefined connection string and connect-pg-simple retries a
+  // CREATE TABLE against it on every request. Fall back to the default
+  // in-memory store, which is fine while nothing signs in.
+  const databaseUrl = process.env.DATABASE_URL;
+  let store: session.Store | undefined;
+  if (databaseUrl) {
+    const PgSession = connectPgSimple(session);
+    store = new PgSession({
+      pool: new Pool({ connectionString: databaseUrl }),
+      createTableIfMissing: true,
+    });
+  } else if (process.env.NODE_ENV === "production") {
+    // Not fatal today: auth is off, so no session is ever written. It becomes
+    // fatal the moment AUTH_ENABLED flips on — the in-memory store loses every
+    // session on restart and leaks across instances.
+    console.warn(
+      "[auth] DATABASE_URL is not set — sessions would use the in-memory store. Set it before enabling AUTH_ENABLED.",
+    );
+  }
+
   app.use(
     session({
-      store: new PgSession({ pool, createTableIfMissing: true }),
+      store,
       secret: sessionSecret || "turath-dev-secret-change-in-prod",
       resave: false,
       saveUninitialized: false,
