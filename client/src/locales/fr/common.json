@@ -136,6 +136,11 @@
       "title": "Broderie",
       "description": "Motifs Tatreez centenaires, brodés à la main sur les plus beaux tissus locaux.",
       "cta": "ACHETER LA BRODERIE"
+    },
+    "glass": {
+      "title": "Verre",
+      "description": "Verrerie soufflée à la bouche par des artisans en Palestine.",
+      "cta": "ACHETER LE VERRE"
     }
   },
   "collectionCards": {
