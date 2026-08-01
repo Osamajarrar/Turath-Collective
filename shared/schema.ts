@@ -1,5 +1,13 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
+// D1 (Cloudflare SQLite) dialect. The tables below are still commented out
+// and no database is provisioned — the dialect is converted NOW because it is
+// nearly free while nothing depends on it, and genuinely annoying once there
+// are live rows. See DECISIONS.md §3.
+//
+// SQLite has no gen_random_uuid() and no timestamp type:
+//   text(...).default(sql`gen_random_uuid()`)  ->  text(...).$defaultFn(() => crypto.randomUUID())
+//   timestamp(...).defaultNow()                    ->  integer(..., { mode: "timestamp" }).$defaultFn(() => new Date())
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -7,13 +15,13 @@ import { z } from "zod";
 // v1 Launch uses Shopify customer accounts. Custom auth backend kept for future.
 // To re-enable: uncomment schema below and restore auth routes in App.tsx
 //
-// export const users = pgTable("users", {
-//   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+// export const users = sqliteTable("users", {
+//   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
 //   email: text("email").notNull().unique(),
 //   passwordHash: text("password_hash"),
 //   firstName: text("first_name"),
 //   lastName: text("last_name"),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 // });
 
 // ── Orders (Deferred) ─────────────────────────────────────────────────────────
@@ -23,19 +31,19 @@ import { z } from "zod";
 // and owns line items. Uncomment together with the users table; the TS
 // interfaces below are the live source of truth for server code until then.
 //
-// export const orders = pgTable("orders", {
-//   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-//   userId: varchar("user_id").references(() => users.id),
+// export const orders = sqliteTable("orders", {
+//   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+//   userId: text("user_id").references(() => users.id),
 //   shopifyOrderId: text("shopify_order_id"),
 //   status: text("status").notNull().default("pending"),
 //   totalAmount: text("total_amount").notNull(),
 //   currencyCode: text("currency_code").notNull().default("CAD"),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 // });
 //
-// export const orderItems = pgTable("order_items", {
-//   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-//   orderId: varchar("order_id").notNull().references(() => orders.id),
+// export const orderItems = sqliteTable("order_items", {
+//   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+//   orderId: text("order_id").notNull().references(() => orders.id),
 //   productHandle: text("product_handle").notNull(),
 //   variantId: text("variant_id").notNull(),
 //   quantity: integer("quantity").notNull(),
@@ -81,13 +89,13 @@ export interface Order {
 // /api/contact route currently disabled for v1 Launch.
 // To re-enable: uncomment schema below and restore route in server/routes.ts
 //
-// export const contactMessages = pgTable("contact_messages", {
-//   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+// export const contactMessages = sqliteTable("contact_messages", {
+//   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
 //   name: text("name").notNull(),
 //   email: text("email").notNull(),
 //   subject: text("subject").notNull(),
 //   message: text("message").notNull(),
-//   createdAt: timestamp("created_at").defaultNow(),
+//   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 // });
 
 // ── Newsletter Subscribers ────────────────────────────────────────────────────

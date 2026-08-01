@@ -1,0 +1,54 @@
+name = "turath-collective"
+main = "worker/index.ts"
+compatibility_date = "2026-07-01"
+
+# The shared handlers (server/contact-handler.ts, server/reserve-handler.ts)
+# and the Resend SDK expect a Node-ish environment — process.env in
+# particular. nodejs_compat provides it.
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets: the Vite build output, served directly by Cloudflare and NOT
+# billed as Worker requests (a storefront is overwhelmingly static assets,
+# which is what makes this free at our scale — DECISIONS.md §1).
+#
+# single-page-application replaces BOTH the `/(.*) -> /index.html` rewrite in
+# vercel.json and the Express fallback in server/static.ts. Without it, deep
+# links like /product/<handle> return 404 instead of the app.
+[assets]
+directory = "dist/public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Rate limiting. express-rate-limit kept its counters in the memory of ONE
+# instance, so on Vercel the limit was never actually enforced across the
+# fleet. These bindings are enforced by Cloudflare, so this is the first
+# deployment where the ceiling is real. Rates match the previous intent.
+[[unsafe.bindings]]
+name = "SHOPIFY_RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }
+
+[[unsafe.bindings]]
+name = "API_RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }
+
+# ── Environment variables ────────────────────────────────────────────────────
+# NON-SECRET values only. Secrets are set with `wrangler secret put`:
+#   SHOPIFY_STOREFRONT_TOKEN, RESEND_API_KEY, POSTHOG_API_KEY
+# Locally they go in .dev.vars, which is gitignored alongside .env.local.
+#
+# ⚠ VITE_* vars are NOT runtime config. Vite bakes them into the bundle at
+# build time, so they must be set in the Cloudflare BUILD environment. Setting
+# them only as Worker secrets leaves GA4 and PostHog dark, which is the most
+# likely cause of an "analytics stopped working" report after cutover.
+#
+# ⚠ VITE_DEMO_MODE must NEVER be set in any Cloudflare environment, exactly as
+# with Vercel. It forces fake reviews, fake social proof and a fake shipping
+# offer on for real visitors.
+[vars]
+# SHOPIFY_STORE_DOMAIN is not secret (it is visible in the storefront anyway).
+# Set it here or in the dashboard.
+# SHOPIFY_STORE_DOMAIN = "turath-collective.myshopify.com"
