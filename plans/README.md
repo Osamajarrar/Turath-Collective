@@ -13,8 +13,17 @@ can execute it or a stronger model is needed.
 | [05](05-story-section-claims.md) | story-section unverified claims | Already resolved on main — verification record | None needed |
 | [06](06-design-consistency-pass.md) | Design/tone/token consistency findings | Survey complete, fix list specified | Cheap for PR A; founder decision gates PR B |
 | [07](07-placeholder-gating.md) | Placeholder review/social-proof gating | Verified safe; small consolidation suggested | Cheap/fast model |
+| [10](10-cloudflare-migration.md) | Move hosting Vercel → Cloudflare Workers + D1 | Fully specified, not started | Stronger model (CSP/routing); phases 1 & 5–6 cheap |
+| [09](09-mvp-demand-test.md) | MVP demand test: checkout intent, Resend, Sentry, tests | Fully specified, not started; copy decisions open | Stronger model (copy + CASL consent); tests cheap |
+
+Architecture decisions and their rationale — including alternatives rejected — live in
+[DECISIONS.md](DECISIONS.md) (session of 2026-07-31). Read it before executing 09 or 10.
 
 Written directly (not planned): `MARKETING_STRATEGY.md`, `CLAUDE.md`, `AGENTS.md` (repo root).
 
 Suggested execution order after review: 04 (cleanup) → 02 (legal) → 03 (consent, after PR #5
 merges) → 06 PR A → 07. Plans 01 and 06 PR B need founder input first.
+
+Revised 2026-07-31: **09 before 10** — the demand test answers whether there's a market; the
+Cloudflare migration is infrastructure that doesn't move that question. 03 (consent) must account
+for Sentry, added in 09.
