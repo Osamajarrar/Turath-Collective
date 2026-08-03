@@ -129,6 +129,17 @@ Outcome: **one CSP source of truth**, ending the [vercel.json](../vercel.json) �
 
 ### Phase 5 — Cut over
 
+0. **Set the runtime vars in the Cloudflare dashboard first** (Workers & Pages → the worker →
+   Settings → Variables and Secrets), *before* pointing DNS. Missing ones fail silently:
+   - `SENTRY_DSN` — the **turathcollective-backend** Sentry project. A plain variable, not a
+     secret; deliberately NOT in [wrangler.toml](../wrangler.toml) because this repo is public.
+     Without it the Worker runs fine and reports nothing, which looks identical to "no errors".
+   - `SHOPIFY_STORE_DOMAIN`, plus `SHOPIFY_STOREFRONT_TOKEN` / `RESEND_API_KEY` /
+     `POSTHOG_API_KEY` as **secrets**.
+   - Every `VITE_*` var belongs in the **build** environment, not here — Vite bakes them into the
+     bundle. Set only as Worker vars, GA4/PostHog/client Sentry stay dark after cutover.
+   - `ENVIRONMENT` is already `production` in `wrangler.toml`; don't override it in the dashboard,
+     or local and live errors become indistinguishable in Sentry.
 1. Verify on the `*.workers.dev` URL (checklist below).
 2. Lower DNS TTL, then point the domain at Cloudflare. **Keep the Vercel deployment intact for a
    same-day rollback.**

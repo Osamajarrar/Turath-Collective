@@ -125,7 +125,13 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 - [ ] Run a fresh dependency + SAST scan after Shopify auth migration
 - [ ] HTML-escape interpolated values in `server/email.ts` before re-enabling contact route
 - [ ] Add a tight rate limiter (e.g. 5/min) to contact and newsletter endpoints when re-enabled
-- [ ] Set up error tracking (Sentry or similar) for both client and server
+- [x] Set up error tracking (Sentry) for both client and server — client via
+      `@sentry/react` inside the consent gate (`client/src/lib/monitoring.ts`), Worker via
+      `@sentry/cloudflare` (`worker/index.ts`), emails scrubbed from both by
+      `shared/scrub.ts`. Two Sentry projects, separate alert rules.
+      **Still needs the env vars to actually report:** `VITE_SENTRY_DSN` is set in Vercel
+      (done, requires a fresh build not a cached redeploy); `SENTRY_DSN` for the Worker is
+      set at Cloudflare cutover — see plan 10 phase 5 step 0.
 - [ ] Configure log retention / rotation in production
 - [ ] Backup strategy for the Postgres database (Replit-managed snapshots verified working)
 - [ ] Review all `process.env` reads — fail fast at boot if a required prod var is missing
