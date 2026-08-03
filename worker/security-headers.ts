@@ -23,7 +23,7 @@
  *   - fonts.googleapis.com / gstatic.com   → Google Fonts
  */
 
-const CSP_DIRECTIVES: Record<string, string[]> = {
+export const CSP_DIRECTIVES: Record<string, string[]> = {
   "default-src": ["'self'"],
   "script-src": [
     "'self'",
@@ -58,6 +58,23 @@ const CSP_DIRECTIVES: Record<string, string[]> = {
   "form-action": ["'self'"],
   "frame-ancestors": ["'none'"],
 };
+
+/**
+ * The same policy in the shape helmet wants, for the LOCAL dev server only.
+ *
+ * server/index.ts used to hand-maintain a third copy of every directive. It is
+ * the one copy no test guarded, so the environment developers actually look at
+ * could drift from production silently — which is the precise failure mode the
+ * rest of this file exists to prevent.
+ *
+ * `extra` is for directives that dev genuinely needs and production must NOT
+ * have. Keep it small, and justify each one at the call site.
+ */
+export function cspDirectivesForHelmet(
+  extra: Record<string, string[]> = {},
+): Record<string, string[]> {
+  return { ...CSP_DIRECTIVES, ...extra };
+}
 
 export function buildCsp(): string {
   const directives = Object.entries(CSP_DIRECTIVES).map(

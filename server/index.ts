@@ -19,6 +19,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { shutdownPostHog } from "./posthog";
+import { cspDirectivesForHelmet } from "../worker/security-headers";
 
 const app = express();
 const httpServer = createServer(app);
@@ -34,45 +35,20 @@ declare module "http" {
 }
 
 // ── Security Headers ─────────────────────────────────────────────────────
-// NOTE: this only protects the Node/Express host. The Vercel deploy serves
-// dist/public statically and runs api/*.ts as functions, so this middleware
-// never executes there — the equivalent headers live in vercel.json and the
-// two must be kept in sync.
+// This only protects the local Node/Express host — `server/` ships nowhere.
+// The directives come from worker/security-headers.ts, the single source of
+// truth, so the policy you debug locally is the policy production serves.
+// Add origins THERE, never here.
 app.use(helmet({
   contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com", "https://us-assets.i.posthog.com", "https://*.posthog.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "https:", "data:"],
-      // GA4 beacons go to *.google-analytics.com / *.analytics.google.com —
-      // without these the gtag script loads but no event ever leaves the page.
-      connectSrc: [
-        "'self'",
-        "https://api.shopify.com",
-        "https://*.myshopify.com",
-        "https://cdn.shopify.com",
-        "https://www.google-analytics.com",
-        "https://*.google-analytics.com",
-        "https://*.analytics.google.com",
-        "https://*.googletagmanager.com",
-        "https://us.i.posthog.com",
-        "https://us-assets.i.posthog.com",
-        "https://*.posthog.com",
-        // Sentry error reports are POSTed to <org>.ingest.sentry.io. Without
-        // this the SDK initialises and then every report is blocked by CSP —
-        // silently, with an empty dashboard that looks like "no errors".
-        "https://*.ingest.sentry.io",
-        "https://*.ingest.de.sentry.io",
-        "https://*.ingest.us.sentry.io",
-      ],
-      frameSrc: ["'none'"],
-      frameAncestors: ["'none'"],
-      objectSrc: ["'none'"],
-      baseUri: ["'self'"],
-      formAction: ["'self'"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-    },
+    directives: cspDirectivesForHelmet({
+      // DEV ONLY, and deliberately absent from the shared policy: Vite's HMR
+      // client spawns a SharedWorker from a blob: URL to ping the dev server
+      // back after a dropped socket (vite/dist/client/client.mjs). Nothing the
+      // site actually ships uses a Worker, so production must NOT allow blob:
+      // — it would widen the XSS surface for a dev-only convenience.
+      "worker-src": ["'self'", "blob:"],
+    }),
   },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   // Match the CSP frame-ancestors above for pre-CSP browsers (helmet's
