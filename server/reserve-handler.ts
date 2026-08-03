@@ -23,6 +23,7 @@
  */
 import { z } from "zod";
 import { Resend } from "resend";
+import { sendNotifyConfirmation } from "./email";
 
 export const reserveSchema = z.object({
   email: z.string().trim().email().max(254),
@@ -32,6 +33,8 @@ export const reserveSchema = z.object({
   cartValue: z.number().nonnegative().max(1_000_000).optional(),
   currency: z.string().trim().length(3).optional(),
   locale: z.string().trim().max(10).optional(),
+  /** Which piece they were looking at, so the confirmation can name it. */
+  productName: z.string().trim().max(200).optional(),
   company: z.string().max(200).optional(),
 });
 
@@ -75,7 +78,7 @@ export async function handleReserveSubmission(payload: unknown): Promise<Reserve
     return { status: 400, body: { message: "Please enter a valid email address." } };
   }
 
-  const { email, newsletterOptIn, company } = parsed.data;
+  const { email, newsletterOptIn, company, productName } = parsed.data;
 
   // Honeypot — succeed silently so a bot learns nothing.
   if (company) return { status: 200, body: { ok: true, message: "Captured." } };
@@ -119,6 +122,15 @@ export async function handleReserveSubmission(payload: unknown): Promise<Reserve
         console.error("[reserve] failed to record newsletter consent:", err);
       }
     }
+  }
+
+  // Best-effort: the address is already recorded, so a failed confirmation
+  // must not tell the visitor their request did not go through. They would
+  // resubmit, and the demand-test numbers would double-count them.
+  try {
+    await sendNotifyConfirmation(email, productName);
+  } catch (err) {
+    console.error("[reserve] confirmation email failed (address still recorded):", err);
   }
 
   return { status: 200, body: { ok: true, message: "Captured." } };

@@ -146,3 +146,57 @@ export async function sendNewsletterWelcome(to: string) {
   if (error) throw new Error(error.message);
   return { success: true };
 }
+
+/**
+ * Confirmation for the checkout-intent capture ("tell me when this is ready").
+ *
+ * Sent immediately after the address is recorded. Without it the visitor has
+ * no evidence anything happened, which makes a working capture look broken —
+ * and an address that goes cold before launch is worth nothing.
+ *
+ * ── CASL ────────────────────────────────────────────────────────────────
+ * This is a CONFIRMATION of a request the person just made, so it is
+ * transactional rather than a commercial electronic message. It therefore
+ * needs no unsubscribe link — and it must stay that way to keep that status:
+ * do NOT add offers, product promotion or a newsletter pitch here. The
+ * newsletter is a separate consent with its own audience.
+ *
+ * States no timeline, because none is known. "We'll write to you when it's
+ * ready" is true; any date would not be.
+ */
+export async function sendNotifyConfirmation(to: string, productName?: string) {
+  const client = getClient();
+
+  if (!client) {
+    console.log("[Email - DEV] Notify confirmation to:", to, productName ?? "");
+    return { success: true, dev: true };
+  }
+
+  // The piece is named only when we actually know which one.
+  const piece = productName
+    ? `<p>You asked about <strong>${escapeHtml(productName)}</strong>.</p>`
+    : "";
+
+  const { error } = await client.emails.send({
+    from: FROM_EMAIL,
+    to,
+    subject: "We'll tell you first — Turath Collective",
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;line-height:1.6">
+        <h2 style="font-weight:normal">Thank you</h2>
+        ${piece}
+        <p>
+          We are not taking orders yet — the pieces are still being made by hand.
+          When this one is ready, you will hear from us before anyone else.
+        </p>
+        <p>Nothing has been charged, and we will not add you to anything else.</p>
+        <p style="color:#888;font-size:12px;margin-top:40px">
+          Turath Collective · Montreal, QC · turathcollective.com
+        </p>
+      </div>
+    `,
+  });
+
+  if (error) throw new Error(error.message);
+  return { success: true };
+}

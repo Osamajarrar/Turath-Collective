@@ -10,7 +10,6 @@
     "account": "Mon compte",
     "collections": "Collections",
     "brand": "Marque",
-    "tagline": "Artisanat du Patrimoine",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer",
     "comingSoon": "Bientôt disponible"
@@ -46,9 +45,9 @@
     "freeShippingReached": "Votre commande est admissible à la livraison gratuite."
   },
   "hero": {
-    "heading": "Connectez-vous par le",
-    "headingItalic": "Patrimoine",
-    "cta": "Découvrir",
+    "heading": "L'histoire,",
+    "headingItalic": "toujours faite main.",
+    "cta": "Découvrir la collection",
     "watchStory": "Voir notre histoire",
     "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin"
   },

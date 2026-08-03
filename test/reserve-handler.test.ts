@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const contactsCreate = vi.hoisted(() => vi.fn());
+const email = vi.hoisted(() => ({ sendNotifyConfirmation: vi.fn() }));
+vi.mock("../server/email", () => email);
 vi.mock("resend", () => ({
   Resend: class {
     contacts = { create: contactsCreate };
@@ -15,6 +17,7 @@ const NEWSLETTER = "aud_newsletter";
 beforeEach(() => {
   vi.clearAllMocks();
   contactsCreate.mockResolvedValue({ error: null });
+  email.sendNotifyConfirmation.mockResolvedValue({ success: true });
   process.env.RESEND_API_KEY = "re_test";
   process.env.RESEND_NOTIFY_AUDIENCE_ID = NOTIFY;
   process.env.RESEND_NEWSLETTER_AUDIENCE_ID = NEWSLETTER;
@@ -116,5 +119,26 @@ describe("reserve — validation", () => {
     const written = contactsCreate.mock.calls[0][0];
     expect(written).not.toHaveProperty("cartValue");
     expect(Object.keys(written).sort()).toEqual(["audienceId", "email", "unsubscribed"]);
+  });
+});
+
+describe("reserve — confirmation email", () => {
+  it("sends a confirmation after the address is recorded", async () => {
+    await handleReserveSubmission({ email: "a@b.com", productName: "Indigo Mosaic Bowl" });
+    expect(email.sendNotifyConfirmation).toHaveBeenCalledWith("a@b.com", "Indigo Mosaic Bowl");
+  });
+
+  it("still succeeds when the confirmation fails", async () => {
+    // The address IS recorded. Failing here would make the visitor resubmit,
+    // which double-counts them in the demand test.
+    email.sendNotifyConfirmation.mockRejectedValue(new Error("resend down"));
+    const result = await handleReserveSubmission({ email: "a@b.com" });
+    expect(result.status).toBe(200);
+  });
+
+  it("does not send a confirmation when nothing was recorded", async () => {
+    delete process.env.RESEND_NOTIFY_AUDIENCE_ID;
+    await handleReserveSubmission({ email: "a@b.com" });
+    expect(email.sendNotifyConfirmation).not.toHaveBeenCalled();
   });
 });
