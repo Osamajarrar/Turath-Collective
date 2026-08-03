@@ -2,14 +2,18 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Instagram, ArrowRight, Check } from "lucide-react";
-import { applyRtl } from "@/lib/i18n";
+import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import brandVideo from "@/assets/brand-video.mp4";
 
 // Newsletter form submits to /api/newsletter, which stores the email locally
 // (see server/newsletter.ts). No provider is connected yet; success is shown
 // only after the server confirms the email was stored.
 
-const LANGUAGES = ["en", "fr", "ar"] as const;
+// Derived from the one enabled-locales list in lib/i18n.ts. This page used to
+// keep its OWN ["en","fr","ar"], so it offered Arabic after the navbar stopped
+// doing so — and because the choice is cached in localStorage, picking it here
+// left the whole site in Arabic with no way back through the UI.
+const LANGUAGES = SUPPORTED_LANGUAGES.map((l) => l.code);
 
 export default function ComingSoon() {
   const { t, i18n } = useTranslation();

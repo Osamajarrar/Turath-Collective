@@ -30,6 +30,54 @@ import {
   designVariantNamespaces,
 } from "../design-variants/locales";
 
+/**
+ * The locales a visitor can actually reach — the SINGLE source of truth.
+ *
+ * Arabic is fully translated and stays in the bundle, but is not enabled:
+ * uncomment it here and it becomes selectable everywhere at once (language
+ * switcher, coming-soon page, and the browser-language detector below).
+ *
+ * ⚠ Before re-enabling `ar`: test/ar-parity-baseline.json records ~297 keys
+ * that are still missing from the Arabic files. Shipping it while that
+ * baseline is non-empty means Arabic visitors see English fallback text on
+ * whole pages.
+ */
+export const SUPPORTED_LANGUAGES = [
+  { code: "en", label: "EN", full: "English" },
+  { code: "fr", label: "FR", full: "Français" },
+  // { code: "ar", label: "AR", full: "العربية" },
+] as const;
+
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]["code"];
+
+const ENABLED_CODES = SUPPORTED_LANGUAGES.map((l) => l.code) as unknown as string[];
+
+const LANG_STORAGE_KEY = "turath_lang";
+
+/**
+ * Drop a persisted language that is no longer enabled.
+ *
+ * Without this, anyone who selected Arabic while it was offered — including on
+ * the coming-soon page, which used to list it — is stuck: i18next restores
+ * `ar` from localStorage on every load, and the navbar switcher does not offer
+ * it, so there is no way back to English through the UI.
+ *
+ * Runs BEFORE init so the detector never sees the stale value.
+ */
+function clearDisabledStoredLanguage() {
+  try {
+    const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored && !ENABLED_CODES.includes(stored)) {
+      window.localStorage.removeItem(LANG_STORAGE_KEY);
+    }
+  } catch {
+    // Storage unavailable (private mode) — the detector falls back to
+    // navigator, which supportedLngs already constrains.
+  }
+}
+
+clearDisabledStoredLanguage();
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -64,11 +112,14 @@ i18n
     fallbackNS: "common",
     ns: ["common", "pages", "commerce", "legal", "errors", ...designVariantNamespaces],
     defaultNS: "common",
-    supportedLngs: ["en", "fr", "ar"],
+    // Derived, NOT a second hardcoded list: with "ar" here the detector would
+    // pick Arabic straight from navigator.languages for anyone whose browser
+    // lists it, even though the switcher offers no way back.
+    supportedLngs: ENABLED_CODES,
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
-      lookupLocalStorage: "turath_lang",
+      lookupLocalStorage: LANG_STORAGE_KEY,
     },
     interpolation: {
       escapeValue: false,
@@ -93,11 +144,3 @@ export function applyRtl(lng: string) {
 // (before React renders) to avoid a flash of wrong-direction text
 // when the user's persisted language is Arabic.
 applyRtl(i18n.language);
-
-export const SUPPORTED_LANGUAGES = [
-  { code: "en", label: "EN", full: "English" },
-  { code: "fr", label: "FR", full: "Français" },
-  // { code: "ar", label: "AR", full: "العربية" },
-] as const;
-
-export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]["code"];
