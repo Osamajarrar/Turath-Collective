@@ -52,3 +52,14 @@ simple = { limit = 10, period = 60 }
 # SHOPIFY_STORE_DOMAIN is not secret (it is visible in the storefront anyway).
 # Set it here or in the dashboard.
 # SHOPIFY_STORE_DOMAIN = "turath-collective.myshopify.com"
+
+# Sentry DSN for the WORKER. Deliberately a DIFFERENT Sentry project from the
+# browser's VITE_SENTRY_DSN: a failing /api/shopify is an outage, a client
+# TypeError usually is not, and the two want different alert rules.
+#
+# A DSN is a write-only ingest key, not a secret — it belongs here rather than
+# in `wrangler secret put`. Unset = Worker monitoring off.
+#
+# Unlike VITE_* vars this IS runtime config, so it takes effect on deploy with
+# no rebuild. Locally it goes in .dev.vars.
+# SENTRY_DSN = "https://xxxxxxxx@oNNNNNN.ingest.us.sentry.io/NNNNNN"

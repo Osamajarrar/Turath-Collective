@@ -15,9 +15,19 @@
  */
 import { Hono } from "hono";
 import { z } from "zod";
+import * as Sentry from "@sentry/cloudflare";
 import { SECURITY_HEADERS } from "./security-headers";
+import { scrubEmails } from "../shared/scrub";
 
 export type Env = {
+  /**
+   * Sentry DSN for the WORKER, deliberately separate from the browser's
+   * VITE_SENTRY_DSN: a failing /api/shopify is an outage, a client TypeError
+   * usually isn't, and they want different alert rules. Not a secret (a DSN is
+   * a write-only ingest key), so it belongs in [vars], not `wrangler secret`.
+   * Unset = monitoring off, which is the normal local state.
+   */
+  SENTRY_DSN?: string;
   SHOPIFY_STORE_DOMAIN?: string;
   SHOPIFY_STOREFRONT_TOKEN?: string;
   RESEND_API_KEY?: string;
@@ -55,8 +65,13 @@ app.use("*", async (c, next) => {
 // ── Error handler ───────────────────────────────────────────────────────────
 // Ported from server/index.ts. The rule that survives the move: a 5xx never
 // leaks internal error text to the caller.
+//
+// Hono catches route exceptions here, which means Sentry's own wrapper never
+// sees them — without the explicit captureException below, every handled 500
+// would be invisible in Sentry while looking fine in the dashboard.
 app.onError((err, c) => {
   console.error("[worker] unhandled error:", err);
+  Sentry.captureException(err);
   return c.json({ message: "Internal Server Error" }, 500);
 });
 
@@ -265,4 +280,34 @@ app.all("/api/*", (c) => c.json({ message: "Not found" }, 404));
 // server/static.ts.
 app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 
-export default app;
+// ── Error monitoring ────────────────────────────────────────────────────────
+// The browser SDK is gated on visitor consent (client/src/lib/monitoring.ts).
+// This one is NOT, and the difference is deliberate:
+//
+// Client-side Sentry observes the visitor — session identifier, breadcrumbs of
+// what they clicked. That is the non-essential collection the consent dialog
+// asks about. This instead observes OUR infrastructure: a route threw, an
+// upstream timed out. It is operational logging for availability and security,
+// the standard exception under Law 25 / PIPEDA, and it is also the only
+// version that works — a first-time visitor has no consent cookie yet, and a
+// first-time visitor hitting a broken endpoint is exactly the report worth
+// having.
+//
+// What keeps that defensible is the scrubbing below, not the justification:
+//   - sendDefaultPii false  → no IP address, no cookies, no headers
+//   - beforeSend            → strips anything email-shaped from the payload
+// /api/contact and /api/reserve both receive an email address, so an exception
+// thrown near either could otherwise carry it into the report.
+//
+// tracesSampleRate is 0 for the same reason as the client: an MVP wants to
+// know what broke, not to pay quota for spans nobody reads.
+export default Sentry.withSentry(
+  (env: Env) => ({
+    dsn: env.SENTRY_DSN,
+    sendDefaultPii: false,
+    tracesSampleRate: 0,
+    beforeSend: (event: Sentry.ErrorEvent) => scrubEmails(event),
+    beforeBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => scrubEmails(breadcrumb),
+  }),
+  app satisfies ExportedHandler<Env>,
+);

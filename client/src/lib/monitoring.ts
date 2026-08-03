@@ -27,28 +27,13 @@ import * as Sentry from "@sentry/react";
 // this module reads back only the `getConsent` helper. The cycle is resolved
 // at call time, never at module-evaluation time.
 import { getConsent } from "./consent";
+// One implementation, shared with the Worker's Sentry setup — two copies would
+// drift, and the drifted one would be the one that leaked.
+import { scrubEmails } from "@shared/scrub";
+
+export { scrubEmails };
 
 let initialized = false;
-
-/** Redact anything email-shaped, wherever it appears in a string. */
-const EMAIL_RE = /[^\s@"'<>()[\]{},;:]+@[^\s@"'<>()[\]{},;:]+\.[a-z]{2,}/gi;
-
-export function scrubEmails<T>(value: T): T {
-  if (typeof value === "string") {
-    return value.replace(EMAIL_RE, "[redacted-email]") as unknown as T;
-  }
-  if (Array.isArray(value)) {
-    return value.map(scrubEmails) as unknown as T;
-  }
-  if (value !== null && typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      out[k] = scrubEmails(v);
-    }
-    return out as unknown as T;
-  }
-  return value;
-}
 
 /**
  * Start Sentry. Called only from the consent layer on "granted", and from
