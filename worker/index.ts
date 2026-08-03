@@ -28,6 +28,18 @@ export type Env = {
    * Unset = monitoring off, which is the normal local state.
    */
   SENTRY_DSN?: string;
+  /**
+   * Which deployment this is, as Sentry's `environment` tag.
+   *
+   * Cloudflare exposes no equivalent of import.meta.env.MODE, and Sentry's own
+   * default is the string "production" — so without this every `wrangler dev`
+   * error is filed as a production incident and trips production alert rules.
+   *
+   * Defaults to "production" rather than "development" deliberately: if this
+   * is ever missing in the real deploy, the failure should be a noisy local
+   * error, not silently unmonitored production.
+   */
+  ENVIRONMENT?: string;
   SHOPIFY_STORE_DOMAIN?: string;
   SHOPIFY_STOREFRONT_TOKEN?: string;
   RESEND_API_KEY?: string;
@@ -304,6 +316,7 @@ app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 export default Sentry.withSentry(
   (env: Env) => ({
     dsn: env.SENTRY_DSN,
+    environment: env.ENVIRONMENT ?? "production",
     sendDefaultPii: false,
     tracesSampleRate: 0,
     beforeSend: (event: Sentry.ErrorEvent) => scrubEmails(event),

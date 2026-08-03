@@ -63,3 +63,9 @@ simple = { limit = 10, period = 60 }
 # Unlike VITE_* vars this IS runtime config, so it takes effect on deploy with
 # no rebuild. Locally it goes in .dev.vars.
 # SENTRY_DSN = "https://xxxxxxxx@oNNNNNN.ingest.us.sentry.io/NNNNNN"
+
+# Sentry's `environment` tag. Cloudflare has no equivalent of Vite's MODE, and
+# Sentry defaults this to the literal "production" — so a local `wrangler dev`
+# crash is filed as a live incident and trips production alert rules unless
+# .dev.vars overrides it to "development".
+ENVIRONMENT = "production"
