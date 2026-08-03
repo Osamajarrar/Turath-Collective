@@ -2,7 +2,59 @@
 
 Status snapshot of what's missing or pending before the site can go live at **turathcollective.com**.
 
+> **Read this section first. Everything below §1 is older detail that has NOT been
+> re-verified since 2026-08-01 — several items in it are already done.** This top
+> section is the current view; treat the rest as history until it is checked.
+
 ---
+
+# Current state — 2026-08-01
+
+**The code is well ahead of the business decisions.** Almost nothing left is a coding
+task; most of it is a decision only the founder can make, or an account/dashboard
+action. Per-branch detail lives in [plans/11-dev-backlog.md](plans/11-dev-backlog.md).
+
+## Blocking launch — founder actions, no code
+
+| # | Item | Why it blocks |
+|---|---|---|
+| 1 | **Remove the Shopify storefront password** | Until then nobody can buy anything. `VITE_REAL_CHECKOUT` must stay unset, so checkout shows the intent dialog instead of a password wall |
+| 2 | **Set the production env vars** | `RESEND_API_KEY`, `RESEND_NOTIFY_AUDIENCE_ID`, `RESEND_NEWSLETTER_AUDIENCE_ID`, `VITE_SENTRY_DSN`, Shopify domain + token. Without Resend the contact form and email capture return errors *by design*, rather than pretending to work |
+| 3 | **Verify the Hebron "2,000 years" claim** in the FAQ | Hard rule 4. Nobody has confirmed the number, and no model should invent one |
+| 4 | **Decide the reply-time promise**, or leave it out | No window is promised anywhere right now. If you add one it must be true, and it must match in the email template *and* the contact page |
+| 5 | **Pick the admin email** | `server/email.ts` sends to collectiveturath@gmail.com; the site advertises support@turathcollective.com |
+| 6 | **Choose a homepage design** | Six built at `/design`. Narrow to two, get feedback, then delete the gallery |
+| 7 | **Choose a catalogue grouping** | Four options at `/shop-filters`. It is a site-wide taxonomy — it changes the homepage collection cards too, not just the shop |
+| 8 | **Decide the navbar tagline** | Recommendation: remove it. The SVG work is manual |
+
+## Blocking launch — needs code
+
+| # | Item | Notes |
+|---|---|---|
+| 9 | **Category source of truth** | `inferCategoryHandle` guesses a product's category by string-matching its name — a glass bowl matches "bowl" and is filed under ceramics, silently. Cheap to fix NOW against mock data; expensive once real products are tagged and Google has indexed them. See [plans/12](plans/12-reversibility.md) |
+| 10 | **Email templates** | The contact confirmation exists. The notify-me confirmation, the "it's available now" email and the newsletter welcome do not. `sendNewsletterWelcome` must not be called until it has a working unsubscribe (CASL) |
+| 11 | **Cloudflare cutover** | Code-complete and verified against a real `wrangler dev`. Remaining: DNS, secrets, and `VITE_*` in the Cloudflare **build** environment — not only as runtime secrets, since Vite bakes them into the bundle at build time. This is the most likely cause of an "analytics stopped working" report after cutover |
+| 12 | **Arabic, if it ships** | ~297 keys missing (`test/ar-parity-baseline.json`). Currently disabled, which is the honest state |
+
+## Done since this checklist was last accurate — do not redo
+
+Analytics consent (blocking modal, category-keyed record), Sentry on the client behind that
+consent, the contact form rebuilt and wired to Resend, checkout-intent capture with the CASL
+two-consent split, newsletter moved off a JSON file onto a Resend audience, vitest with 189
+tests, the self-hosted auth stack and file-backed stores deleted, the D1 dialect conversion,
+the Cloudflare Worker with one CSP source of truth, embroidery removed from every surface
+(including the meta tags and the care page), and the Arabic-default language bug.
+
+## Deliberately NOT done
+
+- **Anonymous pre-consent analytics** — specified, legally unsettled, not signed off
+- **Granular cookie category toggles** — only one non-essential category exists today; the
+  stored record is already category-keyed, so adding them later is cheap
+- **Real checkout** — gated on item 1
+- **Reviews, accounts, favourites** — deferred post-MVP by DECISIONS.md
+
+---
+
 
 ## 1. Commerce (Shopify Headless)
 
