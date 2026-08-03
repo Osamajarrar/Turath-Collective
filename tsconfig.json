@@ -6,7 +6,21 @@
   // proxy test imports it, which pulls it into the program. That is the first
   // time the proxy that actually runs in production has been typechecked, and
   // it is why @vercel/node is a devDependency.
-  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "test/**/*"],
+  //
+  // worker/ is listed EXPLICITLY, and that matters: it was missing until
+  // 2026-08-02, so the runtime that production will actually serve had only
+  // ever been bundled by esbuild — which does not typecheck. It briefly became
+  // covered by accident, because two tests import its two files, but coverage
+  // that depends on a test still importing something is coverage that
+  // disappears silently the day someone deletes that test.
+  //
+  // Cloudflare's ambient globals (ExportedHandler, KVNamespace, …) are NOT
+  // available here: @cloudflare/workers-types would redefine
+  // fetch/Request/Response for the whole program, including the client, which
+  // needs the DOM versions. Type Worker bindings through the local `Env` type
+  // instead. If worker/ ever needs the real globals, give it its own tsconfig
+  // rather than widening this one.
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "test/**/*", "worker/**/*"],
   "exclude": ["node_modules", "build", "dist"],
   "compilerOptions": {
     "incremental": true,
