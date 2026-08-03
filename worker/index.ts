@@ -313,14 +313,24 @@ app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 //
 // tracesSampleRate is 0 for the same reason as the client: an MVP wants to
 // know what broke, not to pay quota for spans nobody reads.
-export default Sentry.withSentry(
-  (env: Env) => ({
+// Exported (rather than inlined into withSentry) so the privacy guarantees are
+// testable without a live Sentry: test/worker-sentry.test.ts asserts that
+// beforeSend actually redacts, that PII stays off, and that a local run is not
+// tagged as production. Eyeballing a dashboard does not survive a refactor.
+export function sentryOptions(env: Env) {
+  return {
     dsn: env.SENTRY_DSN,
     environment: env.ENVIRONMENT ?? "production",
     sendDefaultPii: false,
     tracesSampleRate: 0,
     beforeSend: (event: Sentry.ErrorEvent) => scrubEmails(event),
     beforeBreadcrumb: (breadcrumb: Sentry.Breadcrumb) => scrubEmails(breadcrumb),
-  }),
-  app satisfies ExportedHandler<Env>,
-);
+  };
+}
+
+// No `satisfies ExportedHandler<Env>` here: that type is an ambient global from
+// @cloudflare/workers-types, and adding that package to tsconfig `types` would
+// redefine fetch/Request/Response for the whole program — including the client,
+// which needs the DOM versions. Hono's app already types its own fetch handler,
+// and wrangler validates the real shape at build time.
+export default Sentry.withSentry(sentryOptions, app);
