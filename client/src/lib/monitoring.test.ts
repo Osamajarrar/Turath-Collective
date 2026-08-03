@@ -58,6 +58,9 @@ describe("Sentry is blocked until consent", () => {
   });
 
   it("stays a no-op when no DSN is configured", () => {
+    // Stub explicitly rather than relying on the ambient env: a developer with
+    // a real VITE_SENTRY_DSN in .env.local would otherwise fail this test.
+    vi.stubEnv("VITE_SENTRY_DSN", "");
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ status: "granted", timestamp: new Date().toISOString() }),
