@@ -9,7 +9,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 // (craft-band, this one) makes the one CTA unmistakable on the way out.
 // Claim-free heading, no new facts — reuses hero.cta for the button label.
 export default function ClosingCta() {
-  const { t } = useTranslation(["design-warm-immersive", "common"]);
+  const { t } = useTranslation("common");
   const prefersReducedMotion = useReducedMotion();
 
   return (

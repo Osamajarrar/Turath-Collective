@@ -49,7 +49,8 @@
     "headingItalic": "toujours faite main.",
     "cta": "Découvrir la collection",
     "watchStory": "Voir notre histoire",
-    "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin"
+    "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin",
+    "secondaryCta": "Notre histoire"
   },
   "contact": {
     "badge": "Nous contacter",
@@ -183,5 +184,12 @@
     "badge": "Communauté",
     "heading": "Rejoignez le #TurathCollective",
     "instagram": "@TurathCollective"
+  },
+  "craftBand": {
+    "kicker": "Le métier",
+    "quote": "L'argile tournée à la main à Hébron. Le verre soufflé à la bouche par des artisans en Palestine. Chaque pièce porte la main qui l'a façonnée."
+  },
+  "closingCta": {
+    "heading": "Commencez par la collection."
   }
 }

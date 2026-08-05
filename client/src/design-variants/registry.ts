@@ -42,13 +42,12 @@ export const DESIGN_VARIANTS: DesignVariant[] = [
     component: lazy(() => import("./editorial-split/page")),
   },
   {
-    id: "warm-immersive",
-    label: "Golden Hour Immersive",
+    id: "original",
+    label: "Original",
     description:
-      "Warmer and slower: a full-bleed hero, a dark craft band as a pause mid-scroll, and a closing call to action before the newsletter.",
-    branch: "design/warm-immersive",
-    note: "Proposed a warmer cream palette; see design-variants/warm-immersive/README.md for how that is previewed here.",
-    component: lazy(() => import("./warm-immersive/page")),
+      "The homepage that was live before Golden Hour Immersive was promoted to the default. Kept for comparison: no CraftBand pause mid-scroll, no closing CTA, and the cooler palette.",
+    branch: "—",
+    component: lazy(() => import("./original/page")),
   },
   {
     id: "quiet-commerce",

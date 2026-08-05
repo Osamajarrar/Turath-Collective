@@ -11,7 +11,6 @@
 // Preview-only: nothing outside client/src/design-variants reads these, and
 // the real `common` / `pages` namespaces are untouched.
 
-import enWarmImmersive from "../locales/en/design-warm-immersive.json";
 import enEditorialSplit from "../locales/en/design-editorial-split.json";
 import enMobileNarrative from "../locales/en/design-mobile-narrative.json";
 import enMobileNarrativePages from "../locales/en/design-mobile-narrative-pages.json";
@@ -19,7 +18,6 @@ import enQuietCommerce from "../locales/en/design-quiet-commerce.json";
 import enConversionHybrid from "../locales/en/design-conversion-hybrid.json";
 import enObjectFirst from "../locales/en/design-object-first.json";
 
-import frWarmImmersive from "../locales/fr/design-warm-immersive.json";
 import frEditorialSplit from "../locales/fr/design-editorial-split.json";
 import frMobileNarrative from "../locales/fr/design-mobile-narrative.json";
 import frMobileNarrativePages from "../locales/fr/design-mobile-narrative-pages.json";
@@ -27,7 +25,6 @@ import frQuietCommerce from "../locales/fr/design-quiet-commerce.json";
 import frConversionHybrid from "../locales/fr/design-conversion-hybrid.json";
 import frObjectFirst from "../locales/fr/design-object-first.json";
 
-import arWarmImmersive from "../locales/ar/design-warm-immersive.json";
 import arEditorialSplit from "../locales/ar/design-editorial-split.json";
 import arMobileNarrative from "../locales/ar/design-mobile-narrative.json";
 import arMobileNarrativePages from "../locales/ar/design-mobile-narrative-pages.json";
@@ -37,7 +34,6 @@ import arObjectFirst from "../locales/ar/design-object-first.json";
 
 export const designVariantResources = {
   en: {
-    "design-warm-immersive": enWarmImmersive,
     "design-editorial-split": enEditorialSplit,
     "design-mobile-narrative": enMobileNarrative,
     "design-mobile-narrative-pages": enMobileNarrativePages,
@@ -46,7 +42,6 @@ export const designVariantResources = {
     "design-object-first": enObjectFirst,
   },
   fr: {
-    "design-warm-immersive": frWarmImmersive,
     "design-editorial-split": frEditorialSplit,
     "design-mobile-narrative": frMobileNarrative,
     "design-mobile-narrative-pages": frMobileNarrativePages,
@@ -55,7 +50,6 @@ export const designVariantResources = {
     "design-object-first": frObjectFirst,
   },
   ar: {
-    "design-warm-immersive": arWarmImmersive,
     "design-editorial-split": arEditorialSplit,
     "design-mobile-narrative": arMobileNarrative,
     "design-mobile-narrative-pages": arMobileNarrativePages,

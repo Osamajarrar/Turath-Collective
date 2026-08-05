@@ -8,7 +8,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 // between FeaturedProducts and CollectionCards that restates the craft in
 // technique-and-place terms (never implying the object itself is old).
 export default function CraftBand() {
-  const { t } = useTranslation(["design-warm-immersive", "common", "pages"]);
+  const { t } = useTranslation(["common", "pages"]);
   const prefersReducedMotion = useReducedMotion();
 
   return (

@@ -137,7 +137,7 @@ export default function Navbar() {
           {/* Center: logo */}
           <div className="flex flex-col items-center">
             <Link href="/">
-              <Logo variant="mark-only" className="w-36 md:w-44 h-auto" />
+              <Logo variant="mark-only" className="w-44 md:w-56 h-auto" />
             </Link>
           </div>
 
