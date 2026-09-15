@@ -23,21 +23,25 @@ not_found_handling = "single-page-application"
 # instance, so on Vercel the limit was never actually enforced across the
 # fleet. These bindings are enforced by Cloudflare, so this is the first
 # deployment where the ceiling is real. Rates match the previous intent.
-[[unsafe.bindings]]
+# The binding name must match worker/index.ts. `[[ratelimits]]` is the current
+# config key; the older `[[unsafe.bindings]]` form with type = "ratelimit" is
+# accepted by wrangler but does NOT produce a binding, and worker/index.ts
+# skips the check when the binding is absent — so the limit silently never
+# applied. Verified against the deployed Worker: 35 rapid requests, 0 x 429.
+[[ratelimits]]
 name = "SHOPIFY_RATE_LIMITER"
-type = "ratelimit"
 namespace_id = "1001"
 simple = { limit = 30, period = 60 }
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "API_RATE_LIMITER"
-type = "ratelimit"
 namespace_id = "1002"
 simple = { limit = 10, period = 60 }
 
 # ── Environment variables ────────────────────────────────────────────────────
-# NON-SECRET values only. Secrets are set with `wrangler secret put`:
-#   SHOPIFY_STOREFRONT_TOKEN, RESEND_API_KEY, POSTHOG_API_KEY
+# NON-SECRET values only. Secrets are set with `wrangler secret put` (or in
+# the dashboard): SHOPIFY_STOREFRONT_TOKEN, RESEND_API_KEY,
+# RESEND_NEWSLETTER_AUDIENCE_ID, RESEND_NOTIFY_AUDIENCE_ID, SENTRY_DSN.
 # Locally they go in .dev.vars, which is gitignored alongside .env.local.
 #
 # ⚠ VITE_* vars are NOT runtime config. Vite bakes them into the bundle at
