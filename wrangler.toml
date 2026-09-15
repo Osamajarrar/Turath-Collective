@@ -1,0 +1,84 @@
+name = "turath-collective"
+main = "worker/index.ts"
+compatibility_date = "2026-07-01"
+
+# The shared handlers (server/contact-handler.ts, server/reserve-handler.ts)
+# and the Resend SDK expect a Node-ish environment — process.env in
+# particular. nodejs_compat provides it.
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets: the Vite build output, served directly by Cloudflare and NOT
+# billed as Worker requests (a storefront is overwhelmingly static assets,
+# which is what makes this free at our scale — DECISIONS.md §1).
+#
+# single-page-application replaces BOTH the `/(.*) -> /index.html` rewrite in
+# vercel.json and the Express fallback in server/static.ts. Without it, deep
+# links like /product/<handle> return 404 instead of the app.
+[assets]
+directory = "dist/public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Rate limiting. express-rate-limit kept its counters in the memory of ONE
+# instance, so on Vercel the limit was never actually enforced across the
+# fleet. These bindings are enforced by Cloudflare, so this is the first
+# deployment where the ceiling is real. Rates match the previous intent.
+# The binding name must match worker/index.ts. `[[ratelimits]]` is the current
+# config key; the older `[[unsafe.bindings]]` form with type = "ratelimit" is
+# accepted by wrangler but does NOT produce a binding, and worker/index.ts
+# skips the check when the binding is absent — so the limit silently never
+# applied. Verified against the deployed Worker: 35 rapid requests, 0 x 429.
+[[ratelimits]]
+name = "SHOPIFY_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }
+
+[[ratelimits]]
+name = "API_RATE_LIMITER"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }
+
+# ── Environment variables ────────────────────────────────────────────────────
+# NON-SECRET values only. Secrets are set with `wrangler secret put` (or in
+# the dashboard): SHOPIFY_STOREFRONT_TOKEN, RESEND_API_KEY,
+# RESEND_NEWSLETTER_AUDIENCE_ID, RESEND_NOTIFY_AUDIENCE_ID, SENTRY_DSN.
+# Locally they go in .dev.vars, which is gitignored alongside .env.local.
+#
+# ⚠ VITE_* vars are NOT runtime config. Vite bakes them into the bundle at
+# build time, so they must be set in the Cloudflare BUILD environment. Setting
+# them only as Worker secrets leaves GA4 and PostHog dark, which is the most
+# likely cause of an "analytics stopped working" report after cutover.
+#
+# ⚠ VITE_DEMO_MODE must NEVER be set in any Cloudflare environment, exactly as
+# with Vercel. It forces fake reviews, fake social proof and a fake shipping
+# offer on for real visitors.
+[vars]
+# SHOPIFY_STORE_DOMAIN is not secret (it is visible in the storefront anyway).
+# It lives here, not in the dashboard: a `wrangler deploy` REPLACES the Worker
+# plain-text vars with this block, so a dashboard-only value disappears on the
+# next deploy, silently. Secrets are unaffected.
+SHOPIFY_STORE_DOMAIN = "turathcollective.myshopify.com"
+
+# server/email.ts refuses to report a delivered email that was never sent, but
+# only when NODE_ENV === "production". Nothing sets NODE_ENV on Workers, so
+# without this the guard cannot fire: a missing RESEND_API_KEY would make the
+# contact form answer "message received" while sending nothing — exactly the
+# false success the honesty rules exist to prevent. Pin it explicitly.
+NODE_ENV = "production"
+
+# Sentry DSN for the WORKER. Deliberately a DIFFERENT Sentry project from the
+# browser's VITE_SENTRY_DSN: a failing /api/shopify is an outage, a client
+# TypeError usually is not, and the two want different alert rules.
+#
+# A DSN is a write-only ingest key, not a secret — it belongs here rather than
+# in `wrangler secret put`. Unset = Worker monitoring off.
+#
+# Unlike VITE_* vars this IS runtime config, so it takes effect on deploy with
+# no rebuild. Locally it goes in .dev.vars.
+# SENTRY_DSN = "https://xxxxxxxx@oNNNNNN.ingest.us.sentry.io/NNNNNN"
+
+# Sentry's `environment` tag. Cloudflare has no equivalent of Vite's MODE, and
+# Sentry defaults this to the literal "production" — so a local `wrangler dev`
+# crash is filed as a live incident and trips production alert rules unless
+# .dev.vars overrides it to "development".
+ENVIRONMENT = "production"

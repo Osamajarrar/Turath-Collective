@@ -1,7 +1,30 @@
 node_modules
 dist
 .DS_Store
+# local data stores (newsletter subscribers, product reviews etc. — user-submitted PII, never commit)
+data/
 server/public
 vite.config.ts.*
 *.tar.gz
 .env.local
+**/lighthouse-report*.json
+baseline-report.json
+# agent worktrees + machine-local Claude settings (never shared)
+.claude/worktrees/
+.claude/settings.local.json
+
+# design-sync (staged scripts, build output, machine state)
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
+
+# Cloudflare Worker local secrets — same rule as .env.local, never commit
+.dev.vars
+
+# Wrangler local dev state (miniflare cache/traces) — machine-local
+.wrangler/
+
+# Vite also reads a plain .env; same rule as .env.local, never commit
+.env

@@ -10,12 +10,18 @@
     "account": "Mon compte",
     "collections": "Collections",
     "brand": "Marque",
-    "tagline": "Artisanat du Patrimoine",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer",
     "comingSoon": "Bientôt disponible"
   },
   "announcement": "Livraison gratuite pour les commandes supérieures à 100 CAD",
+  "consent": {
+    "label": "Consentement aux témoins",
+    "message": "Nous utilisons des données analytiques et une surveillance des erreurs pour comprendre comment les visiteurs utilisent le site et pour détecter les problèmes. Rien n'est suivi tant que vous n'avez pas choisi.",
+    "accept": "Accepter l'analyse",
+    "decline": "Essentiels seulement",
+    "privacyLink": "Consulter notre politique de confidentialité."
+  },
   "lang": {
     "label": "Langue",
     "region": "Région et Langue",
@@ -34,14 +40,17 @@
     "empty": "Votre panier est vide.",
     "remove": "Retirer",
     "increaseQty": "Augmenter la quantité",
-    "decreaseQty": "Diminuer la quantité"
+    "decreaseQty": "Diminuer la quantité",
+    "freeShippingAway": "Il vous manque {{amount}} pour profiter de la livraison gratuite.",
+    "freeShippingReached": "Votre commande est admissible à la livraison gratuite."
   },
   "hero": {
-    "heading": "Connectez-vous par le",
-    "headingItalic": "Patrimoine",
-    "cta": "Découvrir",
+    "heading": "L'histoire,",
+    "headingItalic": "toujours faite main.",
+    "cta": "Découvrir la collection",
     "watchStory": "Voir notre histoire",
-    "craftedIn": "Fabriqué à Hébron"
+    "imageAlt": "Une tasse en céramique artisanale sur un linge de lin dans la lumière chaude du matin",
+    "secondaryCta": "Notre histoire"
   },
   "contact": {
     "badge": "Nous contacter",
@@ -53,10 +62,9 @@
     "phone": "Téléphone",
     "wholesale": "Vente en gros et Presse",
     "wholesaleDesc": "Vous souhaitez collaborer ou présenter nos artisans ? Nous serions ravis de vous entendre.",
-    "addressDetails": "1234 Heritage Way, Plateau Mont-Royal\nMontréal, QC H2X 3Y4, Canada",
-    "phoneNumber": "+1 (514) 555-0123",
-    "emailAddress": "hello@turathcollective.com",
-    "partnerEmail": "partnerships@turathcollective.com",
+    "emailCtaTitle": "Écrivez-nous directement",
+    "emailCtaBody": "Écrivez-nous à support@turathcollective.com — nous lisons tout.",
+    "emailCtaButton": "Nous écrire",
     "placeholderName": "Layla Sami",
     "placeholderEmail": "layla@exemple.com",
     "placeholderSubject": "Renseignements sur les céramiques",
@@ -68,11 +76,13 @@
     "formSend": "Envoyer le message",
     "formSending": "Envoi en cours...",
     "successTitle": "Message reçu",
-    "successDesc": "Merci de nous avoir contactés. Nous vous répondrons dans 1 à 2 jours ouvrables.",
+    "successDesc": "Merci de nous avoir contactés. Nous lisons chaque message et vous répondrons dès que possible.",
     "errorTitle": "Une erreur est survenue",
     "errorDesc": "Veuillez réessayer ou nous écrire directement.",
     "checkFaq": "Vous cherchez des réponses rapides?",
-    "viewFaq": "Consultez nos FAQ"
+    "viewFaq": "Consultez nos FAQ",
+    "honeypot": "Entreprise",
+    "orEmail": "Vous préférez votre propre messagerie ? Écrivez-nous à"
   },
   "footer": {
     "tagline": "Sublimer le quotidien par l'artisanat patrimonial. Basés à Montréal, nous existons pour préserver et partager les traditions vivantes de maîtres artisans.",
@@ -94,9 +104,11 @@
   },
   "newsletter": {
     "heading": "Rejoignez le Cercle du Turath",
-    "desc": "Bénéficiez d'un accès prioritaire à nos collections exclusives et découvrez les coulisses des traditions vivantes que nous importons à Montréal.",
+    "desc": "Des nouvelles occasionnelles sur les nouvelles pièces et les artisans qui les façonnent.",
     "placeholder": "Votre adresse courriel",
-    "cta": "S'abonner"
+    "cta": "S'abonner",
+    "success": "Votre courriel est bien enregistré — merci.",
+    "error": "Une erreur est survenue. Veuillez réessayer."
   },
   "comingSoon": {
     "badge": "Bientôt disponible",
@@ -126,6 +138,11 @@
       "title": "Broderie",
       "description": "Motifs Tatreez centenaires, brodés à la main sur les plus beaux tissus locaux.",
       "cta": "ACHETER LA BRODERIE"
+    },
+    "glass": {
+      "title": "Verre",
+      "description": "Verrerie soufflée à la bouche par des artisans en Palestine.",
+      "cta": "ACHETER LE VERRE"
     }
   },
   "collectionCards": {
@@ -134,6 +151,9 @@
     "comingSoon": "Bientôt disponible",
     "inTheWorks": "En cours de préparation",
     "availableSoon": "Disponible bientôt"
+  },
+  "featuredProducts": {
+    "badge": "Pièces en vedette"
   },
   "reviewCarousel": {
     "badge": "Histoires des mécènes",
@@ -164,5 +184,12 @@
     "badge": "Communauté",
     "heading": "Rejoignez le #TurathCollective",
     "instagram": "@TurathCollective"
+  },
+  "craftBand": {
+    "kicker": "Le métier",
+    "quote": "L'argile tournée à la main à Hébron. Le verre soufflé à la bouche par des artisans en Palestine. Chaque pièce porte la main qui l'a façonnée."
+  },
+  "closingCta": {
+    "heading": "Commencez par la collection."
   }
 }

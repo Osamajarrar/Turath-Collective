@@ -22,6 +22,11 @@ function ga4Plugin(measurementId: string): Plugin {
         `  window.dataLayer = window.dataLayer || [];`,
         `  function gtag(){dataLayer.push(arguments);}`,
         `  gtag('js', new Date());`,
+        // Google Consent Mode v2 — deny everything by default (opt-in model,
+        // PIPEDA / Quebec Law 25). gtag.js loads but sets no cookies and sends
+        // no measurable hits until the consent banner flips analytics_storage
+        // to 'granted'. See client/src/lib/consent.ts.
+        `  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });`,
         `  gtag('config', '${measurementId}', { 'anonymize_ip': true });`,
         `</script>`,
       ].join("\n    ");

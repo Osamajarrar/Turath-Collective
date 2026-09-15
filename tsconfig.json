@@ -1,12 +1,35 @@
 {
-  "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
-  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+  // Tests are typechecked too. The previous config excluded `**/*.test.ts` but
+  // not `**/*.test.tsx`, so component tests were checked and plain ones were
+  // not — a split that hid errors in whichever half you weren't looking at.
+  // api/ is not listed, but api/shopify.ts is now typechecked anyway: the
+  // proxy test imports it, which pulls it into the program. That is the first
+  // time the proxy that actually runs in production has been typechecked, and
+  // it is why @vercel/node is a devDependency.
+  //
+  // worker/ is listed EXPLICITLY, and that matters: it was missing until
+  // 2026-08-02, so the runtime that production will actually serve had only
+  // ever been bundled by esbuild — which does not typecheck. It briefly became
+  // covered by accident, because two tests import its two files, but coverage
+  // that depends on a test still importing something is coverage that
+  // disappears silently the day someone deletes that test.
+  //
+  // Cloudflare's ambient globals (ExportedHandler, KVNamespace, …) are NOT
+  // available here: @cloudflare/workers-types would redefine
+  // fetch/Request/Response for the whole program, including the client, which
+  // needs the DOM versions. Type Worker bindings through the local `Env` type
+  // instead. If worker/ ever needs the real globals, give it its own tsconfig
+  // rather than widening this one.
+  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "test/**/*", "worker/**/*"],
+  "exclude": ["node_modules", "build", "dist"],
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
     "noEmit": true,
     "module": "ESNext",
+    // Was unset, so tsc defaulted to ES5 and rejected iterating a Set/Map.
+    // Everything here runs in modern browsers or Node 20+.
+    "target": "ES2022",
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "preserve",
@@ -14,8 +37,11 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
-    "baseUrl": ".",
-    "types": ["node", "vite/client"],
+    "resolveJsonModule": true,
+    // @testing-library/jest-dom registers toBeInTheDocument/toHaveAttribute
+    // on vitest's Assertion type; without it those matchers work at runtime
+    // but fail `npm run check`.
+    "types": ["node", "vite/client", "@testing-library/jest-dom"],
     "paths": {
       "@/*": ["./client/src/*"],
       "@shared/*": ["./shared/*"]

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useRoute } from "wouter";
+import { useRoute, useSearch, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Plus, Minus, Brush, Droplets, Package, Heart, Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ColorSwatch } from "@/components/ColorSwatch";
 import { cn } from "@/lib/utils";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
+import { USE_MOCK_PRODUCTS, NOTIFY_ME_ENABLED } from "@/lib/flags";
 import { useCart } from "@/context/cart-context";
+import { trackEvent } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // Mock assets
@@ -302,9 +304,14 @@ function NotifyMeModal({ isOpen, onClose, product, variant, t }: NotifyMeModalPr
 
     setIsSubmitting(true);
     try {
-      // Simulate API call - replace with actual endpoint
+      // ⚠ STUB — there is no endpoint behind this yet. The modal is unreachable
+      // while NOTIFY_ME_ENABLED is false, which is the only reason showing a
+      // success message here is not a lie. Do NOT enable the flag until this
+      // POSTs to a real capture route AND records the CASL consent basis
+      // (see plan 11 branch 8); `optIn` is the newsletter consent, which is a
+      // separate consent from "tell me when this is available".
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Notify me request:", { email, productHandle: product.handle, variantId: variant.variantId, optIn });
+      void optIn;
       setSubmitted(true);
       setTimeout(() => {
         setEmail("");
@@ -460,6 +467,7 @@ function SkeletonCarousel() {
 export default function ProductPage() {
   const { t } = useTranslation("commerce");
   const [, params] = useRoute("/product/:id");
+  const search = useSearch();
   const { addItem, isBusy, cart, mockLines, hasMockCart } = useCart();
   const prefersReducedMotion = useReducedMotion();
   const [quantity, setQuantity] = useState(1);
@@ -467,18 +475,20 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [liveProduct, setLiveProduct] = useState<DisplayProduct | null>(null);
   const [suggestedProducts, setSuggestedProducts] = useState<DisplayProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(() => import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [isLoading, setIsLoading] = useState(() => !USE_MOCK_PRODUCTS);
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
   const [selectedNotifyVariant, setSelectedNotifyVariant] = useState<Variation | null>(null);
 
   const sectionDuration = prefersReducedMotion ? 0.1 : 0.6;
   const accordionDuration = prefersReducedMotion ? 0.05 : 0.3;
 
-  const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+  // Observe the CTA container (not the Add to Bag button itself) so the sticky
+  // bar still tracks scroll when the Notify Me button is rendered instead.
+  const ctaSectionRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   useEffect(() => {
-    const btn = addToCartBtnRef.current;
+    const btn = ctaSectionRef.current;
     if (!btn) return;
 
     let lastScrollY = window.scrollY;
@@ -507,7 +517,7 @@ export default function ProductPage() {
     if (!handle) return;
     let cancelled = false;
 
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       const mockProduct = MOCK_PRODUCTS.find((p) => p.handle === handle);
       if (mockProduct) setLiveProduct(mockProduct);
       const suggested = MOCK_PRODUCTS
@@ -536,7 +546,7 @@ export default function ProductPage() {
       if (!products || products.length === 0) {
         console.log("[Product] No Shopify products");
         // Only fallback to mocks if explicitly enabled
-        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+        if (USE_MOCK_PRODUCTS) {
           console.log("[Product] Using mock fallback");
           const normalized = MOCK_PRODUCTS
             .filter((p) => p.handle !== handle)
@@ -555,7 +565,7 @@ export default function ProductPage() {
       // If no suggested products after filtering, only use mocks if explicitly enabled
       if (normalized.length === 0) {
         console.log("[Product] No suggested products after filtering");
-        if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+        if (USE_MOCK_PRODUCTS) {
           console.log("[Product] Using mock fallback");
           const mockFallback = MOCK_PRODUCTS
             .filter((p) => p.handle !== handle)
@@ -570,7 +580,7 @@ export default function ProductPage() {
       console.error("[Product] Error fetching Shopify products:", err);
       if (cancelled) return;
       // Only fallback to mocks if explicitly enabled
-      if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+      if (USE_MOCK_PRODUCTS) {
         const normalized = MOCK_PRODUCTS
           .filter((p) => p.handle !== handle)
           .sort(() => Math.random() - 0.5)
@@ -607,7 +617,7 @@ export default function ProductPage() {
     }
 
     // Only use mock products if explicitly enabled in env
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       return (
         MOCK_PRODUCTS.find((p) => p.handle === params?.id) ||
         MOCK_PRODUCTS.find((p) => p.id === params?.id) ||
@@ -629,6 +639,19 @@ export default function ProductPage() {
       specs: {},
     };
   }, [liveProduct, params?.id, isLoading]);
+
+  // Honour ?variant=N from shop-card swatch links. Re-runs when the live
+  // product arrives (variations.length changes), so an index beyond the
+  // loading placeholder still applies once the real variations are known.
+  useEffect(() => {
+    const raw = new URLSearchParams(search).get("variant");
+    if (raw === null) return;
+    const idx = Number(raw);
+    if (Number.isInteger(idx) && idx >= 0 && idx < product.variations.length) {
+      setSelectedVariationIdx(idx);
+      setSelectedImage(0);
+    }
+  }, [search, product.variations.length]);
 
   const currentVariation = product.variations[selectedVariationIdx] ?? product.variations[0];
   const images = currentVariation?.images ?? [];
@@ -674,17 +697,24 @@ export default function ProductPage() {
         currencyCode: product.currencyCode,
         imageUrl: imageUrl || undefined,
       });
-      setQuantity(1);
+      trackEvent("add_to_cart", {
+        product_name: product.name,
+        variant: currentVariation.color,
+        price: currentVariation.price,
+        currency: product.currencyCode,
+        quantity,
+      });
       return;
     }
-    await addItem(currentVariation.variantId, quantity);
-    setQuantity(1);
-  };
 
-  const handleBuyNow = async () => {
-    if (!currentVariation.variantId || currentVariation.variantId.startsWith("mock-")) return;
-    const url = await shopifyService.buyNow(currentVariation.variantId, quantity);
-    if (url) window.location.href = url;
+    await addItem(currentVariation.variantId, quantity);
+    trackEvent("add_to_cart", {
+      product_name: product.name,
+      variant: currentVariation.color,
+      price: currentVariation.price,
+      currency: product.currencyCode,
+      quantity,
+    });
   };
 
   return (
@@ -772,7 +802,7 @@ export default function ProductPage() {
                   </div>
                 )}
                 {product.isBestSeller && (
-                  <div className="badge-product w-fit">Top Rated</div>
+                  <div className="badge-product w-fit">{t("shop.badges.bestSeller")}</div>
                 )}
               </div>
 
@@ -829,19 +859,30 @@ export default function ProductPage() {
               )}
 
               {/* Quantity & CTA */}
-              <div className="space-y-4">
+              <div className="space-y-4" ref={ctaSectionRef}>
                 {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
-                  <button
-                    onClick={() => {
-                      setSelectedNotifyVariant(currentVariation);
-                      setNotifyModalOpen(true);
-                    }}
-                    data-testid="button-notify-me"
-                    className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90"
-                  >
-                    <Bell className="h-4 w-4" />
-                    {t("shop.notifyMe.title", "Notify Me")}
-                  </button>
+                  NOTIFY_ME_ENABLED ? (
+                    <button
+                      onClick={() => {
+                        setSelectedNotifyVariant(currentVariation);
+                        setNotifyModalOpen(true);
+                      }}
+                      data-testid="button-notify-me"
+                      className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90"
+                    >
+                      <Bell className="h-4 w-4" />
+                      {t("shop.notifyMe.title", "Notify Me")}
+                    </button>
+                  ) : (
+                    /* No capture backend yet — state the fact instead of
+                       collecting an email we would silently discard. */
+                    <div
+                      data-testid="text-unavailable"
+                      className="w-full border border-border py-3 px-6 text-center text-sm font-medium uppercase tracking-widest text-muted-foreground"
+                    >
+                      {t("shop.badges.outOfStock")}
+                    </div>
+                  )
                 ) : (
                   <>
                     {product.quantityStyle === "sets" ? (
@@ -859,14 +900,13 @@ export default function ProductPage() {
                       />
                     )}
                     <button
-                      ref={addToCartBtnRef}
                       onClick={handleAddToCart}
                       disabled={isBusy || remainingInventory <= 0}
                       data-testid="button-add-to-cart"
                       className="w-full flex items-center justify-center gap-2 bg-primary py-3 px-6 text-sm font-medium uppercase tracking-widest text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ShoppingBag className="h-4 w-4" />
-                      {remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}
+                      {remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}
                     </button>
                   </>
                 )}
@@ -909,8 +949,10 @@ export default function ProductPage() {
                 </Accordion>
                 <Accordion title="Care" duration={accordionDuration}>
                   <p>
-                    Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.
-                    Ships from Montreal in 2–3 business days. Free shipping on orders above $100 CAD.
+                    Hand-painted with natural dyes — dishwasher safe for everyday use. Handle with care to preserve the artistry of each piece.{" "}
+                    <Link href="/shipping" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                      {t("product.seeShippingReturns")}
+                    </Link>
                   </p>
                 </Accordion>
               </div>
@@ -948,13 +990,13 @@ export default function ProductPage() {
           {/* Centered header */}
           <div className="mb-12 md:mb-16 text-center">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/70 mb-3">
-              The Collection
+              {t("product.related.eyebrow")}
             </p>
             <h2 className="font-serif text-3xl md:text-4xl leading-tight text-foreground">
-              You May Also Love
+              {t("product.related.heading")}
             </h2>
             <p className="mt-3 text-sm text-foreground/60 italic max-w-md mx-auto">
-              Discover more handcrafted pieces, each carrying the heritage of Hebron.
+              {t("product.related.subtitle")}
             </p>
           </div>
 
@@ -987,15 +1029,38 @@ export default function ProductPage() {
                 </span>
               </div>
 
-              {/* Right (or full-width on mobile/tablet): Add to Bag button */}
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.availableForSale || isBusy || remainingInventory <= 0}
-                className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ShoppingBag className="h-3.5 w-3.5" />
-                <span>{!product.availableForSale ? "Sold Out" : remainingInventory <= 0 ? "Already in Bag" : "Add to Bag"}</span>
-              </button>
+              {/* Right (or full-width on mobile/tablet): Add to Bag / Notify Me button */}
+              {!product.availableForSale || (currentVariation.quantityAvailable ?? 0) === 0 ? (
+                NOTIFY_ME_ENABLED ? (
+                  <button
+                    onClick={() => {
+                      setSelectedNotifyVariant(currentVariation);
+                      setNotifyModalOpen(true);
+                    }}
+                    data-testid="button-sticky-notify-me"
+                    className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90"
+                  >
+                    <Bell className="h-3.5 w-3.5" />
+                    <span>{t("shop.notifyMe.title", "Notify Me")}</span>
+                  </button>
+                ) : (
+                  <span
+                    data-testid="text-sticky-unavailable"
+                    className="md:px-32 flex items-center justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-primary-foreground/70"
+                  >
+                    {t("shop.badges.outOfStock")}
+                  </span>
+                )
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isBusy || remainingInventory <= 0}
+                  className="md:px-32 flex bg-background text-primary items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <ShoppingBag className="h-3.5 w-3.5" />
+                  <span>{remainingInventory <= 0 ? t("product.alreadyInBag") : t("product.addToBag")}</span>
+                </button>
+              )}
             </div>
           </motion.div>
         )}

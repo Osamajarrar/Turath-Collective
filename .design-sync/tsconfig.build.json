@@ -1,0 +1,112 @@
+{
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@/assets/bburgundy-bowl.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/brand-video.mp4": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-bowl-mockup1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-bowl-mockup2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-bowl-mockup3.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-bowl-mockup4.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-bowl.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-mezze.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-mug.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-olive-set.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-plate.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/burgundy-plate2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic-bowl.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic-large-plate.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic-mezze-plate.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic-mug.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic-small-plate.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/classic.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/embroidery-detail.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/embroidery-lifestyle.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/embroidery.jpg": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/hero-morning.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/lifestyle-1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-bowl-1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-bowl-2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-cup-1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-cup-2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-vase-1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/product-vase-2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/social-1.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/social-2.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/social-3.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/assets/workshop.png": [
+        "./.design-sync/asset-stub.ts"
+      ],
+      "@/*": [
+        "./client/src/*"
+      ],
+      "@shared/*": [
+        "./shared/*"
+      ]
+    }
+  }
+}

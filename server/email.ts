@@ -9,9 +9,34 @@ import { Resend } from "resend";
 const FROM_EMAIL = "Turath Collective <noreply@turathcollective.com>";
 const ADMIN_EMAIL = "collectiveturath@gmail.com";
 
+/**
+ * Escape user-submitted text before it goes into an HTML email body.
+ * Without this, a contact-form message could inject markup (or a link/script
+ * payload) into the mail the founder opens.
+ */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function getClient() {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return null;
+  if (!key) {
+    // In production a missing key is NOT a "log it instead" situation: the
+    // contact form would tell a visitor "message received" while the message
+    // went nowhere. Fail loudly so the caller returns an error instead of a
+    // false success. Locally, logging is the intended developer experience.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "RESEND_API_KEY is not set. Refusing to report a delivered email that was never sent.",
+      );
+    }
+    return null;
+  }
   return new Resend(key);
 }
 
@@ -36,10 +61,10 @@ export async function sendContactEmail(data: {
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:primary">New Contact Message</h2>
-        <p><strong>From:</strong> ${data.name} &lt;${data.email}&gt;</p>
-        <p><strong>Subject:</strong> ${data.subject}</p>
+        <p><strong>From:</strong> ${escapeHtml(data.name)} &lt;${escapeHtml(data.email)}&gt;</p>
+        <p><strong>Subject:</strong> ${escapeHtml(data.subject)}</p>
         <hr/>
-        <p style="white-space:pre-line">${data.message}</p>
+        <p style="white-space:pre-line">${escapeHtml(data.message)}</p>
       </div>
     `,
   });
@@ -62,8 +87,13 @@ export async function sendContactConfirmation(to: string, name: string) {
     subject: "We received your message — Turath Collective",
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-        <h2 style="color:primary">Thank you, ${name}</h2>
-        <p>We've received your message and will get back to you within 1–2 business days.</p>
+        <h2 style="color:primary">Thank you, ${escapeHtml(name)}</h2>
+        <!-- This previously promised a reply "within 1–2 business days". That
+             is a commitment nobody has agreed to keep, and CLAUDE.md hard rule
+             4 requires any stated number to be true. Restore a specific window
+             only when the founder will actually honour it, and make the
+             contact page's success message say the same thing. -->
+        <p>We've received your message and will reply as soon as we can.</p>
         <p style="color:#888;font-size:12px;margin-top:40px">Turath Collective · Montreal, QC · turathcollective.com</p>
       </div>
     `,
@@ -73,6 +103,24 @@ export async function sendContactConfirmation(to: string, name: string) {
   return { success: true };
 }
 
+/**
+ * ⚠ NOT SAFE TO CALL YET — CASL.
+ *
+ * Nothing calls this today, which is the only reason it has not caused a
+ * problem. As written it is a commercial electronic message with NO
+ * unsubscribe mechanism, which CASL requires (with real penalties), and it
+ * promised "exclusive offers" nobody has consented to receive.
+ *
+ * The "exclusive offers" line is removed below. Before anything calls this:
+ *   1. send it through a Resend Audience so managed unsubscribe + suppression
+ *      apply, rather than a bare emails.send();
+ *   2. include the sender's physical mailing address;
+ *   3. confirm the recipient consented to the NEWSLETTER specifically — a
+ *      "tell me when this piece is available" address is a different consent
+ *      and does not authorise this message.
+ *
+ * See plan 11 branch 7 (email templates).
+ */
 export async function sendNewsletterWelcome(to: string) {
   const client = getClient();
 
@@ -89,8 +137,62 @@ export async function sendNewsletterWelcome(to: string) {
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:primary">Welcome to the Collective</h2>
         <p>You're now part of a community that celebrates Palestinian heritage craftsmanship.</p>
-        <p>Expect early access to new collections, artisan stories, and exclusive offers.</p>
+        <p>We'll write when there's something worth sharing — new collections and the stories behind them.</p>
         <p style="color:#888;font-size:12px;margin-top:40px">Turath Collective · Montreal, QC · turathcollective.com</p>
+      </div>
+    `,
+  });
+
+  if (error) throw new Error(error.message);
+  return { success: true };
+}
+
+/**
+ * Confirmation for the checkout-intent capture ("tell me when this is ready").
+ *
+ * Sent immediately after the address is recorded. Without it the visitor has
+ * no evidence anything happened, which makes a working capture look broken —
+ * and an address that goes cold before launch is worth nothing.
+ *
+ * ── CASL ────────────────────────────────────────────────────────────────
+ * This is a CONFIRMATION of a request the person just made, so it is
+ * transactional rather than a commercial electronic message. It therefore
+ * needs no unsubscribe link — and it must stay that way to keep that status:
+ * do NOT add offers, product promotion or a newsletter pitch here. The
+ * newsletter is a separate consent with its own audience.
+ *
+ * States no timeline, because none is known. "We'll write to you when it's
+ * ready" is true; any date would not be.
+ */
+export async function sendNotifyConfirmation(to: string, productName?: string) {
+  const client = getClient();
+
+  if (!client) {
+    console.log("[Email - DEV] Notify confirmation to:", to, productName ?? "");
+    return { success: true, dev: true };
+  }
+
+  // The piece is named only when we actually know which one.
+  const piece = productName
+    ? `<p>You asked about <strong>${escapeHtml(productName)}</strong>.</p>`
+    : "";
+
+  const { error } = await client.emails.send({
+    from: FROM_EMAIL,
+    to,
+    subject: "We'll tell you first — Turath Collective",
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;line-height:1.6">
+        <h2 style="font-weight:normal">Thank you</h2>
+        ${piece}
+        <p>
+          We are not taking orders yet — the pieces are still being made by hand.
+          When this one is ready, you will hear from us before anyone else.
+        </p>
+        <p>Nothing has been charged, and we will not add you to anything else.</p>
+        <p style="color:#888;font-size:12px;margin-top:40px">
+          Turath Collective · Montreal, QC · turathcollective.com
+        </p>
       </div>
     `,
   });

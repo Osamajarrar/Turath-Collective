@@ -1,13 +1,16 @@
 import dotenv from "dotenv";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Resolve env files from the project root, i.e. the directory npm runs these
+// scripts from. Deliberately NOT import.meta.url: the production bundle is
+// emitted as CJS, where esbuild replaces `import.meta` with `{}` — the old
+// `fileURLToPath(import.meta.url)` threw on the very first line of
+// `npm start`, so the built server could never boot.
+const projectRoot = process.cwd();
 
 // Load .env.local first (dev override), then .env (defaults)
-dotenv.config({ path: path.join(__dirname, "..", ".env.local") });
-dotenv.config({ path: path.join(__dirname, "..", ".env") });
+dotenv.config({ path: path.join(projectRoot, ".env.local") });
+dotenv.config({ path: path.join(projectRoot, ".env") });
 
 import express, { type Request, Response, NextFunction } from "express";
 import helmet from "helmet";
@@ -15,7 +18,8 @@ import rateLimit from "express-rate-limit";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-import { setupAuth } from "./auth";
+import { shutdownPostHog } from "./posthog";
+import { cspDirectivesForHelmet } from "../worker/security-headers";
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,18 +35,25 @@ declare module "http" {
 }
 
 // ── Security Headers ─────────────────────────────────────────────────────
+// This only protects the local Node/Express host — `server/` ships nowhere.
+// The directives come from worker/security-headers.ts, the single source of
+// truth, so the policy you debug locally is the policy production serves.
+// Add origins THERE, never here.
 app.use(helmet({
   contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "https:", "data:"],
-      connectSrc: ["'self'", "https://api.shopify.com", "https://*.myshopify.com"],
-      frameSrc: ["'none'"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-    },
+    directives: cspDirectivesForHelmet({
+      // DEV ONLY, and deliberately absent from the shared policy: Vite's HMR
+      // client spawns a SharedWorker from a blob: URL to ping the dev server
+      // back after a dropped socket (vite/dist/client/client.mjs). Nothing the
+      // site actually ships uses a Worker, so production must NOT allow blob:
+      // — it would widen the XSS surface for a dev-only convenience.
+      "worker-src": ["'self'", "blob:"],
+    }),
   },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  // Match the CSP frame-ancestors above for pre-CSP browsers (helmet's
+  // default is SAMEORIGIN, which would disagree with it).
+  frameguard: { action: "deny" },
   hsts: {
     maxAge: 31536000,
     includeSubDomains: true,
@@ -71,8 +82,9 @@ export const shopifyLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Setup sessions + passport (must come before routes)
-setupAuth(app);
+// Sessions and passport are gone. Shopify's Customer Account API owns
+// accounts, and express-session needs per-request server memory that Cloudflare
+// Workers does not have. See DECISIONS.md §4 and plan 10 phase 6b.
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -119,13 +131,17 @@ app.use((req, res, next) => {
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
 
     console.error("Internal Server Error:", err);
 
     if (res.headersSent) {
       return next(err);
     }
+
+    // Never surface internal error text (stack hints, driver/DSN details) to
+    // clients on 5xx. 4xx messages are ours and safe to pass through.
+    const message =
+      status >= 500 ? "Internal Server Error" : err.message || "Request failed";
 
     return res.status(status).json({ message });
   });
@@ -155,4 +171,11 @@ app.use((req, res, next) => {
       log(`serving on http://${host}:${port}`);
     },
   );
+
+  for (const sig of ["SIGTERM", "SIGINT"]) {
+    process.once(sig, async () => {
+      await shutdownPostHog();
+      process.exit(0);
+    });
+  }
 })();

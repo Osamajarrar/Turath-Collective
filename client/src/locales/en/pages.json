@@ -4,10 +4,10 @@
     "intro": "Some things are too important to forget.",
     "paragraph1": "Turath Collective is a Montreal-based studio born from a singular conviction. We believe the hands shaping clay in Hebron and threading needles in Palestinian villages deserve a place in the modern world. These are not artifacts of the past. They are living expressions of a culture that endures.",
     "paragraph2": "Turath — تراث — is the Arabic word for heritage. It is the invisible thread connecting generations. It is the quiet knowledge passed from artisan to apprentice, and the patterns that tell stories older than any border.",
-    "paragraph3": "We are dedicated to bringing these heritage traditions to homes around the world. Every piece we carry is handmade by masters who have inherited centuries of skill and continue to practice it with extraordinary precision.",
+    "paragraph3": "We are dedicated to bringing these heritage traditions to homes around the world. Every piece we carry is handmade by masters who have inherited generations of skill and continue to practice it with quiet precision.",
     "whatWeCarry": {
       "title": "Foundational Collections",
-      "intro": "We currently focus on two foundational crafts. We chose them because they represent the profound depth and diversity of Palestinian artistic heritage.",
+      "intro": "We focus on the crafts where we have the deepest access and knowledge. We chose them because they represent the depth and diversity of Palestinian artistic heritage.",
       "ceramics": {
         "title": "Ceramics",
         "description": "Hand-thrown Hebron clay vessels, painted with the rhythm of the wheel."
@@ -21,71 +21,47 @@
         "description": "In the works — stay tuned for updates on this new collection coming soon."
       }
     },
-    "collections": {
-      "hebron": {
-        "title": "Hebron Ceramics",
-        "description": "The city of Hebron has been a center of ceramic artistry for over five hundred years. The distinctive deep blues, teals, and earthy tones of this pottery emerge from natural mineral glazes and wood-fired kilns. Each piece carries the slight variations that only handwork produces. No two are identical."
-      },
-      "tatreez": {
-        "title": "Tatreez Embroidery",
-        "description": "Palestinian cross-stitch is one of the most sophisticated textile traditions in the world. Each regional pattern is a visual language. It is a map of village, season, and lineage encoded in thread. Recognized by UNESCO in 2021, Tatreez is a testament to the endurance of the human hand."
-      },
-      "glass": {
-        "title": "Glass Collection",
-        "description": "We are currently curating a collection of hand-blown glassware from artisans in Palestine."
-      }
-    },
     "commitment": {
       "title": "Our Commitment",
       "paragraph1": "We believe that exceptional craft should sustain the people who practice it. We work directly with artisan communities to ensure that the masters of these traditions are fairly compensated and properly credited.",
-      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a legacy that the world cannot afford to lose."
+      "paragraph2": "Every purchase through Turath Collective supports an artisan family continuing a heritage worth keeping alive."
     },
     "authenticity": {
       "title": "A Note on Authenticity",
       "description": "We do not carry mass-produced imitations. Every product is sourced directly and verified for craftsmanship. If it carries the Turath Collective name, it is an authentic original."
     }
   },
-  "heritage": {
-    "title": "The Spirit of Turath",
-    "subtitle": "Our Mission",
-    "paragraph1": "Turath is more than history; it is a living rhythm. From our Montreal studio, we seek out master workshops where time slows down and the soul of the craft is preserved in every detail. We honor the human signature. Those slight variations in texture and the organic flow of a line are the true marks of authenticity in a world of mass production.",
-    "cta": "Read Our Story"
-  },
-  "story": {
-    "mainHeading": "Connecting Earth & Home",
-    "body": "Every piece carries a story of patience. We seek out master workshops that practice slow, intentional craftsmanship, bringing objects into your space that honor the quiet moments of your day.",
+  "brandStory": {
+    "heading": "Made by people, not machines.",
+    "body": "Every piece we carry is made by hand, by artisans practicing crafts their communities have passed down for generations. Not nostalgia, and not a donation — real skill, still at work today.",
     "stats": {
       "stat1": {
         "value": "100%",
         "label": "Handmade"
       },
       "stat2": {
-        "value": "Curated in",
-        "label": "Montreal"
+        "value": "Montreal",
+        "label": "Curated in"
       }
     },
-    "quote": "The most beautiful objects are those that invite us to be present.",
-    "attribution": "— Our Philosophy"
-  },
-  "values": {
-    "title": "Our Values",
-    "items": [
+    "pillars": [
       {
         "number": "01",
-        "title": "The Curator’s Eye",
-        "description": "Honoring the hands that keep ancient traditions alive."
+        "title": "Made by hand",
+        "description": "Each object is shaped by one artisan at a time. The small variations are the signature of a maker's hand, not flaws."
       },
       {
         "number": "02",
-        "title": "The Art of the Pause",
-        "description": "Intentional objects for your most quiet, daily rituals."
+        "title": "Rooted in history",
+        "description": "The techniques behind our pieces pass from artisan to apprentice, generation after generation — living crafts, still practiced today."
       },
       {
         "number": "03",
-        "title": "Earth, Fire, & Nothing Else",
-        "description": "Pure materials. Non-toxic glazes. Sourced with integrity."
+        "title": "Against the mass-produced",
+        "description": "A quiet alternative to identical, disposable objects: pieces with a story, made to last and to be lived with."
       }
-    ]
+    ],
+    "cta": "Read Our Story"
   },
   "care": {
     "title": "Artisan Care Guide",
@@ -163,7 +139,8 @@
     "general": {
       "title": "General Guidance",
       "paragraph1": "Every piece carried by Turath Collective is made by hand. Minor variations in colour, texture, size, and pattern are not imperfections — they are evidence of the human skill behind each object. These variations are what distinguish genuine craft from mass production.",
-      "paragraph2": "If you are ever unsure how to care for a specific piece, reach out to us at support@turathcollective.com and we will advise you directly."
+      "paragraph2": "If you are ever unsure how to care for a specific piece, reach out to us at support@turathcollective.com and we will advise you directly.",
+      "unsure": "If you are ever unsure how to care for a specific piece, reach out to us at"
     }
   },
   "contact": {
@@ -181,7 +158,7 @@
         "items": [
           {
             "question": "Where are Turath products made?",
-            "answer": "Our ceramics collection is handcrafted in Hebron, Palestine — a city with over 2,000 years of continuous pottery tradition. Each piece travels from the hands of Palestinian artisans directly to your home."
+            "answer": "Our ceramics collection is handcrafted in Hebron, Palestine — a city with a craft tradition passed down through generations. Each piece travels from the hands of Palestinian artisans directly to your home."
           },
           {
             "question": "Who are the artisans behind the pieces?",

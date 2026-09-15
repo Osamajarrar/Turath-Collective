@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { getVisibleCategories, Category } from "@/lib/collections";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import MobileCarousel from "@/components/mobile-carousel";
 
 function SingleCard({
   category,
@@ -37,7 +38,7 @@ function SingleCard({
             decoding="async"
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
             <span className="text-[10px] uppercase tracking-[0.5em] text-white/70 font-bold">
               {t("collectionCards.comingSoon")}
             </span>
@@ -46,6 +47,9 @@ function SingleCard({
               {t("collectionCards.inTheWorks")}
             </span>
           </div>
+          <span className="sr-only">
+            {category.title} — {t("collectionCards.comingSoon")}, {t("collectionCards.inTheWorks")}
+          </span>
         </div>
       ) : (
         <Link
@@ -141,18 +145,33 @@ export default function CollectionCards() {
             </div>
           </>
         ) : (
-          <div
-            className={`grid gap-10 ${getGridClass(categories.length)}`}
-          >
-            {categories.map((category, idx) => (
-              <SingleCard
-                key={category.title}
-                category={category}
-                idx={idx}
-                t={t}
-              />
-            ))}
-          </div>
+          <>
+            {/* MOBILE: swipeable carousel with next-card peek (same pattern
+                as featured products); desktop grid below is unchanged */}
+            <MobileCarousel className="md:hidden">
+              {categories.map((category, idx) => (
+                <SingleCard
+                  key={category.title}
+                  category={category}
+                  idx={idx}
+                  t={t}
+                />
+              ))}
+            </MobileCarousel>
+
+            <div
+              className={`hidden md:grid gap-10 ${getGridClass(categories.length)}`}
+            >
+              {categories.map((category, idx) => (
+                <SingleCard
+                  key={category.title}
+                  category={category}
+                  idx={idx}
+                  t={t}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>

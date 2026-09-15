@@ -30,7 +30,7 @@ function Section({
       animate="visible"
     >
       <div className="flex gap-4 mb-3">
-        <span className="font-serif text-[#C9A96E] text-lg leading-tight">
+        <span className="font-serif text-primary text-lg leading-tight">
           {number}.
         </span>
         <h2 className="font-serif text-xl text-foreground leading-tight">

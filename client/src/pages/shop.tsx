@@ -4,10 +4,12 @@ import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 import { motion } from "framer-motion";
 import { shopifyService, type ShopifyProduct } from "@/lib/shopify";
+import { USE_MOCK_PRODUCTS } from "@/lib/flags";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ColorSwatch } from "@/components/ColorSwatch";
+import { getSalesRanking, sortProducts } from "@/lib/product-sort";
 
 import img1 from "@/assets/burgundy-mug.png";
 import img2 from "@/assets/burgundy-plate.png";
@@ -122,7 +124,7 @@ export const ALL_PRODUCTS = MOCK_PRODUCTS;
 
 // ── Normalise a Shopify product into a display-friendly shape ──────────────
 
-interface DisplayProduct {
+export interface DisplayProduct {
   id: string;
   name: string;
   handle: string;
@@ -139,7 +141,7 @@ interface DisplayProduct {
   variations?: Variation[];
 }
 
-function normaliseShopify(p: ShopifyProduct): DisplayProduct {
+export function normaliseShopify(p: ShopifyProduct): DisplayProduct {
   const sourceCategory = p.productType || p.tags?.[0] || "";
   const normalizedCategory = sourceCategory.trim().toLowerCase();
 
@@ -217,7 +219,7 @@ function normaliseShopify(p: ShopifyProduct): DisplayProduct {
 
 // ── SkeletonProductCard Component ──────────────────────────────────────────
 
-function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefersReducedMotion: boolean }) {
+export function SkeletonProductCard({ idx, prefersReducedMotion }: { idx: number; prefersReducedMotion: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -243,7 +245,7 @@ interface ProductCardProps {
   t: any;
 }
 
-function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
+export function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps) {
   const [, navigate] = useLocation();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -318,8 +320,9 @@ function ProductCard({ product, idx, prefersReducedMotion, t }: ProductCardProps
             <p className="text-xs md:text-sm lg:text-base md:whitespace-nowrap">${Math.floor(product.price)}</p>
           </div>
 
-          {/* Variation Color Swatches */}
-          {product.variations && product.variations.length > 0 && (
+          {/* Variation Color Swatches — hidden when there is nothing to
+              choose, matching the product page's single-variant behaviour */}
+          {product.variations && product.variations.length > 1 && (
             <div
               className="flex flex-wrap gap-2 mt-3 pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
@@ -361,9 +364,9 @@ export default function ShopPage() {
   const search = useSearch();
   const prefersReducedMotion = useReducedMotion();
   const [sortBy, setSortBy] = useState("newest");
-  const [isLoading, setIsLoading] = useState(import.meta.env.VITE_USE_MOCK_PRODUCTS !== "true");
+  const [isLoading, setIsLoading] = useState(!USE_MOCK_PRODUCTS);
   const [products, setProducts] = useState<DisplayProduct[]>(
-    import.meta.env.VITE_USE_MOCK_PRODUCTS === "true" ? MOCK_PRODUCTS : []
+    USE_MOCK_PRODUCTS ? MOCK_PRODUCTS : []
   );
 
   const availableCategories = useMemo(() => getAvailableCategories(t), [t]);
@@ -409,7 +412,7 @@ export default function ShopPage() {
   // Fetch live Shopify data (or use mock if VITE_USE_MOCK_PRODUCTS=true)
   useEffect(() => {
     // Skip API call if using mock products
-    if (import.meta.env.VITE_USE_MOCK_PRODUCTS === "true") {
+    if (USE_MOCK_PRODUCTS) {
       setIsLoading(false);
       return;
     }
@@ -447,33 +450,18 @@ export default function ShopPage() {
     return () => { cancelled = true; };
   }, [availableCategoryHandles]);
 
+  // Real sales data (order counts) — null until an orders backend exists.
+  // While null, the best-seller sort option below is not offered at all.
+  const salesRanking = useMemo(() => getSalesRanking(), []);
+
   const filteredAndSortedProducts = useMemo(() => {
-    let result =
+    const result =
       selectedCategory === "all"
-        ? [...visibleProducts]
+        ? visibleProducts
         : visibleProducts.filter((p) => p.category === selectedCategory);
 
-    switch (sortBy) {
-      case "price-low":
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case "best-seller":
-        result.sort(
-          (a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0),
-        );
-        break;
-      case "newest":
-      default:
-        result.sort(
-          (a, b) =>
-            new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime(),
-        );
-    }
-    return result;
-  }, [selectedCategory, sortBy, visibleProducts]);
+    return sortProducts(result, sortBy, salesRanking);
+  }, [selectedCategory, sortBy, visibleProducts, salesRanking]);
 
   const productHref = (p: DisplayProduct) => `/product/${p.handle}`;
 
@@ -532,7 +520,12 @@ export default function ShopPage() {
                 <option value="newest">{t("shop.sortOptions.newest")}</option>
                 <option value="price-low">{t("shop.sortOptions.priceLow")}</option>
                 <option value="price-high">{t("shop.sortOptions.priceHigh")}</option>
-                <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
+                {/* Only offered when real sales data backs it — offering a
+                    "best seller" order we can't actually compute would be a
+                    quiet lie. Activates via getSalesRanking(). */}
+                {salesRanking && (
+                  <option value="best-seller">{t("shop.sortOptions.bestSeller")}</option>
+                )}
               </select>
             </div>
 

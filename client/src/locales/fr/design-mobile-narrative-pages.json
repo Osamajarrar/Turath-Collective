@@ -1,0 +1,18 @@
+{
+  "storyScenes": {
+    "scene1": {
+      "kicker": "Hébron, Palestine",
+      "line": "Chaque pièce prend naissance à Hébron, où ces savoir-faire se transmettent depuis des générations."
+    },
+    "scene2": {
+      "kicker": "Le façonnage",
+      "line": "L'argile d'Hébron, tournée à la main, une pièce à la fois.",
+      "imageAlt": "Un artisan façonnant l'argile sur un tour de potier dans un atelier baigné de lumière."
+    },
+    "scene3": {
+      "kicker": "L'objet",
+      "line": "Cuite à haute température, finie de glaçures minérales naturelles.",
+      "imageAlt": "Un bol en céramique tourné à la main sur une table en bois, dans une douce lumière naturelle."
+    }
+  }
+}

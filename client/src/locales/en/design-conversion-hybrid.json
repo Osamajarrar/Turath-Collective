@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "kicker": "Handmade in Palestine",
+    "subheading": "Ceramics from Hebron and hand-blown glass, shaped by artisans using techniques passed down through generations."
+  },
+  "craftBand": {
+    "kicker": "History, still handmade.",
+    "quote": "Every piece is made by hand, by artisans practicing crafts passed down through generations — real skill, still at work today."
+  },
+  "closingCta": {
+    "heading": "Begin with the collection."
+  },
+  "featuredProducts": {
+    "heading": "A few pieces to start with",
+    "viewAll": "View All Pieces"
+  },
+  "valuesStrip": {
+    "handmade": {
+      "label": "Handmade",
+      "description": "Every piece is made by hand by working artisans."
+    },
+    "heritageCraft": {
+      "label": "Heritage Craft",
+      "description": "Techniques from Hebron and Jaba', still practiced today."
+    },
+    "smallBatches": {
+      "label": "Small Batches",
+      "description": "Made in small quantities, each piece slightly unique."
+    }
+  }
+}

@@ -2,7 +2,59 @@
 
 Status snapshot of what's missing or pending before the site can go live at **turathcollective.com**.
 
+> **Read this section first. Everything below §1 is older detail that has NOT been
+> re-verified since 2026-08-01 — several items in it are already done.** This top
+> section is the current view; treat the rest as history until it is checked.
+
 ---
+
+# Current state — 2026-08-01
+
+**The code is well ahead of the business decisions.** Almost nothing left is a coding
+task; most of it is a decision only the founder can make, or an account/dashboard
+action. Per-branch detail lives in [plans/11-dev-backlog.md](plans/11-dev-backlog.md).
+
+## Blocking launch — founder actions, no code
+
+| # | Item | Why it blocks |
+|---|---|---|
+| 1 | **Remove the Shopify storefront password** | Until then nobody can buy anything. `VITE_REAL_CHECKOUT` must stay unset, so checkout shows the intent dialog instead of a password wall |
+| 2 | **Set the production env vars** | `RESEND_API_KEY`, `RESEND_NOTIFY_AUDIENCE_ID`, `RESEND_NEWSLETTER_AUDIENCE_ID`, `VITE_SENTRY_DSN`, Shopify domain + token. Without Resend the contact form and email capture return errors *by design*, rather than pretending to work |
+| 3 | **Verify the Hebron "2,000 years" claim** in the FAQ | Hard rule 4. Nobody has confirmed the number, and no model should invent one |
+| 4 | **Decide the reply-time promise**, or leave it out | No window is promised anywhere right now. If you add one it must be true, and it must match in the email template *and* the contact page |
+| 5 | **Pick the admin email** | `server/email.ts` sends to collectiveturath@gmail.com; the site advertises support@turathcollective.com |
+| 6 | **Choose a homepage design** | Six built at `/design`. Narrow to two, get feedback, then delete the gallery |
+| 7 | **Choose a catalogue grouping** | Four options at `/shop-filters`. It is a site-wide taxonomy — it changes the homepage collection cards too, not just the shop |
+| 8 | **Decide the navbar tagline** | Recommendation: remove it. The SVG work is manual |
+
+## Blocking launch — needs code
+
+| # | Item | Notes |
+|---|---|---|
+| 9 | **Category source of truth** | `inferCategoryHandle` guesses a product's category by string-matching its name — a glass bowl matches "bowl" and is filed under ceramics, silently. Cheap to fix NOW against mock data; expensive once real products are tagged and Google has indexed them. See [plans/12](plans/12-reversibility.md) |
+| 10 | **Email templates** | The contact confirmation exists. The notify-me confirmation, the "it's available now" email and the newsletter welcome do not. `sendNewsletterWelcome` must not be called until it has a working unsubscribe (CASL) |
+| 11 | **Cloudflare cutover** | Code-complete and verified against a real `wrangler dev`. Remaining: DNS, secrets, and `VITE_*` in the Cloudflare **build** environment — not only as runtime secrets, since Vite bakes them into the bundle at build time. This is the most likely cause of an "analytics stopped working" report after cutover |
+| 12 | **Arabic, if it ships** | ~297 keys missing (`test/ar-parity-baseline.json`). Currently disabled, which is the honest state |
+
+## Done since this checklist was last accurate — do not redo
+
+Analytics consent (blocking modal, category-keyed record), Sentry on the client behind that
+consent, the contact form rebuilt and wired to Resend, checkout-intent capture with the CASL
+two-consent split, newsletter moved off a JSON file onto a Resend audience, vitest with 189
+tests, the self-hosted auth stack and file-backed stores deleted, the D1 dialect conversion,
+the Cloudflare Worker with one CSP source of truth, embroidery removed from every surface
+(including the meta tags and the care page), and the Arabic-default language bug.
+
+## Deliberately NOT done
+
+- **Anonymous pre-consent analytics** — specified, legally unsettled, not signed off
+- **Granular cookie category toggles** — only one non-essential category exists today; the
+  stored record is already category-keyed, so adding them later is cheap
+- **Real checkout** — gated on item 1
+- **Reviews, accounts, favourites** — deferred post-MVP by DECISIONS.md
+
+---
+
 
 ## 1. Commerce (Shopify Headless)
 
@@ -46,6 +98,8 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 ## 5. Content
 
 - [ ] Replace all placeholder/mock product data with real Shopify products (5 mock products currently live in `client/src/data/products.ts`)
+- [ ] **Replace placeholder reviews in `review-carousel.tsx`** — currently hardcoded fake names/cities/quotes (Elena M., Sami K., Amira J.) for structural testing only; gated behind `VITE_SHOW_PLACEHOLDER_CONTENT` env flag, must stay unset in Vercel until real reviews exist
+- [ ] **Replace placeholder Instagram community in `social-proof.tsx`** — currently hardcoded fake usernames (@layla_designs, @marwan_ab, @thecuratedhome) reusing product photos; gated behind same `VITE_SHOW_PLACEHOLDER_CONTENT` flag, must stay unset in Vercel until real content exists
 - [ ] Final hi-res product photography (≥4 angles per product; consistent crop / background)
 - [ ] Artisan story copy (Montreal + Palestine origin narrative)
 - [ ] About page content (mission, sourcing, ethics)
@@ -123,11 +177,44 @@ Status snapshot of what's missing or pending before the site can go live at **tu
 - [ ] Run a fresh dependency + SAST scan after Shopify auth migration
 - [ ] HTML-escape interpolated values in `server/email.ts` before re-enabling contact route
 - [ ] Add a tight rate limiter (e.g. 5/min) to contact and newsletter endpoints when re-enabled
-- [ ] Set up error tracking (Sentry or similar) for both client and server
+- [x] Set up error tracking (Sentry) for both client and server — client via
+      `@sentry/react` inside the consent gate (`client/src/lib/monitoring.ts`), Worker via
+      `@sentry/cloudflare` (`worker/index.ts`), emails scrubbed from both by
+      `shared/scrub.ts`. Two Sentry projects, separate alert rules.
+      **Still needs the env vars to actually report:** `VITE_SENTRY_DSN` is set in Vercel
+      (done, requires a fresh build not a cached redeploy); `SENTRY_DSN` for the Worker is
+      set at Cloudflare cutover — see plan 10 phase 5 step 0.
 - [ ] Configure log retention / rotation in production
 - [ ] Backup strategy for the Postgres database (Replit-managed snapshots verified working)
 - [ ] Review all `process.env` reads — fail fast at boot if a required prod var is missing
 - [ ] Consider `helmet` `crossOriginEmbedderPolicy` and `referrerPolicy: "strict-origin-when-cross-origin"` once Shopify CDN domains are finalised in CSP
+
+## 13a. PostHog Analytics — Open Issues (found 2026-07-05)
+
+- [x] CSP `scriptSrc` was missing PostHog's asset domains (`us-assets.i.posthog.com`, `*.posthog.com`),
+      blocking `config.js`, `posthog-recorder.js`, `surveys.js`, `dead-clicks-autocapture.js`, and
+      `web-vitals.js` from ever loading — likely the root cause of session replay silently not working.
+      Fixed in `server/index.ts` CSP `scriptSrc`/`connectSrc`.
+- [ ] **Still unresolved**: even after the CSP fix, no PostHog capture requests (`$pageview` or custom
+      events) were observed firing at all when testing locally against `/product/indigo-mosaic-bowl` —
+      `config.js` and the feature scripts load fine (200s, no console errors), but no `/e/` or `/capture`
+      network call was ever seen, even after waiting 15s. Needs deeper investigation: check PostHog
+      project settings (event capture toggle, autocapture config in the loaded remote config), verify
+      `VITE_POSTHOG_KEY`/`VITE_POSTHOG_HOST` values in `.env.local` are valid/current, and check
+      posthog-js's internal state (queue/flush behavior) rather than just network requests.
+- [x] `handleBuyNow` in `client/src/pages/product.tsx`, which fired `begin_checkout` but was never
+      wired to any button, has been removed. `begin_checkout` now fires from the real cart-drawer
+      checkout button (`data-testid="button-cart-checkout"` in `navbar.tsx`) via
+      `trackEventThenNavigate()`, which uses sendBeacon/event_callback so the event survives the
+      redirect to Shopify checkout. (`shopifyService.buyNow` and the "Buy Now" locale strings are
+      kept for a future Buy Now button.)
+- [ ] Once capture requests are confirmed working, re-verify `add_to_cart` and `begin_checkout` fire
+      end-to-end. A local Playwright run on 2026-07-07 confirmed the UI flow works (add to cart →
+      drawer checkout button → redirect to Shopify) but still saw **zero** PostHog capture requests,
+      not even `$pageview`, while config.js and all feature scripts load fine. That pattern strongly
+      suggests a PostHog project-side cause: check billing/quota limits and project settings in the
+      PostHog dashboard, and inspect the remote config (`/array/<key>/config.js`) response for
+      quota/capture flags.
 
 ## 14. Pre-Launch Soft Test (Recommended)
 

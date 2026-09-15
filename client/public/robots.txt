@@ -1,0 +1,12 @@
+# Crawling is allowed by default. The two disallowed paths below are internal
+# decision galleries, not content: /design holds the homepage variants and
+# /shop-filters the catalogue-grouping options the founder is choosing
+# between. Indexing them would put half-finished alternate homepages in search
+# results alongside the real one.
+User-agent: *
+Disallow: /design
+Disallow: /shop-filters
+Disallow: /api/
+
+# No Sitemap: line on purpose — there is no sitemap.xml yet, and pointing at
+# a file that does not exist is worse than omitting the directive.

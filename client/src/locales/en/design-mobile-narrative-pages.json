@@ -1,0 +1,18 @@
+{
+  "storyScenes": {
+    "scene1": {
+      "kicker": "Hebron, Palestine",
+      "line": "Every piece begins in Hebron, where these crafts have been practiced for generations."
+    },
+    "scene2": {
+      "kicker": "The Making",
+      "line": "Hand-thrown Hebron clay, shaped one piece at a time on the wheel.",
+      "imageAlt": "An artisan shaping clay on a pottery wheel in a sunlit workshop."
+    },
+    "scene3": {
+      "kicker": "The Object",
+      "line": "Fired at high heat, finished with natural mineral glazes.",
+      "imageAlt": "A hand-thrown ceramic bowl on a wooden table in soft window light."
+    }
+  }
+}

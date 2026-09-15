@@ -38,10 +38,12 @@
   "product": {
     "backButton": "Retour à la collection",
     "addToBag": "Ajouter au panier",
+    "alreadyInBag": "Déjà dans le panier",
     "soldOut": "Épuisé",
     "buyNow": "Acheter maintenant",
     "colorLabel": "Couleur:",
     "quantityLabel": "Quantité",
+    "seeShippingReturns": "Voir livraison et retours",
     "accordion": {
       "description": "Description",
       "specifications": "Spécifications",
@@ -53,7 +55,12 @@
       "weight": "Poids",
       "origin": "Origine"
     },
-    "shippingReturnsText": "Fabriqué à la main en Palestine, expédié avec une logistique neutre en carbone. Livraison dans les 7 à 14 jours ouvrables. Retours garantis 14 jours."
+    "shippingReturnsText": "Fabriqué à la main en Palestine, expédié avec une logistique neutre en carbone. Livraison dans les 7 à 14 jours ouvrables. Retours garantis 14 jours.",
+    "related": {
+      "eyebrow": "La Collection",
+      "heading": "Vous aimerez aussi",
+      "subtitle": "Découvrez d'autres pièces artisanales, chacune porteuse de son propre héritage."
+    }
   },
   "checkout": {
     "header": {
@@ -94,5 +101,20 @@
     "agreement": "En complétant votre commande, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
     "footer": "© 2026 Turath Collective. Tous droits réservés.",
     "currency": "CAD"
+  },
+  "checkoutIntent": {
+    "title": "Rejoignez la première collection",
+    "body": "Nous ne prenons pas encore de commandes. Laissez votre courriel et nous vous préviendrons en premier lorsque cette pièce sera prête.",
+    "emailLabel": "Adresse courriel",
+    "emailPlaceholder": "vous@exemple.com",
+    "newsletter": "Envoyez-moi aussi, à l'occasion, des nouvelles des nouvelles pièces et des artisans qui les façonnent.",
+    "submit": "Prévenez-moi en premier",
+    "submitting": "Enregistrement…",
+    "successTitle": "Nous avons votre adresse",
+    "successBody": "Nous vous écrirons lorsque cette pièce sera prête. Votre panier est toujours là.",
+    "errorTitle": "Nous n'avons pas pu enregistrer votre adresse",
+    "errorBody": "Veuillez réessayer ou nous écrire à support@turathcollective.com.",
+    "close": "Fermer",
+    "cartKept": "Aucun montant n'a été prélevé et votre panier est inchangé."
   }
 }

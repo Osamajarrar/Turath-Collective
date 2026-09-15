@@ -82,6 +82,21 @@ export interface ShopifyProduct {
   metafields?: Array<{ key: string; value: string }>;
 }
 
+/**
+ * One manually curated social-feed entry, stored by the founder in the shop
+ * metafield `custom.social_feed` (JSON type) via Shopify admin — the same
+ * founder-editable-without-redeploy approach as the carousel collections.
+ * Expected metafield value: a JSON array of objects like
+ *   { "imageUrl": "https://…", "caption": "…", "handle": "@…", "link": "https://…" }
+ * Only imageUrl is required.
+ */
+export interface SocialFeedEntry {
+  imageUrl: string;
+  caption?: string;
+  handle?: string;
+  link?: string;
+}
+
 export interface ShopifyCollection {
   id: string;
   title: string;
@@ -330,6 +345,45 @@ export const shopifyService = {
     return this.getCarouselImages("story-carousel", first);
   },
 
+  /**
+   * Fetch the manually curated social feed from the shop metafield
+   * `custom.social_feed`. Returns null when unconfigured, the metafield is
+   * missing/empty, or its value isn't a valid JSON array — callers treat
+   * null as "no real content".
+   */
+  async getSocialFeed(): Promise<SocialFeedEntry[] | null> {
+    const data = await shopifyQuery<{
+      shop: { metafield: { value: string } | null };
+    }>(
+      `query GetSocialFeed {
+        shop {
+          metafield(namespace: "custom", key: "social_feed") { value }
+        }
+      }`
+    );
+
+    const raw = data?.shop?.metafield?.value;
+    if (!raw) return null;
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return null;
+      const entries: SocialFeedEntry[] = parsed
+        .filter((e): e is Record<string, unknown> => !!e && typeof e === "object")
+        .filter((e) => typeof e.imageUrl === "string" && e.imageUrl.length > 0)
+        .map((e) => ({
+          imageUrl: e.imageUrl as string,
+          caption: typeof e.caption === "string" ? e.caption : undefined,
+          handle: typeof e.handle === "string" ? e.handle : undefined,
+          link: typeof e.link === "string" ? e.link : undefined,
+        }));
+      return entries.length > 0 ? entries : null;
+    } catch {
+      console.warn("[Shopify] custom.social_feed metafield is not valid JSON");
+      return null;
+    }
+  },
+
   /** Fetch images from heritage carousel collection. */
   async getHeritageCarouselImages(first = 10): Promise<ShopifyImage[] | null> {
     return this.getCarouselImages("heritage-carousel", first);
@@ -426,6 +480,15 @@ export const shopifyService = {
   },
 
   /** Convenience: create a cart with one item and return the checkout URL. */
+  /**
+   * ⚠ UNUSED and must stay that way for now. Verified 2026-08-01: nothing in
+   * client/src calls this.
+   *
+   * It returns a Shopify checkoutUrl, and while the storefront password is in
+   * place that URL leads to a password wall. Any caller added here would
+   * bypass the checkout-intent dialog and re-create the dead end that plan 11
+   * branch 8 removed. Do not wire it up until REAL_CHECKOUT_ENABLED is true.
+   */
   async buyNow(variantId: string, quantity = 1): Promise<string | null> {
     const cart = await this.createCart([{ merchandiseId: variantId, quantity }]);
     return cart?.checkoutUrl ?? null;

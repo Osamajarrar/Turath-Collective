@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageLayout from "@/components/PageLayout";
 
 const fadeUp = {
@@ -6,11 +7,86 @@ const fadeUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] as const},
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
+/**
+ * Render a content string that may contain blank-line separated paragraphs
+ * and dash-prefixed bullet lines (as stored in legal.json).
+ */
+function MixedContent({ text }: { text: string }) {
+  const blocks: React.ReactNode[] = [];
+  let paraLines: string[] = [];
+  let bulletLines: string[] = [];
+
+  const flushPara = () => {
+    if (paraLines.length) {
+      blocks.push(<p key={`b${blocks.length}`}>{paraLines.join(" ")}</p>);
+      paraLines = [];
+    }
+  };
+  const flushBullets = () => {
+    if (bulletLines.length) {
+      blocks.push(
+        <ul key={`b${blocks.length}`} className="space-y-1 pl-4">
+          {bulletLines.map((b, i) => (
+            <li
+              key={i}
+              className="before:content-['—'] before:mr-2 before:text-primary"
+            >
+              {b}
+            </li>
+          ))}
+        </ul>,
+      );
+      bulletLines = [];
+    }
+  };
+
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (line === "") {
+      flushPara();
+      flushBullets();
+    } else if (line.startsWith("- ")) {
+      flushPara();
+      bulletLines.push(line.slice(2));
+    } else {
+      flushBullets();
+      paraLines.push(line);
+    }
+  }
+  flushPara();
+  flushBullets();
+
+  return <div className="space-y-2">{blocks}</div>;
+}
+
+function Block({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="font-medium text-foreground mb-1">{title}</p>
+      {children}
+    </div>
+  );
+}
+
 export default function ShippingAndReturns() {
+  const { t } = useTranslation("legal");
+  const estimateItems = t("shipping.shipping.deliveryEstimates.items", {
+    returnObjects: true,
+  }) as { service: string; estimate: string }[];
+  const eligibilityItems = t("shipping.returnsRefunds.eligibility.items", {
+    returnObjects: true,
+  }) as string[];
+
   return (
     <PageLayout>
       <div className="container mx-auto px-6 md:px-12">
@@ -21,7 +97,7 @@ export default function ShippingAndReturns() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            Shipping & Returns
+            {t("shipping.title")}
           </motion.h1>
 
           <motion.p
@@ -30,7 +106,7 @@ export default function ShippingAndReturns() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Last updated: April 2025
+            {t("shipping.lastUpdated")}
           </motion.p>
 
           <div className="space-y-12 text-muted-foreground font-light leading-relaxed">
@@ -42,116 +118,71 @@ export default function ShippingAndReturns() {
               animate="visible"
             >
               <h2 className="font-serif text-2xl text-foreground mb-4">
-                Shipping
+                {t("shipping.shipping.title")}
               </h2>
 
               <div className="space-y-6">
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Where We Ship
-                  </p>
-                  <p>
-                    Turath Collective currently ships within Canada only, to all
-                    provinces and territories including remote areas. We are
-                    working toward international shipping and will announce
-                    availability when it is ready.
-                  </p>
-                </div>
+                <Block title={t("shipping.shipping.whereWeShip.title")}>
+                  <p>{t("shipping.shipping.whereWeShip.content")}</p>
+                </Block>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Processing Time
-                  </p>
-                  <p>
-                    Orders are processed within 2–4 business days of payment
-                    confirmation. During high-volume periods or around holidays,
-                    processing may take slightly longer — we will communicate
-                    any delays promptly. Processing time is separate from
-                    shipping time.
-                  </p>
-                </div>
+                <Block title={t("shipping.shipping.processingTime.title")}>
+                  <p>{t("shipping.shipping.processingTime.content")}</p>
+                </Block>
 
                 <div>
                   <p className="font-medium text-foreground mb-2">
-                    Delivery Estimates
+                    {t("shipping.shipping.deliveryEstimates.title")}
                   </p>
                   <div className="border border-border rounded-sm overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/30">
                           <th className="text-left px-4 py-3 font-medium text-foreground">
-                            Service
+                            {t(
+                              "shipping.shipping.deliveryEstimates.tableHeaders.service",
+                            )}
                           </th>
                           <th className="text-left px-4 py-3 font-medium text-foreground">
-                            Estimated Delivery
+                            {t(
+                              "shipping.shipping.deliveryEstimates.tableHeaders.estimate",
+                            )}
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-b border-border">
-                          <td className="px-4 py-3">Standard Shipping</td>
-                          <td className="px-4 py-3">
-                            5–10 business days from shipment
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3">Expedited Shipping</td>
-                          <td className="px-4 py-3">
-                            2–4 business days from shipment
-                          </td>
-                        </tr>
+                        {estimateItems.map((row, i) => (
+                          <tr
+                            key={i}
+                            className={
+                              i < estimateItems.length - 1
+                                ? "border-b border-border"
+                                : ""
+                            }
+                          >
+                            <td className="px-4 py-3">{row.service}</td>
+                            <td className="px-4 py-3">{row.estimate}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
                   <p className="mt-2 text-sm">
-                    Delivery estimates begin from the date of shipment
-                    confirmation, not the order date. Remote areas (Nunavut,
-                    Northwest Territories, Yukon, and some rural regions) may
-                    experience longer delivery windows.
+                    {t("shipping.shipping.deliveryEstimates.note")}
                   </p>
                 </div>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Shipping Rates
-                  </p>
-                  <p>
-                    Shipping rates are calculated at checkout based on your
-                    location, package weight, and selected service. Where a flat
-                    rate applies, it will be clearly displayed at checkout
-                    before payment.
-                  </p>
-                </div>
+                <Block title={t("shipping.shipping.shippingRates.title")}>
+                  <p>{t("shipping.shipping.shippingRates.content")}</p>
+                </Block>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Order Tracking
-                  </p>
-                  <p>
-                    Once your order ships, you will receive a confirmation email
-                    with a tracking number. Please allow up to 24 hours for
-                    tracking information to become active.
-                  </p>
-                </div>
+                <Block title={t("shipping.shipping.orderTracking.title")}>
+                  <p>{t("shipping.shipping.orderTracking.content")}</p>
+                </Block>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Delays & Exceptions
-                  </p>
-                  <p>
-                    Turath Collective is not responsible for delays caused by
-                    carriers, severe weather, or circumstances beyond our
-                    control. If your order appears significantly delayed, please
-                    contact us at{" "}
-                    <a
-                      href="mailto:support@turathcollective.com"
-                      className="text-foreground underline underline-offset-2"
-                    >
-                      support@turathcollective.com
-                    </a>{" "}
-                    and we will investigate on your behalf.
-                  </p>
-                </div>
+                <Block title={t("shipping.shipping.delaysExceptions.title")}>
+                  <p>{t("shipping.shipping.delaysExceptions.content")}</p>
+                </Block>
               </div>
             </motion.div>
 
@@ -165,151 +196,69 @@ export default function ShippingAndReturns() {
               animate="visible"
             >
               <h2 className="font-serif text-2xl text-foreground mb-4">
-                Returns & Refunds
+                {t("shipping.returnsRefunds.title")}
               </h2>
 
               <div className="space-y-6">
-                <p>
-                  We want you to love what you receive. If something is not
-                  right, we are here to make it right.
-                </p>
+                <p>{t("shipping.returnsRefunds.intro")}</p>
+
+                <Block title={t("shipping.returnsRefunds.returnWindow.title")}>
+                  <p>{t("shipping.returnsRefunds.returnWindow.content")}</p>
+                </Block>
 
                 <div>
                   <p className="font-medium text-foreground mb-1">
-                    Return Window
-                  </p>
-                  <p>
-                    You may request a return within{" "}
-                    <span className="text-foreground">
-                      14 days of the delivery date
-                    </span>{" "}
-                    as confirmed by your tracking information.
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Eligibility Conditions
+                    {t("shipping.returnsRefunds.eligibility.title")}
                   </p>
                   <p className="mb-2">
-                    To be eligible for a return, items must be:
+                    {t("shipping.returnsRefunds.eligibility.intro")}
                   </p>
                   <ul className="space-y-1 pl-4">
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      Unused and in their original condition
-                    </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      In original packaging, with all tags and materials
-                      included
-                    </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      Free from damage caused after delivery
-                    </li>
+                    {eligibilityItems.map((item, i) => (
+                      <li
+                        key={i}
+                        className="before:content-['—'] before:mr-2 before:text-primary"
+                      >
+                        {item}
+                      </li>
+                    ))}
                   </ul>
                   <p className="mt-2">
-                    Items that show signs of use, alteration, or damage incurred
-                    after delivery are not eligible for return.
+                    {t("shipping.returnsRefunds.eligibility.outro")}
                   </p>
                 </div>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">Sale Items</p>
-                  <p>
-                    All items purchased at a discounted or sale price are{" "}
-                    <span className="text-foreground">final sale</span> and are
-                    not eligible for return or exchange, unless the item arrived
-                    damaged or defective.
-                  </p>
-                </div>
+                <Block title={t("shipping.returnsRefunds.saleItems.title")}>
+                  <p>{t("shipping.returnsRefunds.saleItems.content")}</p>
+                </Block>
 
-                <div>
+                <Block title={t("shipping.returnsRefunds.howToInitiate.title")}>
+                  <MixedContent
+                    text={t("shipping.returnsRefunds.howToInitiate.content")}
+                  />
+                </Block>
+
+                <Block title={t("shipping.returnsRefunds.refundProcessing.title")}>
+                  <MixedContent
+                    text={t("shipping.returnsRefunds.refundProcessing.content")}
+                  />
+                </Block>
+
+                <div className="border-l-2 border-primary pl-6">
                   <p className="font-medium text-foreground mb-1">
-                    How to Initiate a Return
+                    {t("shipping.returnsRefunds.damageDefective.title")}
                   </p>
-                  <p className="mb-2">
-                    Email us at{" "}
-                    <a
-                      href="mailto:support@turathcollective.com"
-                      className="text-foreground underline underline-offset-2"
-                    >
-                      support@turathcollective.com
-                    </a>{" "}
-                    within your 14-day window with:
-                  </p>
-                  <ul className="space-y-1 pl-4">
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      Your order number
-                    </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      The item(s) you wish to return
-                    </li>
-                    <li className="before:content-['—'] before:mr-2 before:text-[#C9A96E]">
-                      A brief reason for the return
-                    </li>
-                  </ul>
-                  <p className="mt-2">
-                    We will respond within 2 business days with return
-                    instructions and a prepaid return shipping label. Return
-                    shipping is covered by Turath Collective.
-                  </p>
+                  <p>{t("shipping.returnsRefunds.damageDefective.content")}</p>
                 </div>
 
-                <div>
-                  <p className="font-medium text-foreground mb-1">
-                    Refund Processing
-                  </p>
-                  <p>
-                    Refunds are issued once the returned item has been received
-                    and inspected by our team. Inspection typically takes 2–3
-                    business days upon receipt. If the item passes inspection,
-                    your refund will be issued to your original payment method
-                    within 5–7 business days. You will receive an email
-                    confirmation once processed.
-                  </p>
-                  <p className="mt-2">
-                    If the item does not meet return eligibility conditions upon
-                    inspection, we will notify you and return the item to you at
-                    no additional cost.
-                  </p>
-                </div>
-
-                <div className="border-l-2 border-[#C9A96E] pl-6">
-                  <p className="font-medium text-foreground mb-1">
-                    Damaged or Defective Items
-                  </p>
-                  <p>
-                    If your order arrives damaged — whether from transit or a
-                    product defect — please contact us at{" "}
-                    <a
-                      href="mailto:support@turathcollective.com"
-                      className="text-foreground underline underline-offset-2"
-                    >
-                      support@turathcollective.com
-                    </a>{" "}
-                    within{" "}
-                    <span className="text-foreground">
-                      48 hours of delivery
-                    </span>{" "}
-                    with your order number and clear photographs of the damage
-                    and packaging. We will arrange a replacement or full refund
-                    at no cost to you. Do not discard the packaging before
-                    contacting us, as it may be required for a carrier claim.
-                  </p>
-                </div>
-
-                <div>
-                  <p className="font-medium text-foreground mb-1">Exchanges</p>
-                  <p>
-                    We do not offer direct exchanges at this time. If you would
-                    like a different item, please return your original order and
-                    place a new one.
-                  </p>
-                </div>
+                <Block title={t("shipping.returnsRefunds.exchanges.title")}>
+                  <p>{t("shipping.returnsRefunds.exchanges.content")}</p>
+                </Block>
               </div>
             </motion.div>
           </div>
         </div>
       </div>
-      </PageLayout>
+    </PageLayout>
   );
 }

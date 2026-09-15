@@ -7,8 +7,17 @@ import { useTranslation } from "react-i18next";
 import { applyRtl, SUPPORTED_LANGUAGES } from "@/lib/i18n";
 import { getVisibleCategories } from "@/lib/collections";
 import { useCart, lineDisplayImage, lineUnitPrice } from "@/context/cart-context";
+import { trackEvent, trackEventThenNavigate } from "@/lib/analytics";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import Logo from "./Logo";
+import FreeShippingProgress from "./free-shipping-progress";
+import CheckoutIntentDialog from "./checkout-intent-dialog";
+
+// The announcement bar states a shipping offer ("free shipping above X CAD")
+// that has no finalized pricing/shipping policy behind it yet. It is gated —
+// together with the cart-drawer progress bar — by VITE_SHOW_SHIPPING_PROMO
+// (see @/lib/flags for what enabling it asserts).
+import { SHIPPING_PROMO_ENABLED, REAL_CHECKOUT_ENABLED } from "@/lib/flags";
 
 // Helper to slugify product title for mock cart links
 const slugify = (str: string) =>
@@ -37,6 +46,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [intentOpen, setIntentOpen] = useState(false);
   const { scrollY } = useScroll();
 
   const mockSubtotal = mockLines.reduce(
@@ -78,17 +88,20 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Banner — fixed, always visible above the nav */}
-      <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
-        {t("announcement")}
-      </div>
+      {/* Announcement Banner — fixed above the nav; gated off by default (see SHIPPING_PROMO_ENABLED) */}
+      {SHIPPING_PROMO_ENABLED && (
+        <div className="fixed top-0 left-0 right-0 z-[70] flex h-10 items-center justify-center bg-secondary px-4 py-4 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-secondary-foreground">
+          {t("announcement")}
+        </div>
+      )}
 
       <motion.nav
         variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: prefersReducedMotion ? 0.1 : 0.35, ease: "easeInOut" }}
         className={cn(
-          "fixed left-0 right-0 top-10 z-50 border-b transition-all duration-300",
+          "fixed left-0 right-0 z-50 border-b transition-all duration-300",
+          SHIPPING_PROMO_ENABLED ? "top-10" : "top-0",
           isScrolled || isCartOpen || isMenuOpen
             ? "border-border bg-background/80 py-4 backdrop-blur-md"
             : "border-transparent bg-transparent py-6"
@@ -124,7 +137,7 @@ export default function Navbar() {
           {/* Center: logo */}
           <div className="flex flex-col items-center">
             <Link href="/">
-              <Logo variant="with-slogan" />
+              <Logo variant="mark-only" className="w-44 md:w-56 h-auto" />
             </Link>
           </div>
 
@@ -180,7 +193,7 @@ export default function Navbar() {
               className="fixed left-0 top-0 h-full w-full max-w-sm bg-background z-[110] shadow-2xl flex flex-col rtl:left-auto rtl:right-0"
             >
               <div className="p-6 flex items-center justify-between border-b border-border">
-                <Logo variant="with-slogan" className="w-48 h-auto" />
+                <Logo variant="mark-only" className="w-48 h-auto" />
                 <button onClick={() => setIsMenuOpen(false)} data-testid="button-menu-close" aria-label={t("nav.closeMenu")}>
                   <X className="w-6 h-6" />
                 </button>
@@ -431,6 +444,15 @@ export default function Navbar() {
               </div>
 
               <div className="space-y-4 border-t border-border bg-muted/20 p-8">
+                {totalQuantity > 0 && (
+                  <FreeShippingProgress
+                    subtotal={
+                      cart
+                        ? parseFloat(cart.cost.subtotalAmount.amount)
+                        : mockSubtotal
+                    }
+                  />
+                )}
                 <div>
                   <div className="flex justify-between text-xs font-bold uppercase tracking-widest rtl:flex-row-reverse mb-1">
                     <span>{t("cart.subtotal")}</span>
@@ -440,11 +462,43 @@ export default function Navbar() {
                 </div>
                 <button
                   type="button"
-                  disabled={isBusy || !cart?.checkoutUrl || totalQuantity === 0}
+                  // With intent capture, a Shopify checkoutUrl is NOT required
+                  // to click checkout — mock/session carts must reach the
+                  // dialog too, or the demand test misses them entirely.
+                  disabled={
+                    isBusy ||
+                    totalQuantity === 0 ||
+                    (REAL_CHECKOUT_ENABLED && !cart?.checkoutUrl)
+                  }
                   onClick={() => {
-                    if (cart?.checkoutUrl) {
-                      window.location.href = cart.checkoutUrl;
+                    const currency = cart?.cost.subtotalAmount.currencyCode ?? "CAD";
+                    const value = cart
+                      ? parseFloat(cart.cost.subtotalAmount.amount)
+                      : mockSubtotal;
+
+                    if (!REAL_CHECKOUT_ENABLED) {
+                      // Intercept — do NOT navigate. Shopify's checkoutUrl
+                      // still leads to the storefront password page, which is
+                      // both a dead end and a leak that the store isn't live.
+                      trackEvent("checkout_intent", {
+                        cart_value: value,
+                        currency,
+                        num_items: totalQuantity,
+                        locale: i18n.language,
+                      });
+                      setIntentOpen(true);
+                      return;
                     }
+
+                    if (!cart?.checkoutUrl) return;
+                    const { checkoutUrl } = cart;
+                    trackEventThenNavigate(
+                      "begin_checkout",
+                      { currency, value, num_items: totalQuantity },
+                      () => {
+                        window.location.href = checkoutUrl;
+                      },
+                    );
                   }}
                   className="w-full bg-primary py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white disabled:opacity-50"
                   data-testid="button-cart-checkout"
@@ -456,6 +510,19 @@ export default function Navbar() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Checkout-intent capture. Opens instead of navigating while the store
+          cannot take money (REAL_CHECKOUT_ENABLED). The cart is deliberately
+          left open and untouched behind it — nothing is cleared. */}
+      <CheckoutIntentDialog
+        open={intentOpen}
+        onClose={() => setIntentOpen(false)}
+        context={{
+          cartValue: cart ? parseFloat(cart.cost.subtotalAmount.amount) : mockSubtotal,
+          currency: cart?.cost.subtotalAmount.currencyCode ?? "CAD",
+          numItems: totalQuantity,
+        }}
+      />
     </>
   );
 }

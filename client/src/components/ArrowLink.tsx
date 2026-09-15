@@ -23,7 +23,7 @@ export function ArrowLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`text-primary font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all inline-flex items-center gap-1 ${className}`}
+      className={`text-primary font-bold border-b border-primary/20 pb-1 hover:border-primary transition-all inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
     >
       {children}
       <span aria-hidden="true">→</span>
