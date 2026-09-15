@@ -10,32 +10,21 @@ import {
 } from "../worker/security-headers";
 
 // The CSP used to exist twice — helmet in server/index.ts (never executed in
-// production) and a hand-transcribed copy in vercel.json (what actually ran).
-// A missing origin fails SILENTLY in the browser: the script loads and no data
-// ever leaves the page.
+// production) and a hand-transcribed copy in vercel.json. A missing origin
+// fails SILENTLY in the browser: the script loads and no data ever leaves the
+// page.
 //
 // On Cloudflare there is one definition, in worker/security-headers.ts, applied
 // to Worker responses by middleware and to static assets via a GENERATED
 // client/public/_headers. These tests pin that:
-//   1. the migration is behaviour-preserving vs what production serves today
-//   2. client/public/_headers is actually in step with its source
+//   1. client/public/_headers is actually in step with its source
+//   2. the dev server derives its policy from the same module
 //   3. every third party we load is still named
-
+//
+// The fourth test — that the generated policy was byte-identical to the one
+// vercel.json served — retired with vercel.json itself once DNS moved to
+// Cloudflare. There is no second environment left to drift from.
 const ROOT = path.resolve(import.meta.dirname, "..");
-
-const vercelCsp: string = (() => {
-  const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, "vercel.json"), "utf8"));
-  const headers = cfg.headers?.flatMap((h: any) => h.headers ?? []) ?? [];
-  return headers.find((h: any) => h.key?.toLowerCase() === "content-security-policy").value;
-})();
-
-describe("CSP migration is behaviour-preserving", () => {
-  it("generates a policy byte-identical to the one Vercel serves today", () => {
-    // Vercel remains the live deploy until the founder cuts DNS over. If these
-    // ever differ, one of the two environments is running a different policy.
-    expect(buildCsp()).toBe(vercelCsp);
-  });
-});
 
 describe("client/public/_headers is generated, not hand-edited", () => {
   const headersFile = path.join(ROOT, "client", "public", "_headers");
