@@ -25,3 +25,6 @@ ds-bundle/
 
 # Wrangler local dev state (miniflare cache/traces) — machine-local
 .wrangler/
+
+# Vite also reads a plain .env; same rule as .env.local, never commit
+.env

@@ -50,8 +50,17 @@ simple = { limit = 10, period = 60 }
 # offer on for real visitors.
 [vars]
 # SHOPIFY_STORE_DOMAIN is not secret (it is visible in the storefront anyway).
-# Set it here or in the dashboard.
-# SHOPIFY_STORE_DOMAIN = "turath-collective.myshopify.com"
+# It lives here, not in the dashboard: a `wrangler deploy` REPLACES the Worker
+# plain-text vars with this block, so a dashboard-only value disappears on the
+# next deploy, silently. Secrets are unaffected.
+SHOPIFY_STORE_DOMAIN = "turathcollective.myshopify.com"
+
+# server/email.ts refuses to report a delivered email that was never sent, but
+# only when NODE_ENV === "production". Nothing sets NODE_ENV on Workers, so
+# without this the guard cannot fire: a missing RESEND_API_KEY would make the
+# contact form answer "message received" while sending nothing — exactly the
+# false success the honesty rules exist to prevent. Pin it explicitly.
+NODE_ENV = "production"
 
 # Sentry DSN for the WORKER. Deliberately a DIFFERENT Sentry project from the
 # browser's VITE_SENTRY_DSN: a failing /api/shopify is an outage, a client
