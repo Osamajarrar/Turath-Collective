@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { CONSENT_BAR_ENABLED } from "@/lib/flags";
 import PageLayout from "@/components/PageLayout";
 
 const fadeUp = {
@@ -229,6 +230,19 @@ export default function PrivacyPolicy() {
                   <Bullet key={i}>{item}</Bullet>
                 ))}
               </ul>
+              {/* The analytics choice a visitor actually has depends on
+                  VITE_CONSENT_BAR_SHOWN: with the bar off there is no banner
+                  and analytics run for everyone, so a policy sentence
+                  describing a banner would be false. Reading the flag here
+                  keeps the disclosure true in both states without anyone
+                  remembering to edit it. See client/src/lib/flags.ts. */}
+              <p>
+                {t(
+                  CONSENT_BAR_ENABLED
+                    ? "privacy.sections.section6.analyticsChoiceBanner"
+                    : "privacy.sections.section6.analyticsChoiceAll",
+                )}
+              </p>
               <p>{t("privacy.sections.section6.outro")}</p>
             </Section>
 

@@ -55,11 +55,12 @@ vite.config.ts                   Vite config + custom ga4Plugin (transformIndexH
 vite-plugin-meta-images.ts       Custom plugin: rewrites OG image URLs at build
 ```
 
-**Retained but not serving traffic:** `api/shopify.ts` (+ the `@vercel/node` dev dep). The Worker
-owns this endpoint now, but the Vercel handler keeps the 17 hardening tests in
-`test/shopify-proxy.test.ts` alive — introspection blocking, query cap, origin enforcement, token
-non-leakage — and those tests are written against its req/res shape. Deleting the file deletes the
-coverage, so it waits for a real port to `worker/index.ts`. Do not extend it; do not delete it.
+**Deleted:** `api/shopify.ts` and the `@vercel/node` dev dep. The Vercel serverless copy of the
+Shopify proxy was kept only because `test/shopify-proxy.test.ts` was written against its req/res
+shape; that suite now drives the Hono app (`worker/index.ts` exports the bare `app` alongside the
+Sentry-wrapped default) with a synthetic `env`, so the hardening coverage — introspection
+blocking, query cap, origin enforcement, token non-leakage, upstream 504/502 mapping, rate-limit
+429 and its fail-open-when-unbound behaviour — moved with it. There is no `api/` directory.
 
 ---
 
