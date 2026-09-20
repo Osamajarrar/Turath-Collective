@@ -21,6 +21,7 @@ import {
   undecidedCategories,
   onConsentChange,
   syncConsentCookie,
+  applyImplicitConsent,
 } from "./consent";
 import { initAnalytics, isAnalyticsInitialized } from "./analytics";
 
@@ -220,5 +221,48 @@ describe("category-keyed record (v2)", () => {
     expect(getConsent()).toBeNull();
     expect(hasConsent("analytics")).toBe(false);
     expect(hasDecidedAll()).toBe(false);
+  });
+});
+
+describe("applyImplicitConsent — the VITE_CONSENT_BAR=off path", () => {
+  // With the bar off there is no banner to answer, so analytics start for
+  // everyone at boot. The point of these tests is that it starts EVERYTHING
+  // (a half-started stack looks identical to a working one from the code, and
+  // only shows up as empty dashboards), and that it fabricates no consent.
+
+  it("initialises PostHog without any stored decision", () => {
+    // The key is unset in the test env, and enableAnalytics no-ops without
+    // one — so stub it, or this asserts nothing.
+    vi.stubEnv("VITE_POSTHOG_KEY", "phc_test_key");
+    try {
+      applyImplicitConsent();
+      expect(posthog.init).toHaveBeenCalledWith("phc_test_key", expect.anything());
+      expect(isAnalyticsInitialized()).toBe(true);
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("flips gtag analytics_storage to granted", () => {
+    // gtag.js loads with analytics_storage denied (Consent Mode v2 defaults in
+    // vite.config.ts). Without this update GA4 stays in cookieless ping mode
+    // and the GA dashboard looks empty while PostHog looks fine.
+    applyImplicitConsent();
+    expect(window.gtag).toHaveBeenCalledWith("consent", "update", {
+      analytics_storage: "granted",
+    });
+  });
+
+  it("writes the checkout cookie so the Shopify pixel is not left behind", () => {
+    applyImplicitConsent();
+    expect(document.cookie).toContain("turath-consent=granted");
+  });
+
+  it("stores NO consent record", () => {
+    applyImplicitConsent();
+    // A stored decision here would be a fabricated consent artefact, and would
+    // silently suppress the bar for these visitors once it is switched on.
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(getConsent()).toBeNull();
   });
 });

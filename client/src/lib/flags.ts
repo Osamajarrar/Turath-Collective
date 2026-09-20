@@ -17,6 +17,22 @@
 // while configuring Vercel: do not add this variable.
 export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 
+// ── Analytics consent bar ────────────────────────────────────────────────────
+// One switch over both the bar and the gate, because they only make sense
+// together:
+//
+//   unset / false  no bar is rendered, and analytics + Sentry start for every
+//                  visitor at app boot (see applyImplicitConsent in consent.ts).
+//   true           the bar is shown and nothing starts until Accept is clicked.
+//
+// Deliberately defaulting to OFF while the site is pre-launch: the founder
+// wants full analytics coverage now and will set VITE_CONSENT_BAR=true before
+// the store opens. Flipping it needs a fresh build like every other VITE_ var.
+//
+// Whichever way it is set, the bar never lies: with the flag off there is no
+// Accept/Decline to ignore, because there is no bar.
+export const CONSENT_BAR_ENABLED = import.meta.env.VITE_CONSENT_BAR === "true";
+
 // ── Mock product catalog ──────────────────────────────────────────────────────
 // Local mock products instead of the Shopify Storefront API.
 export const USE_MOCK_PRODUCTS =

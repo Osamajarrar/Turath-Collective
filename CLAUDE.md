@@ -71,6 +71,7 @@ founder points DNS at Cloudflare (plan 10 phase 5).
 | `RESEND_NEWSLETTER_AUDIENCE_ID` | Resend audience for the newsletter consent |
 | `VITE_REAL_CHECKOUT` | Unset = clicking checkout opens the intent dialog instead of navigating. Set to `true` **only** once the Shopify storefront password is removed and checkout genuinely works, or real customers hit a password wall |
 | `VITE_NOTIFY_ME_ENABLED` | Unset = out-of-stock variants show "Out of Stock" instead of collecting an email nothing stores. Only enable once the capture has a real backend |
+| `VITE_CONSENT_BAR` | Unset/false = **no consent bar and analytics + Sentry start for every visitor** (`applyImplicitConsent`); `true` = the sticky bottom bar shows and nothing starts until Accept. Deliberately off pre-launch at the founder’s direction; set it to `true` before the store opens. No stored consent record is fabricated while it is off, so switching it on asks everyone properly. |
 | `VITE_USE_MOCK_PRODUCTS` | `true` = local mock catalog instead of Shopify |
 | `VITE_SHOW_PLACEHOLDER_CONTENT` | Gates fake review/social components. **Must never be set in Vercel.** |
 | `VITE_SHOW_SHIPPING_PROMO` | Single gate for the announcement bar + cart free-shipping progress bar (`VITE_FREE_SHIPPING_THRESHOLD` supplies the CAD amount). Off until the shipping offer is real. |
