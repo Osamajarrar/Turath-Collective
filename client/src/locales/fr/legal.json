@@ -190,7 +190,9 @@
           "Cookies essentiels — requis pour le fonctionnement du site (par ex. panier, session)",
           "Cookies analytiques — utilisés pour comprendre l'utilisation globale du site (aucune donnée d'identification personnelle)"
         ],
-        "outro": "Vous pouvez désactiver les cookies dans les paramètres de votre navigateur. Si vous désactivez les cookies essentiels, cela peut affecter la fonctionnalité du site. Nous n'utilisons pas de cookies pour la publicité ciblée."
+        "outro": "Vous pouvez désactiver les cookies dans les paramètres de votre navigateur. Si vous désactivez les cookies essentiels, cela peut affecter la fonctionnalité du site. Nous n'utilisons pas de cookies pour la publicité ciblée.",
+        "analyticsChoiceBanner": "Lors de votre première visite, vous pouvez accepter ou refuser les témoins d’analyse. Un refus laisse l’ensemble du site fonctionnel, sans rien retirer.",
+        "analyticsChoiceAll": "Les témoins d’analyse sont actuellement déposés pour tous les visiteurs. Vous pouvez les bloquer dans les paramètres de votre navigateur."
       },
       "section7": {
         "number": "7",

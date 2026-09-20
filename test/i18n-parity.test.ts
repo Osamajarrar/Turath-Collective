@@ -62,7 +62,7 @@ describe("i18n key parity", () => {
 
     // Arabic is translated but deliberately NOT exposed: its entry in
     // SUPPORTED_LANGUAGES is commented out, so no visitor can select it. It
-    // carries 301 keys of known translation debt, recorded in
+    // carries 303 keys of known translation debt, recorded in
     // ar-parity-baseline.json.
     //
     // The assertion is therefore "no NEW drift": adding an EN key without an

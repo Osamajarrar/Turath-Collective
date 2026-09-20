@@ -190,7 +190,9 @@
           "Essential cookies — required for the site to function (e.g. cart, session)",
           "Analytics cookies — used to understand aggregate site usage (no personally identifying data)"
         ],
-        "outro": "You may disable cookies in your browser settings. Disabling essential cookies may affect site functionality. We do not use cookies for targeted advertising."
+        "outro": "You may disable cookies in your browser settings. Disabling essential cookies may affect site functionality. We do not use cookies for targeted advertising.",
+        "analyticsChoiceBanner": "When you first visit, you may accept or decline analytics cookies. Declining leaves the entire site working, with nothing withheld.",
+        "analyticsChoiceAll": "Analytics cookies are currently set for all visitors. You can prevent them through your browser settings."
       },
       "section7": {
         "number": "7",
