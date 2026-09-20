@@ -9,7 +9,7 @@ const posthog = vi.hoisted(() => ({
 }));
 vi.mock("posthog-js", () => ({ default: posthog }));
 
-// VITE_CONSENT_BAR is read at module load, so the flag is mocked through a
+// VITE_CONSENT_BAR_SHOWN is read at module load, so the flag is mocked through a
 // mutable holder rather than by reloading modules in every test.
 const flagState = vi.hoisted(() => ({ barEnabled: true }));
 vi.mock("@/lib/flags", async (importOriginal) => ({
@@ -39,7 +39,7 @@ beforeEach(() => {
   flagState.barEnabled = true;
 });
 
-describe("consent bar — the VITE_CONSENT_BAR switch", () => {
+describe("consent bar — the VITE_CONSENT_BAR_SHOWN switch", () => {
   it("renders nothing at all when the bar is disabled", () => {
     flagState.barEnabled = false;
     render(<CookieConsent />);

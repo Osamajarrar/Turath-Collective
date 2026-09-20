@@ -26,12 +26,12 @@ export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 //   true           the bar is shown and nothing starts until Accept is clicked.
 //
 // Deliberately defaulting to OFF while the site is pre-launch: the founder
-// wants full analytics coverage now and will set VITE_CONSENT_BAR=true before
+// wants full analytics coverage now and will set VITE_CONSENT_BAR_SHOWN=true before
 // the store opens. Flipping it needs a fresh build like every other VITE_ var.
 //
 // Whichever way it is set, the bar never lies: with the flag off there is no
 // Accept/Decline to ignore, because there is no bar.
-export const CONSENT_BAR_ENABLED = import.meta.env.VITE_CONSENT_BAR === "true";
+export const CONSENT_BAR_ENABLED = import.meta.env.VITE_CONSENT_BAR_SHOWN === "true";
 
 // ── Mock product catalog ──────────────────────────────────────────────────────
 // Local mock products instead of the Shopify Storefront API.

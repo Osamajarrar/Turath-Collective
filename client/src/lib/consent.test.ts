@@ -224,7 +224,7 @@ describe("category-keyed record (v2)", () => {
   });
 });
 
-describe("applyImplicitConsent — the VITE_CONSENT_BAR=off path", () => {
+describe("applyImplicitConsent — the VITE_CONSENT_BAR_SHOWN=off path", () => {
   // With the bar off there is no banner to answer, so analytics start for
   // everyone at boot. The point of these tests is that it starts EVERYTHING
   // (a half-started stack looks identical to a working one from the code, and

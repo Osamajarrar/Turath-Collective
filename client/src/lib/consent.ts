@@ -117,7 +117,7 @@ export function syncConsentCookie(): void {
 /**
  * Start analytics for everyone, with no banner and no stored decision.
  *
- * Used when VITE_CONSENT_BAR is off (see flags.ts). It does what accepting
+ * Used when VITE_CONSENT_BAR_SHOWN is off (see flags.ts). It does what accepting
  * would do — PostHog, Sentry, and gtag’s analytics_storage — with two
  * deliberate differences:
  *

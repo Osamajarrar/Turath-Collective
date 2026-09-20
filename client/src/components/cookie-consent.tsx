@@ -9,7 +9,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 /**
  * Opt-in analytics consent (PIPEDA / Quebec Law 25), as a sticky bottom bar.
  *
- * Renders only when VITE_CONSENT_BAR is on AND this visitor still owes an
+ * Renders only when VITE_CONSENT_BAR_SHOWN is on AND this visitor still owes an
  * answer. With the flag off there is no bar at all and analytics start for
  * everyone at boot (applyImplicitConsent in consent.ts) — so there is never an
  * Accept/Decline on screen that does not do exactly what it says.
