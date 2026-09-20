@@ -47,7 +47,17 @@ not_found_handling = "single-page-application"
 # config key; the older `[[unsafe.bindings]]` form with type = "ratelimit" is
 # accepted by wrangler but does NOT produce a binding, and worker/index.ts
 # skips the check when the binding is absent — so the limit silently never
-# applied. Verified against the deployed Worker: 35 rapid requests, 0 x 429.
+# applied. Verified against the deployed Worker at the time: 35 rapid requests,
+# 0 x 429.
+#
+# HOW TO VERIFY THIS, because the obvious test lies: a SEQUENTIAL loop does not
+# trip these limits. Cloudflare caches the counters per isolate per location and
+# syncs them asynchronously — the docs call the API "permissive, eventually
+# consistent, and intentionally designed to not be used as an accurate
+# accounting system". 30 sequential requests at 3x the limit passed cleanly and
+# led to a whole session concluding the limiter was broken. It is not: 100
+# PARALLEL requests against the 10/60s limit returned 82 x 429, and 60
+# sequential immediately afterwards returned 56 x 429. Test with a burst.
 [[ratelimits]]
 name = "SHOPIFY_RATE_LIMITER"
 namespace_id = "1001"
