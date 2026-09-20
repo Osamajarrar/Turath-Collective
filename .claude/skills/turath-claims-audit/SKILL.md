@@ -42,7 +42,7 @@ written procedure for future sessions, nothing more.
 - Fake reviews and social-proof components shipped and had to be ripped out
   by the founder personally (commit `c92704d`, "remove fake stuff"). They
   now exist only behind `VITE_SHOW_PLACEHOLDER_CONTENT` (see
-  `client/src/components/review-carousel.tsx:2` — **never set in Vercel**).
+  `client/src/components/review-carousel.tsx:2` — **never set in Cloudflare**).
 
 ## The rule
 

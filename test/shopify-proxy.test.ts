@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import handler from "../api/shopify";
 
-// The Vercel function in api/shopify.ts is the proxy that actually runs in
-// production — the Express route in server/routes.ts only serves the local
-// host. It is unauthenticated and public, so its validation is the only thing
-// standing between the internet and a Shopify token. These tests pin the
-// behaviour that hardening added; a regression here is silent and expensive.
+// api/shopify.ts no longer serves traffic — the Cloudflare Worker does. These
+// tests are why the file still exists: they are written against its req/res
+// shape and are the only coverage of the hardening on our one public endpoint
+// holding the storefront token.
+// A regression here is silent and expensive.
 
 type Res = {
   statusCode?: number;

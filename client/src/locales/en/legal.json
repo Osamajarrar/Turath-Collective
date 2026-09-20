@@ -163,7 +163,7 @@
             "purpose": "Transactional emails"
           },
           {
-            "name": "Website hosting (Vercel)",
+            "name": "Website hosting (Cloudflare)",
             "purpose": "Website infrastructure"
           }
         ],

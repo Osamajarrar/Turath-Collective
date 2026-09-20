@@ -9,6 +9,16 @@ const posthog = vi.hoisted(() => ({
 }));
 vi.mock("posthog-js", () => ({ default: posthog }));
 
+// VITE_CONSENT_BAR_SHOWN is read at module load, so the flag is mocked through a
+// mutable holder rather than by reloading modules in every test.
+const flagState = vi.hoisted(() => ({ barEnabled: true }));
+vi.mock("@/lib/flags", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/flags")>()),
+  get CONSENT_BAR_ENABLED() {
+    return flagState.barEnabled;
+  },
+}));
+
 // wouter's Link needs no router for rendering an <a>, but keep it inert.
 vi.mock("wouter", () => ({
   Link: ({ children, href }: any) => <a href={href}>{children}</a>,
@@ -20,16 +30,47 @@ vi.mock("react-i18next", () => ({
 
 import CookieConsent from "./cookie-consent";
 
+const bar = () => screen.queryByTestId("consent-bar");
+
 beforeEach(() => {
   vi.clearAllMocks();
   localStorage.clear();
   window.gtag = vi.fn();
+  flagState.barEnabled = true;
 });
 
-describe("consent dialog — visibility", () => {
+describe("consent bar — the VITE_CONSENT_BAR_SHOWN switch", () => {
+  it("renders nothing at all when the bar is disabled", () => {
+    flagState.barEnabled = false;
+    render(<CookieConsent />);
+
+    // Not "hidden" — absent. With the flag off, analytics are started for
+    // everyone at boot, so a visible Accept/Decline would be a choice that
+    // changes nothing.
+    expect(bar()).not.toBeInTheDocument();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+  });
+
+  it("does not record a decision when the bar is disabled", () => {
+    flagState.barEnabled = false;
+    render(<CookieConsent />);
+
+    // applyImplicitConsent deliberately stores no consent record: when the bar
+    // is switched on for launch, these visitors must be asked properly rather
+    // than discovered to be already opted in.
+    expect(localStorage.getItem("turath-consent")).toBeNull();
+  });
+
+  it("shows the bar when enabled", () => {
+    render(<CookieConsent />);
+    expect(bar()).toBeInTheDocument();
+  });
+});
+
+describe("consent bar — visibility", () => {
   it("shows for a visitor with no decision", () => {
     render(<CookieConsent />);
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(bar()).toBeInTheDocument();
   });
 
   it("does not show once a decision exists", () => {
@@ -38,18 +79,18 @@ describe("consent dialog — visibility", () => {
       JSON.stringify({ status: "denied", timestamp: new Date().toISOString() }),
     );
     render(<CookieConsent />);
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(bar()).not.toBeInTheDocument();
   });
 
   it("closes after either choice", async () => {
     const user = userEvent.setup();
     render(<CookieConsent />);
     await user.click(screen.getByTestId("button-consent-accept"));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    await waitFor(() => expect(bar()).not.toBeInTheDocument());
   });
 });
 
-describe("consent dialog — Law 25 equal-weight requirement", () => {
+describe("consent bar — Law 25 equal-weight requirement", () => {
   it("styles accept and decline identically", () => {
     render(<CookieConsent />);
     const accept = screen.getByTestId("button-consent-accept");
@@ -62,8 +103,7 @@ describe("consent dialog — Law 25 equal-weight requirement", () => {
 
   it("offers exactly two choices, both one click", () => {
     render(<CookieConsent />);
-    const buttons = screen.getAllByRole("button");
-    expect(buttons).toHaveLength(2);
+    expect(screen.getAllByRole("button")).toHaveLength(2);
   });
 
   it("declining takes a single click and needs no confirmation", async () => {
@@ -71,14 +111,14 @@ describe("consent dialog — Law 25 equal-weight requirement", () => {
     render(<CookieConsent />);
     await user.click(screen.getByTestId("button-consent-decline"));
 
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    await waitFor(() => expect(bar()).not.toBeInTheDocument());
     expect(JSON.parse(localStorage.getItem("turath-consent")!).categories.analytics).toBe(
       false,
     );
   });
 });
 
-describe("consent dialog — a choice must actually be made", () => {
+describe("consent bar — a choice must actually be made", () => {
   it("has no dismiss control", () => {
     render(<CookieConsent />);
     // Only the two choices — no X, no "continue without choosing".
@@ -90,40 +130,42 @@ describe("consent dialog — a choice must actually be made", () => {
     const user = userEvent.setup();
     render(<CookieConsent />);
     await user.keyboard("{Escape}");
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(bar()).toBeInTheDocument();
     expect(localStorage.getItem("turath-consent")).toBeNull();
   });
 });
 
-describe("consent dialog — accessibility", () => {
-  it("is a labelled modal dialog", () => {
+describe("consent bar — accessibility", () => {
+  it("is a labelled region, not a modal dialog", () => {
     render(<CookieConsent />);
-    const dialog = screen.getByRole("dialog");
-    expect(dialog).toHaveAttribute("aria-modal", "true");
-    expect(dialog).toHaveAttribute("aria-labelledby");
-    expect(dialog).toHaveAttribute("aria-describedby");
+
+    // A bar overlays the page without blocking it, so announcing it as a modal
+    // dialog would be a lie to a screen reader: focus is not trapped and the
+    // content behind stays reachable.
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    const region = screen.getByRole("region", { name: "consent.label" });
+    expect(region).toBe(bar());
   });
 
-  it("moves focus into the dialog on open", async () => {
+  it("leaves focus on the page instead of seizing it", () => {
     render(<CookieConsent />);
-    await waitFor(() =>
-      expect(screen.getByRole("dialog").contains(document.activeElement)).toBe(true),
-    );
+    // The modal stole focus deliberately; a bar must not, or it interrupts
+    // someone mid-task on a page it is not blocking.
+    expect(bar()!.contains(document.activeElement)).toBe(false);
   });
 
-  it("traps Tab inside the dialog", async () => {
+  it("keeps both choices reachable by keyboard", async () => {
     const user = userEvent.setup();
     render(<CookieConsent />);
-    const dialog = screen.getByRole("dialog");
 
-    for (let i = 0; i < 6; i += 1) {
-      await user.tab();
-      expect(dialog.contains(document.activeElement)).toBe(true);
-    }
+    await user.tab();
+    await user.tab();
+    await user.tab();
+    expect(bar()!.contains(document.activeElement)).toBe(true);
   });
 });
 
-describe("consent dialog — analytics gating", () => {
+describe("consent bar — analytics gating", () => {
   it("does not initialise PostHog merely by rendering", () => {
     render(<CookieConsent />);
     expect(posthog.init).not.toHaveBeenCalled();

@@ -1,8 +1,8 @@
 // Central build-time UI feature flags. All values come from Vite env vars and
-// are BAKED AT BUILD TIME — changing one in Vercel needs a fresh build, and a
+// are BAKED AT BUILD TIME — changing one in Cloudflare needs a fresh build, and a
 // local change needs a dev-server restart.
 
-// ── Demo mode (LOCAL DEV ONLY — NEVER SET IN VERCEL) ─────────────────────────
+// ── Demo mode (LOCAL DEV ONLY — NEVER SET IN CLOUDFLARE) ─────────────────────
 // VITE_DEMO_MODE=true is a master switch that forces every mock/placeholder
 // flag below to its "on" state so the full intended site experience can be
 // previewed locally: mock product catalog, fake review/social-proof
@@ -10,12 +10,28 @@
 // when no real one is set), and the full site instead of the coming-soon page.
 //
 // It exists purely for the founder's own .env.local during design/layout
-// review. It must NEVER be set in any Vercel environment (dev, test, or main):
+// review. It must NEVER be set in any Cloudflare build environment:
 // a deployed build with this flag would show FAKE reviews, FAKE social posts,
 // and a FAKE shipping offer to real visitors — exactly the dishonest content
 // this project's honesty framework exists to prevent. If you are reading this
-// while configuring Vercel: do not add this variable.
+// while configuring Cloudflare: do not add this variable.
 export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+
+// ── Analytics consent bar ────────────────────────────────────────────────────
+// One switch over both the bar and the gate, because they only make sense
+// together:
+//
+//   unset / false  no bar is rendered, and analytics + Sentry start for every
+//                  visitor at app boot (see applyImplicitConsent in consent.ts).
+//   true           the bar is shown and nothing starts until Accept is clicked.
+//
+// Deliberately defaulting to OFF while the site is pre-launch: the founder
+// wants full analytics coverage now and will set VITE_CONSENT_BAR_SHOWN=true before
+// the store opens. Flipping it needs a fresh build like every other VITE_ var.
+//
+// Whichever way it is set, the bar never lies: with the flag off there is no
+// Accept/Decline to ignore, because there is no bar.
+export const CONSENT_BAR_ENABLED = import.meta.env.VITE_CONSENT_BAR_SHOWN === "true";
 
 // ── Mock product catalog ──────────────────────────────────────────────────────
 // Local mock products instead of the Shopify Storefront API.
@@ -24,7 +40,7 @@ export const USE_MOCK_PRODUCTS =
 
 // ── Placeholder review / social-proof content ────────────────────────────────
 // Fake testimonials and fake Instagram posts, for structural/layout testing
-// only. Never set VITE_SHOW_PLACEHOLDER_CONTENT in Vercel either — same
+// only. Never set VITE_SHOW_PLACEHOLDER_CONTENT in Cloudflare either — same
 // honesty rules as DEMO_MODE apply.
 export const SHOW_PLACEHOLDER_CONTENT =
   DEMO_MODE || import.meta.env.VITE_SHOW_PLACEHOLDER_CONTENT === "true";

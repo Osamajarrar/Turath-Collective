@@ -370,7 +370,7 @@ Hard constraints: **no music in any content, ever** (religious constraint, no wo
 ## 8. Technology & website status
 
 **Stack:** React + TypeScript + Vite + Tailwind client, Express server (Shopify Storefront
-proxy + CSP/helmet), headless Shopify, Vercel deploy, PostHog + GA4 analytics, i18n EN/FR
+proxy + CSP), headless Shopify, Cloudflare Workers deploy, PostHog + GA4 analytics, i18n EN/FR
 (AR deliberately deferred: files kept, hidden from switcher — do not re-enable without
 explicit founder sign-off).
 
@@ -389,7 +389,7 @@ form → Shopify plan upgrade + remove storefront password → staging soft test
 order end-to-end → DNS/launch runbook. The store password stays on and payments stay in test
 mode until immediately before launch (intentional — no monthly fees while pre-revenue).
 
-**Ongoing tech cost at launch:** Shopify plan + domain; Vercel/PostHog/GA free tiers at this
+**Ongoing tech cost at launch:** Shopify plan + domain; Cloudflare/PostHog/GA free tiers at this
 scale. `[confirm current Shopify pricing at upgrade time]`
 
 ---
@@ -418,7 +418,7 @@ Revisit seriously only after DTC is stable; a catalog is cheap to produce when t
 | **Fragile goods economics** | Breakage and shipping cost could erode margins unexpectedly. | Sample shipments measured as packing tests; breakage priced into COGS; packaging iterated on real damage data. |
 | **Compliance** | Ceramics food-safety (lead/cadmium), import duties, consumer law on delivery promises, GST/QST. | §2 and §5.3 action items — all before first sale, each cheap to resolve early and expensive late. |
 | **Solo-founder key-person risk** | Everything — sourcing relationships, content, ops — routes through one person with finite hours. | Sustainable cadence already designed into the marketing plan; scope discipline (deferred features stay deferred); document supplier specs/contacts as they form. |
-| **Platform dependency** | Shopify + Meta + Vercel are load-bearing third parties. | Accept at this scale (fighting it costs more than the risk); email list ownership as the eventual hedge once the newsletter backend is real. |
+| **Platform dependency** | Shopify + Meta + Cloudflare are load-bearing third parties. | Accept at this scale (fighting it costs more than the risk); email list ownership as the eventual hedge once the newsletter backend is real. |
 | **Copycat exposure** | Hebron glass is already widely resold; nothing stops a competitor copying the positioning. | The durable moats are the artisan relationships, the real process footage, and the honesty track record — none purchasable quickly. |
 
 ---

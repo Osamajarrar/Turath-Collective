@@ -163,7 +163,7 @@
             "purpose": "Courriels transactionnels"
           },
           {
-            "name": "Hébergement Web (Vercel)",
+            "name": "Hébergement Web (Cloudflare)",
             "purpose": "Infrastructure du site Web"
           }
         ],

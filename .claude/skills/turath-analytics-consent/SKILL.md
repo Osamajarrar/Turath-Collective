@@ -63,7 +63,7 @@ description: >
       is accepted — that's correct behavior, not a bug.
    b. CSP: check `connectSrc`/`scriptSrc` in `server/index.ts`; a missing
       domain fails silently in the browser.
-   c. Build-time vars: `VITE_*` values are baked at build. In Vercel a
+   c. Build-time vars: `VITE_*` values are baked at build. In Cloudflare a
       changed var needs a **fresh build**, not a cached redeploy; locally,
       restart the dev server.
    d. Project side: quota/settings in the PostHog dashboard

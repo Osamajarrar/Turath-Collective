@@ -1,7 +1,8 @@
 import { Switch, Route } from "wouter";
 import { lazy, Suspense } from "react";
 // GA4 is injected server-side via custom Vite plugin (transformIndexHtml).
-// Do not add @vercel/analytics or @vercel/speed-insights — they are not installed.
+// Analytics is GA4 + PostHog only, both behind the consent gate. Do not add a
+// host-provided analytics script: it would load before consent and outside the CSP.
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "@/context/cart-context";

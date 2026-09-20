@@ -115,6 +115,35 @@ export function syncConsentCookie(): void {
 }
 
 /**
+ * Start analytics for everyone, with no banner and no stored decision.
+ *
+ * Used when VITE_CONSENT_BAR_SHOWN is off (see flags.ts). It does what accepting
+ * would do — PostHog, Sentry, and gtag’s analytics_storage — with two
+ * deliberate differences:
+ *
+ *   - nothing is written to localStorage. The visitor made no decision, so
+ *     recording one would be a false consent artefact, and the moment the bar
+ *     is switched on they must be asked properly rather than find themselves
+ *     already opted in.
+ *   - the checkout cookie IS written, because the Shopify pixel on
+ *     checkout.turathcollective.com has no other way to know tracking is on
+ *     and would otherwise fail closed while the storefront tracks.
+ *
+ * When the bar is switched on for launch, delete nothing here: flags.ts stops
+ * calling it and the opt-in path in setConsent() takes over unchanged.
+ */
+export function applyImplicitConsent(): void {
+  writeConsentCookie("granted");
+  enableAnalytics();
+  enableMonitoring();
+  if (typeof window.gtag === "function") {
+    // gtag.js was loaded with analytics_storage denied by the Vite plugin, so
+    // without this GA4 stays in cookieless ping mode and the dashboards look
+    // empty even though PostHog is fine.
+    window.gtag("consent", "update", { analytics_storage: "granted" });
+  }
+}
+/**
  * Read the stored decision. Returns null when no decision has been made yet
  * (fresh visitor) or when storage is unavailable/corrupt (private mode, manual
  * tampering) — treating those as "not decided" so we re-prompt rather than
