@@ -7,6 +7,26 @@ compatibility_date = "2026-07-01"
 # particular. nodejs_compat provides it.
 compatibility_flags = ["nodejs_compat"]
 
+# Serve the site from turathcollective.com ONLY. Both of these default to
+# true, which publishes the same storefront at a second address:
+#   workers_dev  → turath-collective.<subdomain>.workers.dev
+#   preview_urls → <version>-turath-collective.<subdomain>.workers.dev, a new
+#                  one per deployed version
+# A crawler that finds either indexes the whole store under a URL that is not
+# the brand — robots.txt does not help, since it is the same file served from
+# the same Worker.
+#
+# These live in the file rather than in the dashboard for the same reason
+# SHOPIFY_STORE_DOMAIN does (see the [vars] note below): `wrangler deploy`
+# reconciles the Worker to this config, so a dashboard-only toggle can come
+# back on at the next deploy, silently.
+#
+# Trade-off, deliberate: there is now no pre-production URL for this Worker.
+# `npm run dev:worker` (wrangler dev) is the way to check the real runtime
+# before deploying.
+workers_dev = false
+preview_urls = false
+
 # Static assets: the Vite build output, served directly by Cloudflare and NOT
 # billed as Worker requests (a storefront is overwhelmingly static assets,
 # which is what makes this free at our scale — DECISIONS.md §1).
