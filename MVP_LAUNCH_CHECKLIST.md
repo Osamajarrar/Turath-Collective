@@ -3,58 +3,100 @@
 Status snapshot of what's missing or pending before the site can go live at **turathcollective.com**.
 
 > **Read this section first. Everything below §1 is older detail that has NOT been
-> re-verified since 2026-08-01 — several items in it are already done.** This top
-> section is the current view; treat the rest as history until it is checked.
+> re-verified since 2026-08-01 — much of it is already done.** This top section is the
+> current view, accurate as of 2026-09-20; treat the rest as history until it is checked.
 
 ---
 
-# Current state — 2026-08-01
+# Current state — 2026-09-20
 
-**The code is well ahead of the business decisions.** Almost nothing left is a coding
-task; most of it is a decision only the founder can make, or an account/dashboard
-action. Per-branch detail lives in [plans/11-dev-backlog.md](plans/11-dev-backlog.md).
+**The infrastructure is finished; the product decisions are not.** Nothing on the
+blocking list below is waiting on engineering. It is waiting on product photography,
+on taste, and on facts only the founder can confirm. Per-branch detail lives in
+[plans/11-dev-backlog.md](plans/11-dev-backlog.md).
 
-## Blocking launch — founder actions, no code
+The founder's stated order of work: finish the look, then fix the content, then take
+the Shopify password off last.
 
-| # | Item | Why it blocks |
+## Blocking launch — founder decisions, no code
+
+| # | Item | State |
 |---|---|---|
-| 1 | **Remove the Shopify storefront password** | Until then nobody can buy anything. `VITE_REAL_CHECKOUT` must stay unset, so checkout shows the intent dialog instead of a password wall |
-| 2 | **Set the production env vars** | `RESEND_API_KEY`, `RESEND_NOTIFY_AUDIENCE_ID`, `RESEND_NEWSLETTER_AUDIENCE_ID`, `VITE_SENTRY_DSN`, Shopify domain + token. Without Resend the contact form and email capture return errors *by design*, rather than pretending to work |
-| 3 | **Verify the Hebron "2,000 years" claim** in the FAQ | Hard rule 4. Nobody has confirmed the number, and no model should invent one |
-| 4 | **Decide the reply-time promise**, or leave it out | No window is promised anywhere right now. If you add one it must be true, and it must match in the email template *and* the contact page |
-| 5 | **Pick the admin email** | `server/email.ts` sends to collectiveturath@gmail.com; the site advertises support@turathcollective.com |
-| 6 | **Choose a homepage design** | Six built at `/design`. Narrow to two, get feedback, then delete the gallery |
-| 7 | **Choose a catalogue grouping** | Four options at `/shop-filters`. It is a site-wide taxonomy — it changes the homepage collection cards too, not just the shop |
-| 8 | **Decide the navbar tagline** | Recommendation: remove it. The SVG work is manual |
+| 1 | **Product photography** | The real blocker on "finishing the look". There are no product images; everything on screen is placeholder or mock. Design decisions below cannot really be settled against fake assets |
+| 2 | **Homepage design** | Founder leans to the current default (Golden Hour) "with some adjustments". The gallery of six alternatives at `/design` is still shipping — decide what to keep, then delete the gallery |
+| 3 | **Catalogue grouping** | Undecided, and the prior question is whether to have categories at all. See item 8 — the *data* decision is urgent even if the *navigation* decision is not |
+| 4 | **Logo slogan** | Three options on the table: change to "History, still handmade.", keep "Heritage Craftsmanship", or drop the slogan entirely. SVG work is manual |
+| 5 | **Navbar colours** | Open design item |
+| 6 | **Support email routing** | `support@turathcollective.com` is what the site advertises and what customers should write to. `collectiveturath@gmail.com` is the only Gmail the founder could register and is an account-holder address, not a public one. Sending should come from `noreply@turathcollective.com`, which is already DKIM-verified in Resend. See §Email routing below |
+| 7 | **Content audit** | Deferred deliberately until the look is settled. Includes the unverified Hebron "2,000 years" claim in the FAQ and the reply-time promise (currently promised nowhere, which is the honest state) |
 
 ## Blocking launch — needs code
 
 | # | Item | Notes |
 |---|---|---|
-| 9 | **Category source of truth** | `inferCategoryHandle` guesses a product's category by string-matching its name — a glass bowl matches "bowl" and is filed under ceramics, silently. Cheap to fix NOW against mock data; expensive once real products are tagged and Google has indexed them. See [plans/12](plans/12-reversibility.md) |
-| 10 | **Email templates** | The contact confirmation exists. The notify-me confirmation, the "it's available now" email and the newsletter welcome do not. `sendNewsletterWelcome` must not be called until it has a working unsubscribe (CASL) |
-| 11 | **Cloudflare cutover** | DNS is cut over and the Vercel project is deleted (2026-09-14). Remaining: confirm the secrets and every `VITE_*` var are set in the Cloudflare **build** environment — NOT verified in this session — not only as runtime secrets, since Vite bakes them into the bundle at build time. This is the most likely cause of an "analytics stopped working" report after cutover |
-| 12 | **Arabic, if it ships** | ~297 keys missing (`test/ar-parity-baseline.json`). Currently disabled, which is the honest state |
+| 8 | **Category source of truth** | `inferCategoryHandle` ([client/src/pages/shop.tsx:148](client/src/pages/shop.tsx#L148)) guesses a product's category by string-matching its name — a glass bowl matches "bowl" and is filed under ceramics, silently. **This is the one expensive-to-reverse item left.** It must be a real Shopify field (product type or tag) before real products are tagged and their URLs indexed. Cheap today against one mock product. See [plans/12](plans/12-reversibility.md) |
+| 9 | **Email templates** | The contact confirmation exists. The notify-me confirmation, the "it's available now" email and the newsletter welcome do not. `sendNewsletterWelcome` must not be called until it has a working unsubscribe (CASL) |
+| 10 | **Arabic, if it ships** | 303 keys missing (`test/ar-parity-baseline.json`). Deliberately hidden from the language switcher, which is the honest state |
 
-## Done since this checklist was last accurate — do not redo
+## Last, by the founder's own sequencing
 
-Analytics consent (blocking modal, category-keyed record), Sentry on the client behind that
-consent, the contact form rebuilt and wired to Resend, checkout-intent capture with the CASL
-two-consent split, newsletter moved off a JSON file onto a Resend audience, vitest with 189
-tests, the self-hosted auth stack and file-backed stores deleted, the D1 dialect conversion,
-the Cloudflare Worker with one CSP source of truth, embroidery removed from every surface
-(including the meta tags and the care page), and the Arabic-default language bug.
+| # | Item | Notes |
+|---|---|---|
+| 11 | **Remove the Shopify storefront password** | Until this is done nobody can buy anything, and `VITE_REAL_CHECKOUT` must stay unset so checkout shows the intent dialog rather than a password wall. Deliberately the final step before launch, not an oversight |
+
+## Email routing — the decision, recorded
+
+- **Inbound:** `support@turathcollective.com` should forward to the founder's real
+  mailbox. Cloudflare Email Routing does this free on a domain already on Cloudflare,
+  and does not require adding an MX for a mail provider. Nothing in the code reads
+  inbound mail.
+- **Outbound:** Resend sends from `noreply@turathcollective.com`, already verified —
+  the DKIM, SPF and bounce records survived the Vercel-to-Cloudflare move and were
+  confirmed live on 2026-09-15.
+- **Where mail lands today:** `server/email.ts` sends contact-form notifications to
+  `ADMIN_EMAIL = collectiveturath@gmail.com`. Once forwarding exists, this should
+  become `support@turathcollective.com` so there is one address to change later.
+
+## Done — do not redo
+
+**Hosting and delivery.** Migrated off Vercel onto a Cloudflare Worker (2026-09-14/15);
+Vercel project and account deleted, `vercel.json` and `api/` removed from the repo.
+`workers_dev` and `preview_urls` are off so the storefront serves only from the domain.
+`robots.txt` keeps `/design` and `/shop-filters` out of search. One CSP source of truth
+in `worker/security-headers.ts`; `client/public/_headers` is generated from it. The
+Shopify proxy's 23 tests now drive the Worker rather than the deleted Vercel function.
+Rate limiting is real and verified — note that only a **burst** trips it; a sequential
+loop does not, and wrongly reading that as a bug cost a session (see `wrangler.toml`).
+
+**Analytics and consent.** GA4 and PostHog confirmed arriving in their dashboards
+(2026-09-20), PostHog session replay on. Sentry on both the client and the Worker, two
+projects, emails scrubbed by `shared/scrub.ts`. Consent is a **sticky bottom bar**, not
+the old modal, and it is switched by `VITE_CONSENT_BAR_SHOWN` — unset in production
+today, so there is no bar and analytics run for every visitor. That is a deliberate
+pre-launch decision by the founder; the flag restores opt-in consent for launch, and
+the privacy policy's wording follows the flag automatically.
+
+**Legal.** Privacy policy names Cloudflare (not Vercel) as host, and lists PostHog and
+Sentry in the Law 25 sub-processor table, EN and FR.
+
+**Earlier.** The contact form rebuilt on Resend, checkout-intent capture with the CASL
+two-consent split, newsletter on a Resend audience, 208 vitest tests, the self-hosted
+auth stack and file-backed stores deleted, the D1 dialect conversion, embroidery removed
+from every surface, and the Arabic-default language bug.
 
 ## Deliberately NOT done
 
-- **Anonymous pre-consent analytics** — specified, legally unsettled, not signed off
-- **Granular cookie category toggles** — only one non-essential category exists today; the
-  stored record is already category-keyed, so adding them later is cheap
-- **Real checkout** — gated on item 1
+- **Anonymous pre-consent analytics** — specified, legally unsettled, superseded for now
+  by the decision to run analytics unconditionally pre-launch
+- **Granular cookie category toggles** — only one non-essential category exists today;
+  the stored record is already category-keyed, so adding them later is cheap
+- **Real checkout** — gated on item 11
 - **Reviews, accounts, favourites** — deferred post-MVP by DECISIONS.md
+- **A second notify-me path** — `/api/reserve` and its separate notify audience exist
+  and are tested, but stay behind `VITE_NOTIFY_ME_ENABLED` until there is something to
+  notify people about
 
 ---
-
 
 ## 1. Commerce (Shopify Headless)
 
