@@ -35,7 +35,7 @@ Do **not** include `https://`.
 
 ## Step 3 — Set Environment Variables
 
-Add these secrets to your deployment environment (e.g., Vercel, environment file, or hosting dashboard):
+Add these secrets to your deployment environment (the Cloudflare **build** environment for `VITE_*` vars, Worker secrets for the rest):
 
 | Secret Key                  | Value Example                             |
 |-----------------------------|-------------------------------------------|

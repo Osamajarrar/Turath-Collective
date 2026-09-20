@@ -33,7 +33,7 @@ action. Per-branch detail lives in [plans/11-dev-backlog.md](plans/11-dev-backlo
 |---|---|---|
 | 9 | **Category source of truth** | `inferCategoryHandle` guesses a product's category by string-matching its name — a glass bowl matches "bowl" and is filed under ceramics, silently. Cheap to fix NOW against mock data; expensive once real products are tagged and Google has indexed them. See [plans/12](plans/12-reversibility.md) |
 | 10 | **Email templates** | The contact confirmation exists. The notify-me confirmation, the "it's available now" email and the newsletter welcome do not. `sendNewsletterWelcome` must not be called until it has a working unsubscribe (CASL) |
-| 11 | **Cloudflare cutover** | Code-complete and verified against a real `wrangler dev`. Remaining: DNS, secrets, and `VITE_*` in the Cloudflare **build** environment — not only as runtime secrets, since Vite bakes them into the bundle at build time. This is the most likely cause of an "analytics stopped working" report after cutover |
+| 11 | **Cloudflare cutover** | DNS is cut over and the Vercel project is deleted (2026-09-14). Remaining: confirm the secrets and every `VITE_*` var are set in the Cloudflare **build** environment — NOT verified in this session — not only as runtime secrets, since Vite bakes them into the bundle at build time. This is the most likely cause of an "analytics stopped working" report after cutover |
 | 12 | **Arabic, if it ships** | ~297 keys missing (`test/ar-parity-baseline.json`). Currently disabled, which is the honest state |
 
 ## Done since this checklist was last accurate — do not redo
@@ -98,8 +98,8 @@ the Cloudflare Worker with one CSP source of truth, embroidery removed from ever
 ## 5. Content
 
 - [ ] Replace all placeholder/mock product data with real Shopify products (5 mock products currently live in `client/src/data/products.ts`)
-- [ ] **Replace placeholder reviews in `review-carousel.tsx`** — currently hardcoded fake names/cities/quotes (Elena M., Sami K., Amira J.) for structural testing only; gated behind `VITE_SHOW_PLACEHOLDER_CONTENT` env flag, must stay unset in Vercel until real reviews exist
-- [ ] **Replace placeholder Instagram community in `social-proof.tsx`** — currently hardcoded fake usernames (@layla_designs, @marwan_ab, @thecuratedhome) reusing product photos; gated behind same `VITE_SHOW_PLACEHOLDER_CONTENT` flag, must stay unset in Vercel until real content exists
+- [ ] **Replace placeholder reviews in `review-carousel.tsx`** — currently hardcoded fake names/cities/quotes (Elena M., Sami K., Amira J.) for structural testing only; gated behind `VITE_SHOW_PLACEHOLDER_CONTENT` env flag, must stay unset in the Cloudflare build environment until real reviews exist
+- [ ] **Replace placeholder Instagram community in `social-proof.tsx`** — currently hardcoded fake usernames (@layla_designs, @marwan_ab, @thecuratedhome) reusing product photos; gated behind same `VITE_SHOW_PLACEHOLDER_CONTENT` flag, must stay unset in the Cloudflare build environment until real content exists
 - [ ] Final hi-res product photography (≥4 angles per product; consistent crop / background)
 - [ ] Artisan story copy (Montreal + Palestine origin narrative)
 - [ ] About page content (mission, sourcing, ethics)
@@ -181,11 +181,12 @@ the Cloudflare Worker with one CSP source of truth, embroidery removed from ever
       `@sentry/react` inside the consent gate (`client/src/lib/monitoring.ts`), Worker via
       `@sentry/cloudflare` (`worker/index.ts`), emails scrubbed from both by
       `shared/scrub.ts`. Two Sentry projects, separate alert rules.
-      **Still needs the env vars to actually report:** `VITE_SENTRY_DSN` is set in Vercel
-      (done, requires a fresh build not a cached redeploy); `SENTRY_DSN` for the Worker is
-      set at Cloudflare cutover — see plan 10 phase 5 step 0.
+      **Still needs the env vars to actually report:** `VITE_SENTRY_DSN` was set in Vercel, which
+      is now deleted — it must be re-set in the Cloudflare **build** environment (a build-time
+      var, so a rebuild is required, not a redeploy). `SENTRY_DSN` for the Worker is a runtime
+      var in `wrangler.toml`/secrets. Neither was verified in this session.
 - [ ] Configure log retention / rotation in production
-- [ ] Backup strategy for the Postgres database (Replit-managed snapshots verified working)
+- [ ] Backup strategy — N/A while no database is provisioned (`shared/schema.ts` is commented out, D1/SQLite dialect). Revisit if D1 is ever created
 - [ ] Review all `process.env` reads — fail fast at boot if a required prod var is missing
 - [ ] Consider `helmet` `crossOriginEmbedderPolicy` and `referrerPolicy: "strict-origin-when-cross-origin"` once Shopify CDN domains are finalised in CSP
 

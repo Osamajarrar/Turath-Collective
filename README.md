@@ -88,4 +88,4 @@ Use the **Publish** button in the Replit workspace. The build command (`npm run 
 
 ## Contributing / AI Agent Notes
 
-If you're an agent picking up work on this project, **read `replit.md` first**. It defines the conventions (test IDs, no-Vercel rule, GA4 plugin, RTL flush, mock fallback strategy) that the rest of the codebase assumes.
+If you're an agent picking up work on this project, **read `replit.md` first**. It defines the conventions (test IDs, no host-analytics rule, GA4 plugin, RTL flush, mock fallback strategy) that the rest of the codebase assumes.

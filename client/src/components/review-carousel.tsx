@@ -3,7 +3,7 @@
 // exist, it renders nothing in production.
 //
 // PLACEHOLDER CONTENT below — fake reviews for layout preview only, gated by
-// VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel). Real reviews
+// VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Cloudflare). Real reviews
 // take precedence over the placeholder regardless of that flag.
 // See plans/07-placeholder-gating.md.
 

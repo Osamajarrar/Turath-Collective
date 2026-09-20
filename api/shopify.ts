@@ -4,9 +4,11 @@
  * Vercel Function that proxies GraphQL requests to Shopify Storefront API
  * Keeps the API token secure (server-side only).
  *
- * This is the proxy that actually runs in production — the Express route in
- * server/routes.ts only serves the local/Node host. Anything that route relies
- * on (rate limiting, validation) has to be reimplemented here.
+ * NOTE: this no longer runs anywhere. The Cloudflare Worker (worker/index.ts)
+ * serves /api/shopify in production. The file is kept because the 17 hardening
+ * tests in test/shopify-proxy.test.ts are written against this handler's
+ * req/res shape, and deleting it would silently delete that coverage. It waits
+ * for a real port to the Worker. Do not extend it.
  *
  * Hardening applied here, because the endpoint is unauthenticated and public:
  *   - shape/size validation so it can't be used to relay arbitrary payloads

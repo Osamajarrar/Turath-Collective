@@ -1,13 +1,11 @@
 /**
  * Contact form — transport-agnostic core.
  *
- * Deliberately knows nothing about Express or Vercel, because the form has to
- * work on BOTH: server/routes.ts serves the local Node host, and api/contact.ts
- * is what actually runs in production (Vercel never executes server/index.ts —
- * see DECISIONS.md §1). Putting the validation in one place is the only way the
- * two cannot drift, which is the same trap the CSP duplication created.
- *
- * Plan 10 collapses this to a single Hono handler.
+ * Deliberately knows nothing about Express or Hono, because the form has to
+ * work on BOTH: server/routes.ts serves the local Node host, and the Cloudflare
+ * Worker (worker/index.ts) is what runs in production. Putting the validation
+ * in one place is the only way the two cannot drift, which is the same trap the
+ * CSP duplication created.
  */
 import { z } from "zod";
 import { sendContactEmail, sendContactConfirmation } from "./email";

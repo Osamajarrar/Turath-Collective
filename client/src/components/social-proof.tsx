@@ -3,7 +3,7 @@
 // Shopify admin without a redeploy (see shopifyService.getSocialFeed).
 //
 // PLACEHOLDER CONTENT below — fake social posts for layout preview only,
-// gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Vercel).
+// gated by VITE_SHOW_PLACEHOLDER_CONTENT (must NEVER be set in Cloudflare).
 // Real metafield entries take precedence over the placeholder regardless of
 // that flag. See plans/07-placeholder-gating.md.
 

@@ -13,11 +13,11 @@ Domain: **turathcollective.com**. Admin email: `collectiveturath@gmail.com`. Lan
 | Layer | Tech | Notes |
 |---|---|---|
 | Frontend | React 18 + TypeScript + Vite 7 | Tailwind CSS v4, Radix UI, Wouter, TanStack Query, framer-motion |
-| Backend | **Express 5** (Node 20) running via `tsx server/index.ts` | NOT Vercel — `vercel.json` and `api/shopify.ts` are unused legacy files |
-| Hosting | Replit (single web service on port 5000) | Use the workspace **Publish** button to deploy |
-| Database | PostgreSQL + Drizzle ORM | Replit-managed; connection via `DATABASE_URL` |
-| E-commerce | Shopify Storefront API v2024-01 | Headless GraphQL, proxied through Express `/api/shopify` route |
-| Email | Resend API | Service module exists (`server/email.ts`); routes currently disabled |
+| Backend | **Hono Worker** on Cloudflare (`worker/index.ts`) | `server/` is the LOCAL host only (Express + Vite middleware, port 5000); every route there delegates to the same shared handlers the Worker uses, so the two cannot diverge |
+| Hosting | **Cloudflare Workers** (`turath-collective`), config in `wrangler.toml` | Live since 2026-09-14; the Vercel project is deleted. Static assets served from `dist/public` via the `[assets]` binding, SPA fallback included |
+| Database | **None provisioned.** Drizzle schema in `shared/schema.ts` is commented out, D1/SQLite dialect | Deferred on purpose — do not wire it live, do not "clean it up" |
+| E-commerce | Shopify Storefront API v2024-01 | Headless GraphQL, proxied through the Worker at `/api/shopify` (Express serves the same path locally) |
+| Email | Resend API | Contact form is LIVE (`/api/contact` → `server/contact-handler.ts`). Newsletter still has no backend — see the CASL warning in `server/email.ts` |
 | i18n | i18next + react-i18next | EN, FR, AR with RTL toggle on `<html dir>` at i18n module load |
 | Analytics | Google Analytics 4 | Injected into `index.html` by custom Vite plugin (`ga4Plugin` in `vite.config.ts`) at build time |
 
@@ -55,7 +55,11 @@ vite.config.ts                   Vite config + custom ga4Plugin (transformIndexH
 vite-plugin-meta-images.ts       Custom plugin: rewrites OG image URLs at build
 ```
 
-**Legacy/unused** (do not modify, do not extend): `vercel.json`, `api/shopify.ts`, `client/src/pages/{login,signup,forgot-password,contact}.tsx` (files exist but not registered in `App.tsx`).
+**Retained but not serving traffic:** `api/shopify.ts` (+ the `@vercel/node` dev dep). The Worker
+owns this endpoint now, but the Vercel handler keeps the 17 hardening tests in
+`test/shopify-proxy.test.ts` alive — introspection blocking, query cap, origin enforcement, token
+non-leakage — and those tests are written against its req/res shape. Deleting the file deletes the
+coverage, so it waits for a real port to `worker/index.ts`. Do not extend it; do not delete it.
 
 ---
 
@@ -141,7 +145,9 @@ When the Shopify env vars are absent, the frontend silently falls back to mock p
 
 1. **Test IDs**: every interactive element needs `data-testid={action}-{target}`; dynamic elements append an id (e.g. `card-product-${id}`).
 2. **No new files when editing existing ones suffices.** Keep file count low; collapse small components into their parent.
-3. **No `@vercel/analytics` or `@vercel/speed-insights` imports.** GA4 is handled by `ga4Plugin` only.
+3. **No host-provided analytics script** (`@vercel/analytics`, Cloudflare Web Analytics, or any
+   equivalent). It would load before consent and outside the CSP. GA4 and PostHog are the only
+   analytics, both gated on consent.
 4. **Update `client/index.html` Open Graph + Twitter meta** (`og:title`, `og:description`, `twitter:title`, `twitter:description`) when changing the brand name or pitch. Never overwrite `og:image`, `twitter:image`, or `twitter:site`.
 5. **Always read `server/email.ts` first** before re-enabling contact/newsletter — the template strings need HTML escaping (SAST-flagged).
 6. **Don't add a second port.** Replit firewalls everything except port 5000.
