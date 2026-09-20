@@ -2,10 +2,10 @@
   // Tests are typechecked too. The previous config excluded `**/*.test.ts` but
   // not `**/*.test.tsx`, so component tests were checked and plain ones were
   // not — a split that hid errors in whichever half you weren't looking at.
-  // api/ is not listed, but api/shopify.ts is now typechecked anyway: the
-  // proxy test imports it, which pulls it into the program. That is the first
-  // time the proxy that actually runs in production has been typechecked, and
-  // it is why @vercel/node is a devDependency.
+  // api/ is gone: it held the Vercel serverless copy of the Shopify proxy,
+  // which stopped serving traffic when Cloudflare took over and was deleted
+  // once test/shopify-proxy.test.ts was re-pointed at the Worker. @vercel/node
+  // went with it.
   //
   // worker/ is listed EXPLICITLY, and that matters: it was missing until
   // 2026-08-02, so the runtime that production will actually serve had only

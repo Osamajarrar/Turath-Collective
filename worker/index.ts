@@ -55,7 +55,10 @@ export type Env = {
 const MAX_QUERY_LENGTH = 20_000;
 const UPSTREAM_TIMEOUT_MS = 10_000;
 
-const app = new Hono<{ Bindings: Env }>();
+// Exported (in addition to the default Sentry-wrapped handler below) so tests
+// can drive the routes directly with app.request(path, init, env) and a
+// synthetic env — no Sentry, no wrangler. test/shopify-proxy.test.ts is why.
+export const app = new Hono<{ Bindings: Env }>();
 
 // ── Security headers on every Worker response ───────────────────────────────
 // Static assets get the same set via client/public/_headers, generated from the same
