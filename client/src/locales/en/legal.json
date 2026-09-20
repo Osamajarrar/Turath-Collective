@@ -165,6 +165,14 @@
           {
             "name": "Website hosting (Cloudflare)",
             "purpose": "Website infrastructure"
+          },
+          {
+            "name": "Site analytics (PostHog)",
+            "purpose": "Understanding site usage — pages viewed and interactions, and session recordings where that feature is enabled"
+          },
+          {
+            "name": "Error monitoring (Sentry)",
+            "purpose": "Diagnosing website and server errors. Email addresses are removed from reports before they are sent, and IP addresses, cookies and headers are not attached"
           }
         ],
         "outro": "All third parties are required to handle your information in accordance with applicable privacy law. We do not authorize them to use your information for any purpose beyond providing services to us.\n\nSome of these providers may store or process data outside of Canada. Where this occurs, your information receives protection equivalent to that provided under Quebec and Canadian law, to the extent reasonably practicable."

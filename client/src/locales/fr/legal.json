@@ -165,6 +165,14 @@
           {
             "name": "Hébergement Web (Cloudflare)",
             "purpose": "Infrastructure du site Web"
+          },
+          {
+            "name": "Analyse du site (PostHog)",
+            "purpose": "Comprendre l'utilisation du site — pages consultées et interactions, ainsi que les enregistrements de session lorsque cette fonction est activée"
+          },
+          {
+            "name": "Surveillance des erreurs (Sentry)",
+            "purpose": "Diagnostiquer les erreurs du site Web et du serveur. Les adresses courriel sont retirées des rapports avant leur envoi, et les adresses IP, témoins et en-têtes ne sont pas joints"
           }
         ],
         "outro": "Tous les tiers sont tenus de traiter vos informations conformément à la loi applicable sur la protection des renseignements personnels. Nous ne les autorisons pas à utiliser vos informations pour quelconque autre objectif que de nous fournir des services.\n\nCertains de ces fournisseurs peuvent stocker ou traiter les données en dehors du Canada. Le cas échéant, vos informations reçoivent une protection équivalente à celle fournie en vertu des lois du Québec et du Canada, dans la mesure raisonnablement possible."
