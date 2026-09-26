@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  categoryHandleFromType,
   getAvailableCategories,
   getVisibleCategories,
   getAvailableCollections,
@@ -64,6 +65,37 @@ describe("category visibility", () => {
         expect(collection.hidden).toBe(category.hidden);
         expect(collection.comingSoon).toBe(category.comingSoon);
       }
+    }
+  });
+});
+
+describe("categoryHandleFromType — Shopify Type to craft handle", () => {
+  // A format rule, not a guess: lowercase and slug the Type, nothing else.
+  it.each([
+    ["Ceramics", "ceramics"],
+    ["  GLASS ", "glass"],
+    ["Olive Wood", "olive-wood"],
+    ["Home & Garden", "home-and-garden"],
+    ["", ""],
+    [null, ""],
+    [undefined, ""],
+  ])("%j -> %j", (type, handle) => {
+    expect(categoryHandleFromType(type)).toBe(handle);
+  });
+
+  it("does not guess a craft from a shape", () => {
+    // The old heuristic mapped any "bowl" to ceramics, so a glass bowl was
+    // filed under the wrong craft. A shape stays a shape and matches nothing.
+    expect(categoryHandleFromType("Bowl")).toBe("bowl");
+  });
+
+  it("maps the Type a founder would actually type onto every advertised craft", () => {
+    // Title-cased, as Shopify admin encourages. If a craft is renamed in the
+    // registry without this still holding, every product of that craft
+    // silently disappears from the shop.
+    for (const { handle } of getVisibleCategories(t)) {
+      const typed = handle.charAt(0).toUpperCase() + handle.slice(1).replace(/-/g, " ");
+      expect(categoryHandleFromType(typed)).toBe(handle);
     }
   });
 });
