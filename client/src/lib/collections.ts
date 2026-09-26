@@ -61,6 +61,30 @@ const categoryVisibility: Record<string, VisibilityFlags> = {
   glass: { comingSoon: true, hidden: false },
 };
 
+/**
+ * The category a product belongs to, read from its Shopify **Type** field.
+ *
+ * Type is set by hand in Shopify admin to the CRAFT — `Ceramics`, `Glass` —
+ * and must match a handle in categoryVisibility above once formatted. Not the
+ * separate Shopify "Category" field, which is Shopify’s standard taxonomy
+ * for tax and Google Shopping and is not read here.
+ *
+ * This is a FORMAT rule, never a guess: it lowercases and slugs the Type and
+ * nothing else. It replaced a heuristic that keyword-matched "bowl", "plate"
+ * and "mug" to ceramics, fell back to a product’s first tag, and defaulted
+ * anything empty to ceramics — so a glass bowl was filed as ceramics, and a
+ * product tagged `best-seller` first became category "best-seller". A Type
+ * that matches no registered craft is left as-is; the shop then declines to
+ * show it rather than filing it somewhere plausible.
+ */
+export function categoryHandleFromType(productType: string | null | undefined): string {
+  return (productType ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\s+/g, "-");
+}
+
 const getVisibilityFlags = (handle: string): VisibilityFlags =>
   categoryVisibility[handle] ?? { comingSoon: false, hidden: false };
 

@@ -17,7 +17,7 @@ import img3 from "@/assets/burgundy-bowl.png";
 import img4 from "@/assets/burgundy-mezze.png";
 import classicBowl from "@/assets/classic-bowl.png";
 import classicMezze from "@/assets/classic-mezze-plate.png";
-import { getAvailableCategories } from "@/lib/collections";
+import { categoryHandleFromType, getAvailableCategories } from "@/lib/collections";
 
 // ── Variation interface ───────────────────────────────────────────────────
 
@@ -142,31 +142,6 @@ export interface DisplayProduct {
 }
 
 export function normaliseShopify(p: ShopifyProduct): DisplayProduct {
-  const sourceCategory = p.productType || p.tags?.[0] || "";
-  const normalizedCategory = sourceCategory.trim().toLowerCase();
-
-  const inferCategoryHandle = (value: string) => {
-    if (!value) return "ceramics";
-    if (
-      value.includes("embroider") ||
-      value.includes("tatreez") ||
-      value.includes("textile") ||
-      value.includes("linen")
-    ) {
-      return "embroidery";
-    }
-    if (
-      value.includes("ceramic") ||
-      value.includes("potter") ||
-      value.includes("clay") ||
-      value.includes("mug") ||
-      value.includes("bowl") ||
-      value.includes("plate")
-    ) {
-      return "ceramics";
-    }
-    return value.replace(/\s+/g, "-").replace(/&/g, "and");
-  };
 
   const variations: Variation[] = p.variants.edges.map((e) => {
     const colorHex = e.node.colorHexMf?.value ?? undefined;
@@ -201,7 +176,7 @@ export function normaliseShopify(p: ShopifyProduct): DisplayProduct {
     id: p.id,
     name: p.title,
     handle: p.handle,
-    category: inferCategoryHandle(normalizedCategory),
+    category: categoryHandleFromType(p.productType),
     price: parseFloat(p.priceRange.minVariantPrice.amount),
     currencyCode: p.priceRange.minVariantPrice.currencyCode,
     image: p.images.edges[0]?.node.url ?? "",
@@ -430,14 +405,23 @@ export default function ShopPage() {
         return;
       }
       
-      const fallbackCategory = availableCategoryHandles[0] || "ceramics";
-      const normalizedProducts = result.map((item) => {
-        const normalized = normaliseShopify(item);
-        if (availableCategoryHandles.includes(normalized.category)) {
-          return normalized;
+      // No fallback. This used to reassign any product outside an available
+      // craft to the first one, so a piece correctly typed Glass (glass is
+      // coming soon, not yet available) was displayed as Ceramics. Such a
+      // product is now simply not shown — visibleProducts below filters to
+      // available crafts — and development says why instead of hiding it.
+      const normalizedProducts = result.map(normaliseShopify);
+      if (import.meta.env.DEV) {
+        for (const p of normalizedProducts) {
+          if (!availableCategoryHandles.includes(p.category)) {
+            console.warn(
+              `[Shop] Not shown: "${p.name}" has Shopify Type "${p.category || "(empty)"}", ` +
+                `which is not an available craft (${availableCategoryHandles.join(", ")}). ` +
+                `Set its Type in Shopify admin, or make the craft available in client/src/lib/collections.ts.`,
+            );
+          }
         }
-        return { ...normalized, category: fallbackCategory };
-      });
+      }
       console.log("[Shop] Normalized products:", normalizedProducts.length);
       setProducts(normalizedProducts);
       setIsLoading(false);
