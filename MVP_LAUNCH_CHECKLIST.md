@@ -27,7 +27,7 @@ the Shopify password off last.
 | 3 | **Catalogue grouping** | Undecided, and the prior question is whether to have categories at all. See item 8 — the *data* decision is urgent even if the *navigation* decision is not |
 | 4 | **Logo slogan** | Three options on the table: change to "History, still handmade.", keep "Heritage Craftsmanship", or drop the slogan entirely. SVG work is manual |
 | 5 | **Navbar colours** | Open design item |
-| 6 | **Support email routing** | `support@turathcollective.com` is what the site advertises and what customers should write to. `collectiveturath@gmail.com` is the only Gmail the founder could register and is an account-holder address, not a public one. Sending should come from `noreply@turathcollective.com`, which is already DKIM-verified in Resend. See §Email routing below |
+| 6 | ~~Support email routing~~ | **Done 2026-09-26** — see §Email routing below |
 | 7 | **Content audit** | Deferred deliberately until the look is settled. Includes the unverified Hebron "2,000 years" claim in the FAQ and the reply-time promise (currently promised nowhere, which is the honest state) |
 
 ## Blocking launch — needs code
@@ -44,18 +44,27 @@ the Shopify password off last.
 |---|---|---|
 | 11 | **Remove the Shopify storefront password** | Until this is done nobody can buy anything, and `VITE_REAL_CHECKOUT` must stay unset so checkout shows the intent dialog rather than a password wall. Deliberately the final step before launch, not an oversight |
 
-## Email routing — the decision, recorded
+## Email routing — done and verified 2026-09-26
 
-- **Inbound:** `support@turathcollective.com` should forward to the founder's real
-  mailbox. Cloudflare Email Routing does this free on a domain already on Cloudflare,
-  and does not require adding an MX for a mail provider. Nothing in the code reads
-  inbound mail.
-- **Outbound:** Resend sends from `noreply@turathcollective.com`, already verified —
-  the DKIM, SPF and bounce records survived the Vercel-to-Cloudflare move and were
-  confirmed live on 2026-09-15.
-- **Where mail lands today:** `server/email.ts` sends contact-form notifications to
-  `ADMIN_EMAIL = collectiveturath@gmail.com`. Once forwarding exists, this should
-  become `support@turathcollective.com` so there is one address to change later.
+- **Inbound:** `support@turathcollective.com` forwards to `collectiveturath@gmail.com`
+  through Cloudflare Email Routing. Verified by sending from a personal address. Forwarded
+  mail can land in Gmail spam at first; a Gmail filter on `to:support@turathcollective.com`
+  set to "Never send it to Spam" is the durable fix. There is no auto-reply for direct
+  emails to `support@` — deliberately, the contact form is the path with a confirmation.
+- **Outbound:** Resend sends from `noreply@turathcollective.com`. A live contact-form
+  submission produced both emails, both delivered: the visitor confirmation ("We received
+  your message") and the notification to `ADMIN_EMAIL`.
+- **The DNS went missing once.** Resend’s three records (`resend._domainkey`, and TXT + MX
+  on `send`) were present on 2026-09-15 and gone by 2026-09-26, probably collateral from
+  deleting a Cloudflare project. The site kept working, so nothing noticed: adding contacts
+  to an audience needs no domain verification, but *sending* does. Re-added 2026-09-26 with
+  the same DKIM key. If contact-form mail stops arriving, check these first.
+- **Not done, optional:** a `_dmarc` TXT record (`v=DMARC1; p=none;`). Helps new-domain
+  deliverability, blocks nothing.
+- **Not done, optional:** `ADMIN_EMAIL` in `server/email.ts` still points straight at the
+  Gmail. Pointing it at `support@` instead would mean one address to change later, at the
+  cost of an extra forwarding hop — which is exactly where the spam placement happens.
+  Direct delivery works; leave it unless there is a reason.
 
 ## Done — do not redo
 
